@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './fox-sitting.png';
 import './App.css';
 
 class App extends Component {
-  // state = {users: []}
+  constructor(props){
+    super(props);
+    this.state = {users: []}
+  }
 
-  // componentDidMount = () => {
-  //   fetch('/users')
-  //     .then(response => response.json())
-  //     .then(users => this.setState({users}))
-  // }
+  componentDidMount = () => {
+    fetch('/users')
+      .then(response => response.json())
+      .then(users => this.setState({users}))
+  }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Welcome to Fetch</h1>
         </header>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.

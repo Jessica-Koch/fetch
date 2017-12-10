@@ -1,0 +1,12 @@
+.Button {
+  padding: 1rem 2rem;
+  border-radius: 10rem;
+  letter-spacing: 0.2rem;
+  font-weight: 200;
+  font-family: 'Aileron', 'Helvetica Neue Light', sans-serif;
+  font-size: 1rem;
+}
+button {
+  background-color: tomato;
+  color: #ffffff;
+}

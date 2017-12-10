@@ -4,5 +4,5 @@ import ReactDOM from 'react-dom';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<Avatar avatarUrl="www.someUrl.com" />, div);
+  ReactDOM.render(<Avatar avatarUrl="someUrl" />, div);
 });
