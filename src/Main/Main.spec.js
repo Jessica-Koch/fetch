@@ -1,4 +1,6 @@
-import { shallow } from 'enzyme';
 import Main from './Main';
+import { renderTest } from '../../utils/testUtils';
 
-describe('Main', () => {});
+describe('Main', () => {
+  renderTest(Main);
+});

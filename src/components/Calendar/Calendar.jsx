@@ -20,17 +20,16 @@ class Calendar extends Component {
     }
   }
 
-  showCalendar = () => this.setState({ isOpen: true });
-
-  hideCalendar = () => this.setState({ isOpen: false });
-
   onEscape = ({ key }) => {
     if (key === 'Escape') {
       this.hideCalendar();
     }
   };
 
-  isDateValid = input => {};
+  hideCalendar = () => this.setState({ isOpen: false });
+  showCalendar = () => this.setState({ isOpen: true });
+
+  isDateValid = (input) => {};
 
   render() {
     const { date, isOpen, selectedDate } = this.state;

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import logo from './fox-sitting.png';
+import logo from '../../fox-sitting.png';
 
 class Header extends PureComponent {
   render() {

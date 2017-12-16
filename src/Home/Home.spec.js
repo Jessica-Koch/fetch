@@ -1,10 +1,6 @@
-/* eslint-env jest */
 import Home from './Home';
-import { shallow } from 'enzyme';
+import { renderTest } from '../../utils/testUtils';
 
 describe('Home', () => {
-  it('renders', () => {
-    const comp = shallow(<Home />);
-    expect(comp).toBePresent();
-  });
+  renderTest(Home);
 });
