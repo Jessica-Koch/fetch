@@ -1,19 +1,32 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { string } from 'prop-types';
 import styles from './TextInput.css';
 
-const TextInput = props => {
-  return (
-    <div>
-      <input className={props.className} />
-    </div>
-  );
-};
+class TextInput extends PureComponent {
+  static defaultProps = {
+    cx: undefined,
+    theme: 'default',
+    type: 'text',
+    value: '',
+  };
 
-TextInput.defaultProps = {
-  className: undefined,
-  theme: 'default',
-  type: 'text',
-  value: '',
-};
+  static propTypes = {
+    cx: string,
+    theme: string,
+    type: string,
+    value: string,
+  };
+
+  render() {
+    const {
+      cx, theme, type, value,
+    } = this.props;
+    return (
+      <div className={cx}>
+        <input type={type} value={value} theme={theme} />
+      </div>
+    );
+  }
+}
 
 export default TextInput;
