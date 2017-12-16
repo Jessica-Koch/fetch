@@ -16,7 +16,11 @@
     "whatwg-fetch": "^2.0.3"
   },
   "jest": {
-    "collectCoverageFrom": ["src/**/*.{js,jsx}", "components/**/*.{js,jsx}", "!node_modules/"],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "components/**/*.{js,jsx}",
+      "!node_modules/"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 90,
@@ -41,12 +45,16 @@
   },
   "proxy": "http://localhost:8000",
   "devDependencies": {
-    "@storybook/addon-actions": "^3.2.16",
+    "@sambego/storybook-styles": "^1.0.0",
+    "@storybook/addon-actions": "^3.2.17",
+    "@storybook/addon-info": "^3.2.17",
+    "@storybook/addon-knobs": "^3.2.17",
     "@storybook/addon-links": "^3.2.16",
+    "@storybook/addon-storyshots": "^3.2.17",
     "@storybook/react": "^3.2.16",
     "babel-eslint": "^7.2.3",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "chai": "^4.1.2",
+    "babel-preset-env": "^1.6.1",
     "enzyme": "^3.2.0",
     "enzyme-adapter-react-16": "^1.1.0",
     "eslint": "^4.13.1",
@@ -56,6 +64,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.5.1",
     "eslint-rule-documentation": "^1.0.18",
-    "jest-enzyme": "^4.0.1"
+    "jest-enzyme": "^4.0.1",
+    "storybook-addon-specifications": "^2.1.1"
   }
 }
