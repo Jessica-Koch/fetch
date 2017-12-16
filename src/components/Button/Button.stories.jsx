@@ -2,7 +2,7 @@
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import Button from './Button';
-import '../../.storybook/base.css';
+import '../../../.storybook/base.css';
 
 storiesOf('Button', module)
   .add('story 1', () => <Button label="You should be able to switch backgrounds for this story" />)
