@@ -1,10 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+/* eslint-env jest */
 import TextInput from './TextInput';
+import { renderTest } from '../../../utils/testUtils';
 
 describe('TextInput', () => {
-  it('should render without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<TextInput />, div);
-  });
+  renderTest(TextInput);
 });

@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import Button from './Button';
-import { renderTest } from '../../utils/testUtils';
+import { renderTest } from '../../../utils/testUtils';
 
-it('renders without crashing', () => {
+describe('Button', () => {
   renderTest(Button);
 });

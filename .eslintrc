@@ -8,4 +8,8 @@
     "jest/globals": true
   },
   "plugins": ["jest"],
+  "rules": {
+    "import/no-extraneous-dependencies": 0,
+    "import/prefer-default-export": 0
+  }
 }

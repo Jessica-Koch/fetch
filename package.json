@@ -18,7 +18,13 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",
+      "src/**/*.spec.{js,jsx}",
       "components/**/*.{js,jsx}",
+      "components/**/*.spec.{js,jsx}",
+      "!components/**/*.stories.jsx",
+      "!components/**/index.js",
+      "!src/**/*.stories.jsx",
+      "!src/**/index.js",
       "!node_modules/"
     ],
     "coverageThreshold": {

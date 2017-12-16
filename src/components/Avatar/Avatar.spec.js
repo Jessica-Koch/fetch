@@ -1,8 +1,7 @@
-import React from 'react';
+/* eslint-env jest */
 import Avatar from './Avatar';
-import ReactDOM from 'react-dom';
+import { renderTest } from '../../../utils/testUtils';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<Avatar avatarUrl="someUrl" />, div);
+describe('Avatar', () => {
+  renderTest(Avatar, { avatarUrl: 'immaurl' });
 });
