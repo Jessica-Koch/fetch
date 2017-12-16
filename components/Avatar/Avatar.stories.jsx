@@ -1,13 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import { storiesOf } from '@storybook/react';
 import React from 'react';
 import Avatar from './Avatar';
-import { storiesOf } from '@storybook/react';
 import '../../.storybook/base.css';
-import avatar from './avatar.jpg';
+import { avatar } from './avatar.jpg';
 
-storiesOf('Avatar', module).add('Avatar', () => {
-  return (
-    <div className="container" height="100%">
-      <Avatar className="Avatar" avatarUrl={avatar} />
-    </div>
-  );
-});
+storiesOf('Avatar', module).add('Avatar', () => <Avatar className="Avatar" avatarUrl={avatar} />);
