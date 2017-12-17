@@ -1,19 +1,22 @@
 import { Switch, Route } from 'react-router-dom';
-import React from 'react';
+import React, { Component } from 'react';
 import './UserList.scss';
 import Users from '../Users';
 import User from '../User';
 
-const UserList = () => (
-  <div className="section">
-    <h1>This is a User page!</h1>
-    <Switch>
-      <Route exact path="/users" component={Users} />
-      <Route path="users/:number" component={User} />
-    </Switch>
-  </div>
-);
-// class UserList extends Component {
+class UserList extends Component {
+  render() {
+    return (
+      <div className="section">
+        <h1>This is a User page!</h1>
+        <Switch>
+          <Route exact path="/users" component={Users} />
+          <Route path="users/:number" component={User} />
+        </Switch>
+      </div>
+    );
+  }
+}
 //   static propTypes = {
 //     users: array,
 //   };
@@ -48,4 +51,4 @@ const UserList = () => (
 //   }
 // }
 //
-// export default UserList;
+export default UserList;

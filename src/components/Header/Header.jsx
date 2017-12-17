@@ -4,12 +4,22 @@ import logo from '../../fox-sitting.png';
 class Header extends PureComponent {
   render() {
     return (
-      <div className="nav">
-        <header className="App-header">
+      <header className="App-header">
+        <nav>
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to Fetch</h1>
-        </header>
-      </div>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/users" />
+            </li>
+            <li>
+              <Link to="schedule" />
+            </li>
+          </ul>
+        </nav>
+      </header>
     );
   }
 }

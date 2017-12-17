@@ -22,7 +22,7 @@ class Users extends Component {
   }
 
   render() {
-    const users = this.state.users.map(user => <User key={user.id} user={user} />);
+    const users = this.state.users.map(user => <User key={user.id} user={user} linkTo={`/users/${user.id}`} />);
 
     return (
       <div className="grid-container">
