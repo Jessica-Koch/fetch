@@ -1,17 +1,19 @@
 import 'whatwg-fetch';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import classNames from 'classnames';
 import './App.css';
-import Header from './../components/Header/';
+import Header from './components/Header/';
+import Footer from './components/Footer/';
 import Main from './Main';
 
-class App extends PureComponent {
+class App extends Component {
   render() {
     return (
-      <div className="App">
+      <div className={classNames('App', 'wrapper')}>
         <Header />
-        <div className="grid">
-          <Main />
-        </div>
+
+        <Main />
+        <Footer />
       </div>
     );
   }

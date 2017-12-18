@@ -3,16 +3,10 @@
   grid-template-rows: 80px auto 80px;
   grid-column-gap: 10px;
   grid-row-gap: 15px;
-}
-.header {
-  grid-area: header;
-  color: #ffffff;
-}
 
-.UserList {
-  h1 {
+  .header {
+    grid-area: header;
     color: #ffffff;
-    font-weight: 200;
   }
 }
 

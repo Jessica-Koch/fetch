@@ -1,1 +1,13 @@
+.grid-container {
+  grid-template-columns: 100px 50px 100px;
+  grid-template-rows: 80px auto 80px;
+  grid-column-gap: 10px;
+  grid-row-gap: 15px; }
 
+.header {
+  grid-area: header;
+  color: #ffffff; }
+
+.UserList h1 {
+  color: #ffffff;
+  font-weight: 200; }

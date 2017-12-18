@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { array, string } from 'prop-types';
+import { Link } from 'react-router-dom';
 
-class User extends PureComponent {
+class User extends Component {
   static propTypes = {
     firstName: string.isRequired,
     lastName: string.isRequired,
@@ -17,10 +18,10 @@ class User extends PureComponent {
     return (
       <div className="grid-row">
         <div className="grid-col">
-          <Link to=`/users/${linkTo}`>{firstName}</Link>
+          <Link to={`/users/${linkTo}`}>{firstName}</Link>
         </div>
         <div className="grid-col">
-          <Link to=`/users/${linkTo}`>{lastName}</Link>
+          <Link to={`/users/${linkTo}`}>{lastName}</Link>
         </div>
         <div className="grid-col">{email}</div>
         <div className="grid-col">{dogs}</div>

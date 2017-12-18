@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600');
 * {
   box-sizing: border-box;
 }
@@ -9,9 +10,13 @@
 html,
 body {
   height: 100%;
-  background-image: url('./bg.png')
+  background-image: url('./bg.png');
+  background-position: center;
+  background-size: cover;
+  font-family: 'Work Sans', 'Hevletica Neue', sans-serif;
+  font-weight: 200;
+  font-size: 1rem;
 }
-font-family: 'Hevletica Neue', sans-serif;
-.grid {
-  display: grid;
+#root {
+  height: 100%;
 }

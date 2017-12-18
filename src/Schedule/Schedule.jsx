@@ -11,7 +11,7 @@ class Schedule extends Component {
   };
 
   render() {
-    return <div className="Schedule" />;
+    return <div className="Schedule" appointment={this.props.appointment} />;
   }
 }
 

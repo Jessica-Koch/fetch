@@ -1,0 +1,14 @@
+.main-head {
+  grid-area: header; }
+
+.main-nav {
+  grid-area: nav; }
+
+.main-nav ul {
+  display: flex;
+  justify-content: space-around; }
+
+.main-nav li {
+  list-style: none; }
+  .main-nav li a {
+    text-decoration: none; }

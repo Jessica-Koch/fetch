@@ -1,0 +1,23 @@
+.svg-def {
+  position: absolute;
+  width: 0;
+  height: 0; }
+
+.main-view-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #282a29; }
+
+.loader-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -125px;
+  margin-top: -100px; }
+
+.reflection {
+  transform-origin: 50% 110%;
+  transform: scaleY(-1);
+  opacity: 0.09; }
