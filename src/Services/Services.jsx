@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
+import './Services.css';
 
 class Schedule extends Component {
   static propTypes = {
@@ -11,7 +12,11 @@ class Schedule extends Component {
   };
 
   render() {
-    return <div className="Schedule" appointment={this.props.appointment} />;
+    return (
+      <div className="Services">
+        <h1>Some of the services we provide</h1>
+      </div>
+    );
   }
 }
 

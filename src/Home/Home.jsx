@@ -1,8 +1,13 @@
 import React, { PureComponent } from 'react';
+import './Home.css';
 
 class Home extends PureComponent {
   render() {
-    return <h1>Welcome to fetch!</h1>;
+    return (
+      <div className="Home">
+        <h1>Welcome to Fetch</h1>
+      </div>
+    );
   }
 }
 

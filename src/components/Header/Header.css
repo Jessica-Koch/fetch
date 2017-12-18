@@ -4,11 +4,17 @@
 .main-nav {
   grid-area: nav; }
 
-.main-nav ul {
+.main-nav {
+  padding: 1rem 2.5rem;
   display: flex;
-  justify-content: space-around; }
-
-.main-nav li {
-  list-style: none; }
-  .main-nav li a {
-    text-decoration: none; }
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between; }
+  .main-nav ul {
+    display: flex; }
+  .main-nav li {
+    list-style: none; }
+    .main-nav li a {
+      color: #ffffff;
+      margin: 0.7rem;
+      text-decoration: none; }

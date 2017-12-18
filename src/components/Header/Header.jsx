@@ -8,16 +8,18 @@ class Header extends PureComponent {
     return (
       <header className="main-head">
         <nav className="main-nav">
-          <img src={logo} className="App-logo" alt="logo" />
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
+          <Link to="/">
+            <img src={logo} className="App-logo" alt="logo" />
+          </Link>
+          <ul className="nav-links">
             <li>
               <Link to="/users">Users</Link>
             </li>
             <li>
-              <Link to="/schedule">Schedule With Us</Link>
+              <Link to="/services">Schedule With Us</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
             </li>
           </ul>
         </nav>

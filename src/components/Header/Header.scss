@@ -7,13 +7,20 @@
 }
 
 .main-nav {
+  padding: 1rem 2.5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+
   ul {
     display: flex;
-    justify-content: space-around;
   }
   li {
     list-style: none;
     a {
+      color: #ffffff;
+      margin: 0.7rem;
       text-decoration: none;
     }
   }
