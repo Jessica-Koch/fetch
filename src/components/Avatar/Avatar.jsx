@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { string } from 'prop-types';
-import styles from './Avatar.css';
+import './Avatar.css';
 
 class Avatar extends PureComponent {
   static propTypes = {
@@ -9,8 +9,8 @@ class Avatar extends PureComponent {
 
   render() {
     return (
-      <div className="round">
-        <img className={styles.Avatar} alt="avatar" src={this.props.avatarUrl} />
+      <div className="wrapper">
+        <img className="Avatar" alt="avatar" src={this.props.avatarUrl} />
       </div>
     );
   }
