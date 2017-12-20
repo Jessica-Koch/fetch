@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import styles from './Calendar.css';
-import BgCalendar from '../BgCalendar';
+import './Calendar.css';
+import ICalendar from '../ICalendar';
 
 class Calendar extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class Calendar extends Component {
 
     return (
       <div className="Calendar">
-        <BgCalendar />
+        <ICalendar />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 .Jumbotron {
   background: url('./fetch.jpg');
   width: 100%;
+  text-align: center;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: bottom;
@@ -11,6 +12,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   width: 100%;
   position: relative;
   height: 100%;
@@ -19,7 +21,7 @@
 h1,
 h3 {
   color: rgba(255, 255, 255, 1);
-  letter-spacing: 1.2rem;
+  letter-spacing: 1rem;
   font-weight: 200;
 }
 
@@ -42,6 +44,6 @@ h3 {
   height: 50vh;
 }
 
-.Jumbotron.fourvh {
+.Jumbotron.fourVH {
   height: 40vh;
 }

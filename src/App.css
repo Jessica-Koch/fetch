@@ -1,14 +1,12 @@
 .App {
   text-align: center;
   height: 100%;
-}
-
-.wrapper {
   display: grid;
-  grid-gap: 20px;
-  grid-template-rows: auto auto 30px;
+  grid-template-rows: auto 80px auto 160px;
+  width: 100%;
   grid-template-areas:
-    'Jumbotron'
+    'jumbotron'
+    'nav'
     'content'
     'footer';
 }
@@ -32,8 +30,9 @@
   .wrapper {
     grid-template-columns: 3fr;
     grid-template-areas:
-      'Jumbotron  Jumbotron'
-      'content content'
-      'footer      footer';
+      'Jumbotron'
+      'Nav'
+      'content'
+      'footer';
   }
 }

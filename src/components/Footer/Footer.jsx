@@ -3,7 +3,7 @@ import './Footer.css';
 
 class Footer extends PureComponent {
   render() {
-    return <footer className="main-footer">The footer</footer>;
+    return <footer className="Footer">The footer</footer>;
   }
 }
 

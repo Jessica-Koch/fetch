@@ -1,24 +1,33 @@
 .Nav {
   position: absolute;
-  top: 0; }
+  top: 0;
+  width: 100%;
+}
 
 .main-head {
-  grid-area: header; }
+  grid-area: header;
+}
 
 .main-nav {
-  grid-area: nav; }
+  grid-area: nav;
+}
 
 .main-nav {
   padding: 1rem 2.5rem;
   display: flex;
   align-items: center;
   flex-direction: row;
-  justify-content: center; }
-  .main-nav ul {
-    display: flex; }
-  .main-nav li {
-    list-style: none; }
-    .main-nav li a {
-      color: #ffffff;
-      margin: 0.7rem;
-      text-decoration: none; }
+  justify-content: center;
+}
+.main-nav ul {
+  display: flex;
+}
+.main-nav li {
+  list-style: none;
+}
+.main-nav li a {
+  color: #ffffff;
+  margin: 0.7rem;
+  text-decoration: none;
+  cursor: pointer;
+}
