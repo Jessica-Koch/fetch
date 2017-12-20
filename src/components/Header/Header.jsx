@@ -16,7 +16,7 @@ class Header extends PureComponent {
               <Link to="/users">Users</Link>
             </li>
             <li>
-              <Link to="/services">Schedule With Us</Link>
+              <Link to="/services">Our Services</Link>
             </li>
             <li>
               <Link to="/login">Login</Link>

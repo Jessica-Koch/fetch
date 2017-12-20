@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { arrayOf, instanceOf, shape, string } from 'prop-types';
+import { arrayOf, shape, string } from 'prop-types';
 import './UserList.css';
 import User from '../User';
-
-const dogShape = shape({
-  name: string,
-  breed: string,
-  sex: string,
-  birthday: instanceOf(Date),
-});
-
+//
+// const dogShape = shape({
+//   name: string,
+//   breed: string,
+//   sex: string,
+//   birthday: instanceOf(Date),
+// });
+//
 const userShape = shape({
   firstName: string,
   lastName: string,
   phoneNumber: string,
   email: string,
-  dogs: arrayOf(dogShape),
+  // dogs: arrayOf(dogShape),
 });
 
 class UserList extends Component {
@@ -44,10 +44,10 @@ class UserList extends Component {
       <div className="UserList">
         <h1>This is a User List Page</h1>
         <div className="grid-container">
-          <div className="header">First Name</div>
-          <div className="header">Last Name</div>
-          <div className="header">email</div>
-          <div className="header">Dogs</div>
+          <div className="t-header">First Name</div>
+          <div className="t-header">Last Name</div>
+          <div className="t-header">email</div>
+          <div className="t-header">Dogs</div>
           {users}
         </div>
       </div>

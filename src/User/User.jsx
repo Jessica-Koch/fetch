@@ -1,30 +1,27 @@
 import React, { Component } from 'react';
-import { array, string } from 'prop-types';
+import { shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
+import { userShape } from '../lib/shapes/user';
+import './User.css';
 
 class User extends Component {
   static propTypes = {
-    firstName: string.isRequired,
-    lastName: string.isRequired,
-    email: string.isRequired,
-    dogs: array.isRequired,
+    user: shape(userShape).isRequired,
     linkTo: string.isRequired,
   };
 
   render() {
-    const {
-      firstName, lastName, email, dogs, linkTo,
-    } = this.props;
+    const { user, linkTo } = this.props;
     return (
-      <div className="grid-row">
-        <div className="grid-col">
-          <Link to={`/users/${linkTo}`}>{firstName}</Link>
+      <div className="row">
+        <div className="cell">
+          <Link to={`/users/${linkTo}`}>{user.firstName}</Link>
         </div>
-        <div className="grid-col">
-          <Link to={`/users/${linkTo}`}>{lastName}</Link>
+        <div className="cell">
+          <Link to={`/users/${linkTo}`}>{user.lastName}</Link>
         </div>
-        <div className="grid-col">{email}</div>
-        <div className="grid-col">{dogs}</div>
+        <div className="cell">{user.email}</div>
+        <div className="grid-col">'user.dogs'</div>
       </div>
     );
   }
