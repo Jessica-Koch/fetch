@@ -1,0 +1,47 @@
+.Jumbotron {
+  background: url('./fetch.jpg');
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  height: 100%;
+}
+
+h1,
+h3 {
+  color: rgba(255, 255, 255, 1);
+  letter-spacing: 1.2rem;
+  font-weight: 200;
+}
+
+.Jumbotron.nineVH {
+  height: 90vh;
+}
+.Jumbotron.eightVH {
+  height: 80vh;
+}
+
+.Jumbotron.sevenVH {
+  height: 70vh;
+}
+
+.Jumbotron.sixVH {
+  height: 60vh;
+}
+
+.Jumbotron.fiveVH {
+  height: 50vh;
+}
+
+.Jumbotron.fourvh {
+  height: 40vh;
+}

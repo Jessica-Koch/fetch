@@ -1,3 +1,7 @@
+.Nav {
+  position: absolute;
+  top: 0;
+}
 .main-head {
   grid-area: header;
 }
@@ -11,7 +15,7 @@
   display: flex;
   align-items: center;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
 
   ul {
     display: flex;

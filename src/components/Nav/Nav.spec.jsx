@@ -1,7 +1,7 @@
 /* eslint-env jest */
-import Header from './Header';
+import Nav from './Nav';
 import { renderTest } from '../../../utils/testUtils';
 
-describe('Header', () => {
-  renderTest(Header);
+describe('Nav', () => {
+  renderTest(Nav);
 });

@@ -9,8 +9,8 @@ class Avatar extends PureComponent {
 
   render() {
     return (
-      <div className="wrapper">
-        <img className="Avatar" alt="avatar" src={this.props.avatarUrl} />
+      <div className="Avatar">
+        <img className="Avatar-img" alt="avatar" src={this.props.avatarUrl} />
       </div>
     );
   }

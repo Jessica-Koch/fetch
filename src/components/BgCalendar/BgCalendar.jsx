@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import BigCalendar from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import './BgCalendar.scss';
+import './BgCalendar.css';
 
 BigCalendar.momentLocalizer(moment);
 
 class BgCalendar extends Component {
   render() {
-    const { date, isOpen, selectedDate } = this.state;
-
     return (
       <div className="Calendar">
-        <BigCalendar {...this.props} step={60} defaultDate={new Date(2015, 3, 1)} />
+        <BigCalendar culture="en-US" events={[]} />
       </div>
     );
   }

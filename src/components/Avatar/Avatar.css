@@ -1,4 +1,4 @@
-.wrapper {
+.Avatar {
   border: 3rem solid rgba(255, 255, 255, 0.8);
   border-radius: 200px;
   height: 5rem;
@@ -9,7 +9,7 @@
   align-items: center;
 }
 
-.Avatar {
+.Avatar-img {
   border-radius: 200px;
   width: inherit;
   height: inherit;

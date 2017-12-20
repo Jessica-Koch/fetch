@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './Calendar.css';
-import BigCalendar from 'react-big-calendar';
+import BgCalendar from '../BgCalendar';
 
 class Calendar extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class Calendar extends Component {
 
     return (
       <div className="Calendar">
-        <BigCalendar {...this.props} step={60} defaultDate={new Date(2015, 3, 1)} />
+        <BgCalendar />
       </div>
     );
   }

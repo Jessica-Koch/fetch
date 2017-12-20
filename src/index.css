@@ -9,8 +9,11 @@
 
 html,
 body {
-  height: 100%;
-  background-image: url('./bg.png');
+  margin: 0 auto;
+  padding: 0;
+  min-height: 100%;
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  background-blend-mode: screen;
   background-position: center;
   background-size: cover;
   font-family: 'Work Sans', 'Hevletica Neue', sans-serif;

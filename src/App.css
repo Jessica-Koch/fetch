@@ -6,13 +6,11 @@
 .wrapper {
   display: grid;
   grid-gap: 20px;
-  grid-template-rows: 50px 80px auto 30px;
+  grid-template-rows: auto auto 30px;
   grid-template-areas:
-    'header'
-    'nav'
+    'Jumbotron'
     'content'
     'footer';
-  grid-template-rows: 50px 100px auto 80px;
 }
 
 .App-logo {
@@ -32,10 +30,9 @@
 
 @media (min-width: 500px) {
   .wrapper {
-    grid-template-columns: 4fr;
+    grid-template-columns: 3fr;
     grid-template-areas:
-      'header  header'
-      'nav     nav'
+      'Jumbotron  Jumbotron'
       'content content'
       'footer      footer';
   }
