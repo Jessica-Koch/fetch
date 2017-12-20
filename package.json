@@ -48,7 +48,6 @@
     }
   },
   "scripts": {
-    "precommit": "lint-staged",
     "build-css": "node-sass-chokidar src/ -o src/",
     "coverage": "open ./coverage/lcov-report/index.html",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
