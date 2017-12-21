@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import './UserList.css';
+import classNames from 'classnames';
 import User from '../User';
 //
 // const dogShape = shape({
@@ -42,12 +43,12 @@ class UserList extends Component {
 
     return (
       <div className="UserList">
-        <h1>This is a User List Page</h1>
+        <h1 className="gradient1">This is a User List Page</h1>
         <div className="grid-container">
-          <div className="t-header">First Name</div>
-          <div className="t-header">Last Name</div>
-          <div className="t-header">email</div>
-          <div className="t-header">Dogs</div>
+          <div className={classNames('gradient2', 't-header')}>First Name</div>
+          <div className={classNames('gradient2', 't-header')}>Last Name</div>
+          <div className={classNames('gradient2', 't-header')}>email</div>
+          <div className={classNames('gradient2', 't-header')}>Dogs</div>
           {users}
         </div>
       </div>

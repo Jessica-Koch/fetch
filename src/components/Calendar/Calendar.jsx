@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import InfiniteCalendar, { Calendar as ICal, withRange } from 'react-infinite-calendar';
+import 'react-infinite-calendar/styles.css';
 import { func, instanceOf } from 'prop-types';
 import './Calendar.css';
-import ICalendar from '../ICalendar';
+import startOfToday from 'date-fns/start_of_today';
 
-const today = new Date();
+const CalendarWithRange = withRange(ICal);
 
 class Calendar extends Component {
   static propTypes = {
@@ -12,7 +14,7 @@ class Calendar extends Component {
   };
 
   static defaultProps = {
-    minDate: today,
+    minDate: undefined,
   };
   constructor(props) {
     super(props);
@@ -35,12 +37,17 @@ class Calendar extends Component {
 
     return (
       <div className="Calendar">
-        <ICalendar
-          minDate={minDate}
-          selected={selected}
-          onSelect={this.onSelect}
-          onScroll={this.onScroll}
-        />
+        render(
+        <InfiniteCalendar
+          Component={CalendarWithRange}
+          selected={{
+            start: new Date(2017, 1, 10),
+            end: new Date(2017, 1, 18),
+          }}
+          locale={{
+            headerFormat: 'MMM Do',
+          }}
+        />, this;
       </div>
     );
   }
