@@ -1,42 +1,46 @@
 import React, { Component } from 'react';
+import { func, instanceOf } from 'prop-types';
 import './Calendar.css';
 import ICalendar from '../ICalendar';
 
+const today = new Date();
+
 class Calendar extends Component {
+  static propTypes = {
+    minDate: instanceOf(Date),
+    onSelect: func.isRequired,
+  };
+
+  static defaultProps = {
+    minDate: today,
+  };
   constructor(props) {
     super(props);
 
     this.state = {
-      date: props.value,
-      isOpen: false,
-      selectedDate: undefined,
+      selected: undefined,
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      const date = nextProps.value;
-      this.setState({ date });
-    }
-  }
-
-  onEscape = ({ key }) => {
-    if (key === 'Escape') {
-      this.hideCalendar();
-    }
+  onSelect = (e) => {
+    console.log('DATE!!!!!!!!!!! ', e);
+    return this.setState({ selected: e });
   };
 
-  hideCalendar = () => this.setState({ isOpen: false });
-  showCalendar = () => this.setState({ isOpen: true });
-
-  isDateValid = (input) => {};
+  onScroll = (...args) => console.log('onscroll: ', args);
 
   render() {
-    const { date, isOpen, selectedDate } = this.state;
+    const { minDate } = this.props;
+    const { selected } = this.state;
 
     return (
       <div className="Calendar">
-        <ICalendar />
+        <ICalendar
+          minDate={minDate}
+          selected={selected}
+          onSelect={this.onSelect}
+          onScroll={this.onScroll}
+        />
       </div>
     );
   }

@@ -5,4 +5,15 @@ import Avatar from './Avatar';
 import '../../../.storybook/base.css';
 import avatar from './avatar.jpeg';
 
-storiesOf('Avatar', module).add('Avatar', () => <Avatar className="Avatar" avatarUrl={avatar} />);
+storiesOf('Avatar', module).add('Avatar', () => (
+  <div
+    style={{
+      height: '100%',
+      display: 'flex',
+      margin: '0 auto',
+      flexdirection: 'column',
+    }}
+  >
+    <Avatar className="Avatar" avatarUrl={avatar} />
+  </div>
+));
