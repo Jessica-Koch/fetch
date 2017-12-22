@@ -5,7 +5,7 @@ class Home extends PureComponent {
   render() {
     return (
       <div className="Home">
-        <h1>Welcome to Fetch</h1>
+        <h1 className="gradient2">This is a home page</h1>
       </div>
     );
   }
