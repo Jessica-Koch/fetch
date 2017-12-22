@@ -1,0 +1,82 @@
+@import '../../../utils/variables.scss';
+.Cal__Container__root {
+  background-image: linear-gradient(to top, #cc208e 0%, #6713d2 100%);
+  font-family: 'Work Sans', 'Hevletica Neue', sans-serif;
+}
+
+.Cal__Header__root {
+  background-color: transparent !important;
+}
+.Cal__Weekdays__root {
+  background-color: transparent !important;
+}
+
+.Cal__Container__listWrapper {
+  background-color: transparent !important;
+}
+
+.Cal__MonthList__root {
+  background-color: transparent !important;
+  color: #ffffff;
+}
+.Cal__Month__row:first-child li {
+  background-color: transparent !important;
+}
+.Cal__Weekdays__day {
+  text-transform: uppercase;
+}
+.Cal__Day__root.Cal__Day__enabled {
+  font-weight: 400;
+}
+.Cal__Day__root.Cal__Day__today.Cal__Day__enabled {
+  font-weight: 800;
+  span {
+    color: #ffffff !important;
+  }
+}
+
+.Cal__Month__row.Cal__Month__partial:first-child li:first-child {
+  box-shadow: none !important;
+}
+
+.Cal__Month__row:first-child li {
+  box-shadow: none !important;
+}
+.Cal__Today__root.Cal__Today__show.Cal__Today__chevronUp {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  // background-color: #8113d2 !important;
+  text-transform: uppercase;
+  padding: 1rem;
+  -webkit-box-shadow: inset 0 20px 20px -20px rgba(255, 255, 255, 0.6),
+    0px 14px 35px -6px rgba(0, 0, 0, 0.47);
+  -moz-box-shadow: inset 0 20px 20px -20px rgba(255, 255, 255, 0.6),
+    0px 14px 35px -6px rgba(0, 0, 0, 0.47);
+  box-shadow: inset 0 20px 20px -20px rgba(255, 255, 255, 0.6),
+    0px 14px 35px -6px rgba(0, 0, 0, 0.47);
+
+  svg {
+    path {
+      fill: #ffffff;
+    }
+  }
+  &::before {
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+  }
+}
+
+.Cal__Day__root.Cal__Day__disabled {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.Cal__Day__month {
+  text-transform: uppercase;
+}
+.Cal__Month__row:nth-child(2) {
+  -webkit-box-shadow: 0 -155px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.Cal__Day__selection {
+  background-image: linear-gradient(to top, #b3ffab 0%, #12fff7 100%) !important;
+}
