@@ -2,10 +2,6 @@
   background-color: transparent;
 }
 
-.Calendar .Cal__Header__root {
-  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-}
-
 .Calendar .Cal__Day__disabled {
   background-color: #f5f7fa;
 }

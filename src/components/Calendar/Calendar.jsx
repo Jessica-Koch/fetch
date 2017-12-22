@@ -25,6 +25,7 @@ class Calendar extends Component {
   }
 
   onSelect = (e) => {
+    this.props.onSelect();
     console.log('DATE!!!!!!!!!!! ', e);
     return this.setState({ selected: e });
   };
@@ -32,22 +33,12 @@ class Calendar extends Component {
   onScroll = (...args) => console.log('onscroll: ', args);
 
   render() {
-    const { minDate } = this.props;
     const { selected } = this.state;
 
     return (
       <div className="Calendar">
         render(
-        <InfiniteCalendar
-          Component={CalendarWithRange}
-          selected={{
-            start: new Date(2017, 1, 10),
-            end: new Date(2017, 1, 18),
-          }}
-          locale={{
-            headerFormat: 'MMM Do',
-          }}
-        />, this;
+        <InfiniteCalendar selected={null} min={new Date()} minDate={new Date()} />, this;
       </div>
     );
   }

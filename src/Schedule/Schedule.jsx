@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
-import './Schedule.scss';
+import './Schedule.css';
 import Calendar from '../components/Calendar';
 
 class Schedule extends Component {
@@ -15,8 +15,7 @@ class Schedule extends Component {
   render() {
     return (
       <div className="Schedule">
-        <h1 className="gradient1">Some of the services we provide</h1>
-        <div>
+        <div className="flex-wrapper">
           <Calendar />
         </div>
       </div>

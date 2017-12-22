@@ -6,7 +6,7 @@
 }
 @supports ((background-clip: text)  or  (-webkit-background-clip: text)) and ((text-fill-color: transparent) or (-webkit-text-fill-color: transparent)) {
   .gradient2 {
-    background-image: linear-gradient(-225deg, #231557 0%, #44107a 29%, #ff1361 67%, #fff800 100%);
+    background-image: linear-gradient(-90deg, #231557 0%, #44107a 29%, #ff1361 67%, #fff800 100%);
     background-size: cover;
     background-size: cover;
     -webkit-background-clip: text;
