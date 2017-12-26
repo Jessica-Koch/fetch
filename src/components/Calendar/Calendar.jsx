@@ -18,12 +18,14 @@ class Calendar extends Component {
     super(props);
 
     this.state = {
-      selected: undefined,
+      selectedDate: undefined,
     };
   }
 
-  onSelect = (e) => {
-    console.log(`You selected: ${format(e, 'ddd, MMM Do YYYY')}`);
+  onSelect = (date) => {
+    this.setState({ selectedDate: date });
+    this.props.onSelect(date);
+    console.log(`You selected: ${format(date, 'ddd, MMM Do YYYY')}`);
   };
 
   render() {
@@ -32,7 +34,7 @@ class Calendar extends Component {
         render(
         <InfiniteCalendar
           onSelect={this.onSelect}
-          selected={null}
+          selected={this.state.selectedDate}
           min={new Date()}
           minDate={new Date()}
           width={window.innerWidth <= 650 ? window.innerWidth : 650}

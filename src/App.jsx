@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Jumbotron from './components/Jumbotron/';
 import Footer from './components/Footer/';
-import Nav from './components/Nav/';
+import Nav from './Nav/';
 import Main from './Main';
 
 class App extends Component {

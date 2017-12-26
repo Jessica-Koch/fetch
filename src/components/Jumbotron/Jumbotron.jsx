@@ -5,7 +5,7 @@ import './Jumbotron.css';
 
 class Jumbotron extends PureComponent {
   static propTypes = {
-    cx: oneOf('nineVH', 'eightVH', 'sevenVH', 'sixVH', 'fiveVH', 'fourVH').isRequired,
+    cx: oneOf(['nineVH', 'eightVH', 'sevenVH', 'sixVH', 'fiveVH', 'fourVH']).isRequired,
     header: string,
     subheader: string,
   };

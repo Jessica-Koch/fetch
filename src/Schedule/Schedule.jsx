@@ -12,11 +12,18 @@ class Schedule extends Component {
     appointment: undefined,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      appointment: props.appointment,
+    };
+  }
   render() {
     return (
       <div className="Schedule">
         <div className="flex-wrapper">
-          <Calendar />
+          <Calendar selected={this.props.appointment} />
         </div>
       </div>
     );

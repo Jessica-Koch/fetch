@@ -1,0 +1,23 @@
+.Register {
+  display: flex;
+  flex-direction: column; }
+  .Register .gradient3 {
+    display: inline-block;
+    color: #a166ab; }
+  .Register .social-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center; }
+    .Register .social-buttons .social {
+      margin: 2rem; }
+      .Register .social-buttons .social a {
+        text-decoration: none; }
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) and ((text-fill-color: transparent) or (-webkit-text-fill-color: transparent)) {
+    .Register .gradient3 {
+      background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);
+      background-size: cover;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent; } }

@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import Home from '../Home';
 import UserList from '../UserList';
 import Services from '../Services';
+import Register from '../Register';
 import './Main.css';
 
 class Main extends Component {
@@ -13,6 +14,7 @@ class Main extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/users" component={UserList} />
           <Route path="/services" component={Services} />
+          <Route path="/login" component={Register} />
         </Switch>
       </main>
     );
