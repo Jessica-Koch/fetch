@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import InfiniteCalendar from 'react-infinite-calendar';
+import format from 'date-fns/format';
 import 'react-infinite-calendar/styles.css';
 import { func, instanceOf } from 'prop-types';
 import './Calendar.css';
-import format from 'date-fns/format';
 
 class Calendar extends Component {
   static propTypes = {
@@ -12,8 +12,9 @@ class Calendar extends Component {
   };
 
   static defaultProps = {
-    minDate: undefined,
+    minDate: new Date(),
   };
+
   constructor(props) {
     super(props);
 
@@ -35,7 +36,7 @@ class Calendar extends Component {
         <InfiniteCalendar
           onSelect={this.onSelect}
           selected={this.state.selectedDate}
-          min={new Date()}
+          min={this.props.minDate}
           minDate={new Date()}
           width={window.innerWidth <= 650 ? window.innerWidth : 650}
           height={window.innerHeight - 250}

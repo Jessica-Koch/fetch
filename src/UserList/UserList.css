@@ -3,13 +3,12 @@
   font-weight: 200; }
 
 .UserList .grid-container {
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  grid-template-rows: repeat(auto, 200px);
-  display: grid;
-  grid-column-gap: 10px;
-  color: #ffffff;
-  grid-row-gap: 15px; }
+  display: flex;
+  flex-direction: column; }
+  .UserList .grid-container .header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around; }
   .UserList .grid-container .t-header {
     color: #ffffff; }
 

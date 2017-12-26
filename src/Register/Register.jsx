@@ -13,6 +13,7 @@ class Register extends Component {
           <GoogleAuth />
           <FacebookAuth />
         </div>
+        <div className="fb-like" data-share="true" data-width="450" data-show-faces="true" />
         {/* <div className="container">
           <form>
             <div className="form-group">
