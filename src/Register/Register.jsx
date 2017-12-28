@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import Jumbotron from '../components/Jumbotron/';
 import './Register.css';
 import GoogleAuth from '../GoogleAuth';
 import FacebookAuth from '../FacebookAuth';
@@ -8,12 +9,14 @@ class Register extends Component {
   render() {
     return (
       <div className="Register">
-        <h1 className={classNames('gradient3', 'text-center')}>Authentication</h1>
-        <div className="social-buttons">
-          <GoogleAuth />
-          <FacebookAuth />
+        <Jumbotron cx="eightVH" header="Join Our pack" />
+        <div className="my-4">
+          <h1 className={classNames('gradient3', 'text-center')}>Authentication</h1>
+          <div className="social-buttons">
+            <GoogleAuth />
+            <FacebookAuth />
+          </div>
         </div>
-        <div className="fb-like" data-share="true" data-width="450" data-show-faces="true" />
         {/* <div className="container">
           <form>
             <div className="form-group">
