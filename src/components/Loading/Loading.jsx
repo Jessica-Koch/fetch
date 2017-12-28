@@ -5,7 +5,7 @@ import { bool, number, string } from 'prop-types';
 class Loading extends PureComponent {
   static propTypes = {
     color: string,
-    loading: bool.isRequired,
+    visible: bool.isRequired,
     margin: string,
     size: number,
   };
@@ -16,13 +16,20 @@ class Loading extends PureComponent {
     size: 60,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: props.visible,
+    };
+  }
+
   render() {
-    const {
-      color, loading, margin, size,
-    } = this.props;
-    return loading ? (
-      <DotLoader color={color} loading={loading} margin={margin} size={size} />
-    ) : null;
+    const { color, margin, size } = this.props;
+    const { visible } = this.state;
+    if (visible === true) {
+      return <DotLoader color={color} visible={visible} margin={margin} size={size} />;
+    }
+    return undefined;
   }
 }
 

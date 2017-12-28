@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import SimpleLineIcon from 'react-simple-line-icons';
 import { string } from 'prop-types';
+import './FacebookAuth.css';
 import Loading from '../components/Loading';
 
 class FacebookAuth extends Component {
@@ -77,6 +78,7 @@ class FacebookAuth extends Component {
     window.FB.api('/me', (response) => {
       console.log(`Successful login for: ${response.name}`);
       document.getElementById('status').innerHTML = `Thanks for logging in, ${response.name}!`;
+      this.setState({ loading: false });
     });
   };
 
@@ -96,16 +98,20 @@ class FacebookAuth extends Component {
     const { status, loading } = this.state;
     return (
       <div className="social">
-        <Loading loading={loading} />
+        {loading && (
+          <div className="loading">
+            <Loading visible />
+          </div>
+        )}
         <div id="status">{status}</div>
         <div className="row">
-          <a href="/api/facebook">
+          <span className="fb">
             <SimpleLineIcon
               scope="public_profile,email"
               onClick={this.checkLoginState}
               name=" icon-social-facebook"
             />
-          </a>
+          </span>
         </div>
       </div>
     );
