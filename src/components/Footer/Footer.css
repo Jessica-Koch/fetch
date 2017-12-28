@@ -2,4 +2,15 @@
   grid-area: footer;
   color: #fff;
   width: 100%;
-  background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%); }
+  background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
+  padding: 3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%; }
+  .Footer div {
+    margin: 2rem; }
+  .Footer a {
+    color: #ffffff;
+    margin: 2rem;
+    text-decoration: none; }

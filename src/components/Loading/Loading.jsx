@@ -20,7 +20,9 @@ class Loading extends PureComponent {
     const {
       color, loading, margin, size,
     } = this.props;
-    return <DotLoader color={color} loading={loading} margin={margin} size={size} />;
+    return loading ? (
+      <DotLoader color={color} loading={loading} margin={margin} size={size} />
+    ) : null;
   }
 }
 

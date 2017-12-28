@@ -1,6 +1,23 @@
-.Home h1 {
-  color: #ffffff;
-  font-weight: 200; }
+.Home {
+  display: flex;
+  flex-direction: column; }
+  .Home .content {
+    position: relative;
+    min-height: 4rem;
+    margin-top: 3rem; }
+  .Home h1 {
+    color: #ffffff;
+    font-weight: 200; }
+  .Home .color-1 {
+    padding: 1rem 3rem;
+    border-radius: 200rem;
+    text-decoration: none;
+    border: 2px solid #ff1361;
+    transition: all 0.5s ease; }
+  .Home .color-1:hover {
+    border: 2x solid #44107a; }
+  .Home .Jumbotron {
+    top: 0; }
 
 @supports ((background-clip: text) or (-webkit-background-clip: text)) and ((text-fill-color: transparent) or (-webkit-text-fill-color: transparent)) {
   .gradient2 {

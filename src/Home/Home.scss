@@ -1,7 +1,28 @@
 .Home {
+  display: flex;
+  flex-direction: column;
+  .content {
+    position: relative;
+    min-height: 4rem;
+    margin-top: 3rem;
+  }
   h1 {
     color: #ffffff;
     font-weight: 200;
+  }
+
+  .color-1 {
+    padding: 1rem 3rem;
+    border-radius: 200rem;
+    text-decoration: none;
+    border: 2px solid #ff1361;
+    transition: all 0.5s ease;
+  }
+  .color-1:hover {
+    border: 2x solid #44107a;
+  }
+  .Jumbotron {
+    top: 0;
   }
 }
 @supports ((background-clip: text)  or  (-webkit-background-clip: text)) and ((text-fill-color: transparent) or (-webkit-text-fill-color: transparent)) {

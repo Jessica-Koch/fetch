@@ -1,22 +1,39 @@
 /* eslint func-names: ["error", "never"] */
-
 import React, { Component } from 'react';
 import SimpleLineIcon from 'react-simple-line-icons';
+import { string } from 'prop-types';
+import Loading from '../components/Loading';
 
 class FacebookAuth extends Component {
-  debugger;
+  static propTypes = {
+    status: string,
+  };
+
+  static defaultProps = {
+    status: '',
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = { status: props.status, loading: false };
+  }
+
   componentDidMount() {
     window.fbAsyncInit = function () {
       window.FB.init({
         appId: '484689505260707',
         cookie: true,
         xfbml: true,
-        version: 'v2.1',
+        version: 'v2.8',
       });
 
       window.FB.AppEvents.logPageView();
     };
 
+    // window.FB.getLoginStatus((response) => {
+    //   this.statusChangeCallback(response);
+    // });
     this.subscribeToUpdates(window.FB);
 
     (function (d, s, id) {
@@ -29,25 +46,41 @@ class FacebookAuth extends Component {
     }(document, 'script', 'facebook-jssdk'));
   }
 
-  getCurrentUser = () => {};
+  // called with results from FB.getLoginStatus()
+  statusChangeCallback = (response) => {
+    console.log('statusChangeCallback');
+    console.log('response: ', response);
 
-  isLoggedIn = () => {
+    if (response.status === 'connected') {
+      console.log('user is logged in: TODO - redirect to previous page');
+
+      this.setState({ status: '' });
+      this.testAPI();
+    } else {
+      // TODO create an alert or error component
+      console.log('User is not logged in, login failed, create an error.');
+      this.setState({ status: 'Please log into this app' });
+    }
+  };
+
+  // Called after someone has interacted with the
+  // login button and either logged in or not
+  checkLoginState = () => {
     window.FB.getLoginStatus((response) => {
-      console.log('in isLoggedIn: ', response);
-      if (response.status === 'connected') {
-        console.log('user is logged in: TODO - redirect to previous page');
-      } else {
-        window.FB.login();
-        console.log('User is not logged in, login failed, create an error.');
-      }
+      this.statusChangeCallback(response);
     });
   };
 
-  logout = () => {
-    window.FB.logout();
+  testAPI = () => {
+    this.setState({ loading: true });
+    console.log('Welcome!  Fetching your information.... ');
+    window.FB.api('/me', (response) => {
+      console.log(`Successful login for: ${response.name}`);
+      document.getElementById('status').innerHTML = `Thanks for logging in, ${response.name}!`;
+    });
   };
 
-  subscribeToUpdates(fb) {
+  subscribeToUpdates = (fb) => {
     if (!fb) return;
 
     fb.event.subscribe('auth.statusChange', () => (response) => {
@@ -57,16 +90,23 @@ class FacebookAuth extends Component {
         this.updateLoggedOutState();
       }
     });
-  }
+  };
 
   render() {
+    const { status, loading } = this.state;
     return (
       <div className="social">
-        <a href="/login/facebook">
-          <SimpleLineIcon name=" icon-social-facebook" />
-        </a>
-
-        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" />
+        <Loading loading={loading} />
+        <div id="status">{status}</div>
+        <div className="row">
+          <a href="/api/facebook">
+            <SimpleLineIcon
+              scope="public_profile,email"
+              onClick={this.checkLoginState}
+              name=" icon-social-facebook"
+            />
+          </a>
+        </div>
       </div>
     );
   }

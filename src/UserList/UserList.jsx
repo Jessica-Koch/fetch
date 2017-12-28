@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
-import './UserList.css';
 import classNames from 'classnames';
+import './UserList.css';
 import User from '../User';
 //
 // const dogShape = shape({

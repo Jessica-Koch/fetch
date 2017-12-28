@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.0.0-beta.2",
     "classnames": "^2.2.5",
     "enzyme": "^3.2.0",
     "enzyme-adapter-react-16": "^1.1.0",
@@ -26,6 +27,7 @@
     "react-spinners": "^0.2.5",
     "react-test-renderer": "^16.2.0",
     "react-transition-group": "^2.2.1",
+    "reactstrap": "^5.0.0-alpha.4",
     "whatwg-fetch": "^2.0.3"
   },
   "lint-staged": {

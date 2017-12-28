@@ -1,2 +1,3 @@
 .main-content {
-  grid-area: content; }
+  grid-area: content;
+  margin-bottom: 3rem; }
