@@ -18,12 +18,12 @@ class User extends Component {
         <Jumbotron cx="eightVH" header="Members" subheader="some of your community" />
 
         <div className="cell">
-          <Link to={`/users/${linkTo}`}>{user.firstName}</Link>
+          <Link to={`/users/${linkTo}`}>{currentUser.firstName}</Link>
         </div>
         <div className="cell">
-          <Link to={`/users/${linkTo}`}>{user.lastName}</Link>
+          <Link to={`/users/${linkTo}`}>{currentUser.lastName}</Link>
         </div>
-        <div className="cell">{user.email}</div>
+        <div className="cell">{currentUser.email}</div>
         <div className="grid-col">'user.dogs'</div>
       </div>
     );

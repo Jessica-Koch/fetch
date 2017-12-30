@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import classNames from 'classnames';
+import Jumbotron from '../components/Jumbotron/';
 import './UserList.css';
 import User from '../User';
 //
@@ -43,6 +44,8 @@ class UserList extends Component {
 
     return (
       <div className="UserList">
+        <Jumbotron cx="eightVH" header="Members" subheader="some of your community" />
+
         <h1 className="gradient1">This is a User List Page</h1>
         <div className="grid-container">
           <div className="header-container">

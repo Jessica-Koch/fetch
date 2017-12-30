@@ -82,6 +82,8 @@ class FacebookAuth extends Component {
     });
   };
 
+  facebookLogout = () => {};
+
   /**
    * Handle login response
    */
@@ -95,14 +97,13 @@ class FacebookAuth extends Component {
         this.props.onLogin(true, result);
       });
     } else {
+      console.log('in facebookLoginHandler: else statement response: ', response);
       this.props.onLogin(false);
     }
   };
 
   render() {
-    const { children } = this.props;
-
-    const { status, loading } = this.state;
+    const { loading } = this.state;
     return (
       <div>
         {loading && (
