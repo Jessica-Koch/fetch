@@ -11,12 +11,14 @@
     flex-direction: row;
     justify-content: flex-end; }
     .Nav .main-nav ul {
-      display: flex; }
+      display: flex;
+      color: #ffffff; }
     .Nav .main-nav li {
       list-style: none; }
-      .Nav .main-nav li a {
+      .Nav .main-nav li .nav-link {
         color: #ffffff;
         margin: 0.7rem;
-        text-decoration: none; }
-      .Nav .main-nav li a:hover {
-        color: navy; }
+        text-decoration: none;
+        font-weight: 300; }
+        .Nav .main-nav li .nav-link:hover {
+          color: navy; }

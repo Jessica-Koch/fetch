@@ -1,7 +1,7 @@
 /* eslint-env react/no-typos */
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
-import { func, string } from 'prop-types';
+import { arrayOf, func, oneOf, string } from 'prop-types';
 import './Button.css';
 
 class Button extends PureComponent {
@@ -12,10 +12,10 @@ class Button extends PureComponent {
   };
 
   static propTypes = {
-    className: string,
+    className: arrayOf(string),
     displayText: string,
     onClick: func.isRequired,
-    theme: string,
+    theme: oneOf('ghost', 'gradient', 'link'),
   };
 
   render() {
@@ -23,13 +23,9 @@ class Button extends PureComponent {
       theme, className, onClick, displayText,
     } = this.props;
     return (
-      <div className={classNames('border', 'Button')}>
-        <button
-          theme={theme}
-          className={classNames('btn', 'btn-hover', className)}
-          onClick={onClick}
-        >
-          {displayText}
+      <div className={classNames('Button')}>
+        <button theme={theme} className={classNames(className, theme)} onClick={onClick}>
+          <span>{displayText}</span>
         </button>
       </div>
     );

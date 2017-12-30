@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { shape, string } from 'prop-types';
-import Jumbotron from '../components/Jumbotron/';
 import { Link } from 'react-router-dom';
+import Jumbotron from '../components/Jumbotron/';
 import { userShape } from '../lib/shapes/user';
 import './User.css';
 

@@ -13,16 +13,18 @@
 
     ul {
       display: flex;
+      color: #ffffff;
     }
     li {
       list-style: none;
-      a {
+      .nav-link {
         color: #ffffff;
         margin: 0.7rem;
         text-decoration: none;
-      }
-      a:hover {
-        color: navy;
+        font-weight: 300;
+        &:hover {
+          color: navy;
+        }
       }
     }
   }

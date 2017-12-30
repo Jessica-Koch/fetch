@@ -10,21 +10,29 @@ class Nav extends PureComponent {
         <nav className="main-nav">
           <ul className="nav-links">
             <li>
-              <Link exact to="/">
+              <Link className="nav-link" exact to="/">
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/users">Members</Link>
+              <Link className="nav-link" to="/users">
+                Members
+              </Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link className="nav-link" to="/about">
+                About
+              </Link>
             </li>
             <li>
-              <Link to="/services">Services</Link>
+              <Link className="nav-link" to="/services">
+                Services
+              </Link>
             </li>
             <li>
-              <Link to="/login">Login</Link>
+              <Link className="nav-link" to="/login">
+                Login
+              </Link>
             </li>
           </ul>
         </nav>

@@ -4,9 +4,30 @@ import Jumbotron from '../components/Jumbotron/';
 import './Register.css';
 import GoogleAuth from '../GoogleAuth';
 import FacebookAuth from '../FacebookAuth';
+import { Alert } from 'reactstrap';
 
 class Register extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: null,
+    };
+  }
+
+  onFacebookLogin = (loginStatus, resultObject) => {
+    if (loginStatus === true) {
+      this.setState({
+        username: resultObject.user.name,
+      });
+    } else {
+      return <Alert color="danger">Facebook login error</Alert>;
+    }
+  };
+
   render() {
+    const { username } = this.state;
+
     return (
       <div className="Register">
         <Jumbotron cx="eightVH" header="Join Our pack" />
@@ -14,49 +35,16 @@ class Register extends Component {
           <h1 className={classNames('gradient3', 'text-center')}>Authentication</h1>
           <div className="social-buttons">
             <GoogleAuth />
-            <FacebookAuth />
+            {!username && (
+              <div>
+                <FacebookAuth onLogin={this.onFacebookLogin}>
+                  <button>Facebook</button>
+                </FacebookAuth>
+              </div>
+            )}
+            {username && <p>Welcome back, {username}</p>}
           </div>
         </div>
-        {/* <div className="container">
-          <form>
-            <div className="form-group">
-          <label htmlFor="username">
-          Username
-          <input type="text" className="form-control" id="username" placeholder="Username" />
-          </label>
-            </div>
-            <div className="form-group">
-          <label htmlFor="password">
-          Password
-          <input
-          type="password"
-          className="form-control"
-          id="password"
-          placeholder="Password"
-          />
-          </label>
-            </div>
-            <button type="button" className="btn btn-primary center-block" onClick="auth()">
-          Submit
-            </button>
-          </form>
-          <div id="token-display" />
-          </div>
-
-          <div className="container">
-          <form>
-            <div className="form-group">
-          <label htmlFor="token">
-          Username
-          <input className="form-control" id="token" placeholder="token" type="text" />
-          </label>
-            </div>
-            <button type="button" className="btn btn-primary center-block" onClick="getlist()">
-          Get List
-            </button>
-          </form>
-          <div id="list" />
-        </div> */}
       </div>
     );
   }

@@ -1,6 +1,5 @@
 /* eslint func-names: ["error", "never"] */
 import React, { Component } from 'react';
-import SimpleLineIcon from 'react-simple-line-icons';
 import { string } from 'prop-types';
 import './FacebookAuth.css';
 import Loading from '../components/Loading';
@@ -24,94 +23,104 @@ class FacebookAuth extends Component {
     window.fbAsyncInit = function () {
       window.FB.init({
         appId: '484689505260707',
-        cookie: true,
+        autoLogAppEvents: true,
         xfbml: true,
-        version: 'v2.8',
+        version: 'v2.11',
       });
 
+      // Broadcast an event when FB object is ready
+      // const fbInitEvent = new Event('FBObjectReady');
+      // document.dispatchEvent(fbInitEvent);
       window.FB.AppEvents.logPageView();
     };
 
-    // window.FB.getLoginStatus((response) => {
-    //   this.statusChangeCallback(response);
-    // });
-    this.subscribeToUpdates(window.FB);
-
     (function (d, s, id) {
       const fjs = d.getElementsByTagName(s)[0];
+
       if (d.getElementById(id)) return;
       const js = d.createElement(s);
       js.id = id;
-      js.src = 'https://connect.facebook.net/en_US/sdk.js';
+      js.src =
+        'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=484689505260707';
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
+
+    document.addEventListener('FBObjectReady', this.initializeFacebookLogin);
   }
 
-  // called with results from FB.getLoginStatus()
-  statusChangeCallback = (response) => {
-    console.log('statusChangeCallback');
-    console.log('response: ', response);
+  componentWillUnmount() {
+    document.removeEventListener('FBObjectReady', this.initializeFacebookLogin);
+  }
 
-    if (response.status === 'connected') {
-      console.log('user is logged in: TODO - redirect to previous page');
-
-      this.setState({ status: '' });
-      this.testAPI();
-    } else {
-      // TODO create an alert or error component
-      console.log('User is not logged in, login failed, create an error.');
-      this.setState({ status: 'Please log into this app' });
-    }
+  /**
+   * Init FB object and check Facebook Login status
+   */
+  initializeFacebookLogin = () => {
+    this.FB = window.FB;
+    this.checkLoginStatus();
   };
 
-  // Called after someone has interacted with the
-  // login button and either logged in or not
-  checkLoginState = () => {
-    window.FB.getLoginStatus((response) => {
-      this.statusChangeCallback(response);
-    });
+  /**
+   * Check login status
+   */
+  checkLoginStatus = () => {
+    this.FB.getLoginStatus(this.facebookLoginHandler);
   };
 
-  testAPI = () => {
-    this.setState({ loading: true });
-    console.log('Welcome!  Fetching your information.... ');
-    window.FB.api('/me', (response) => {
-      console.log(`Successful login for: ${response.name}`);
-      document.getElementById('status').innerHTML = `Thanks for logging in, ${response.name}!`;
-      this.setState({ loading: false });
-    });
-  };
+  /**
+   * Check login status and call login api if user is not logged in
+   */
+  facebookLogin = () => {
+    if (!this.FB) return;
 
-  subscribeToUpdates = (fb) => {
-    if (!fb) return;
-
-    fb.event.subscribe('auth.statusChange', () => (response) => {
-      if (response.authResponse) {
-        this.updateLoggedInState(response);
+    this.FB.getLoginStatus((response) => {
+      if (response.status === 'connected') {
+        this.facebookLoginHandler(response);
       } else {
-        this.updateLoggedOutState();
+        this.FB.login(this.facebookLoginHandler, { scope: 'public_profile' });
       }
     });
   };
 
+  /**
+   * Handle login response
+   */
+  facebookLoginHandler = (response) => {
+    if (response.status === 'connected') {
+      this.FB.api('/me', (userData) => {
+        const result = {
+          ...response,
+          user: userData,
+        };
+        this.props.onLogin(true, result);
+      });
+    } else {
+      this.props.onLogin(false);
+    }
+  };
+
   render() {
+    const { children } = this.props;
+
     const { status, loading } = this.state;
     return (
-      <div className="social">
+      <div>
         {loading && (
           <div className="loading">
             <Loading visible />
           </div>
         )}
-        <div id="status">{status}</div>
-        <div className="row">
-          <span className="fb">
-            <SimpleLineIcon
-              scope="public_profile,email"
-              onClick={this.checkLoginState}
-              name=" icon-social-facebook"
-            />
-          </span>
+        <div id="fb-root" className="mx-1">
+          <div
+            className="fb-login-button"
+            data-width="240px"
+            data-max-rows="1"
+            data-size="large"
+            data-button-type="login_with"
+            data-show-faces="false"
+            data-auto-logout-link="true"
+            data-use-continue-as="false"
+          />
         </div>
       </div>
     );

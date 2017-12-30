@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
-import SimpleLineIcon from 'react-simple-line-icons';
-// import GoogleLogin from 'react-googlse-login';
+import GoogleButton from 'react-google-button';
 
 // const responseGoogle = response => console.log(response);
 
 class GoogleAuth extends Component {
   render() {
     return (
-      <div className="social">
-        <a href="/api/auth/google">
-          <SimpleLineIcon name=" icon-social-google" />
-        </a>
+      <div className="mx-1">
+        <GoogleButton
+          type="light"
+          onClick={() => {
+            console.log('button clicked');
+          }}
+        />
       </div>
-      // <GoogleLogin
-      //   clientId=""
-      //   buttonText="Login"
-      //   onSuccess={responseGoogle}
-      //   onFailure={responseGoogle}
-      // />
     );
   }
 }
