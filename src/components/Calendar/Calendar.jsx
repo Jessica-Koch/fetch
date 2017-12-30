@@ -32,7 +32,6 @@ class Calendar extends Component {
   render() {
     return (
       <div className="Calendar">
-        render(
         <InfiniteCalendar
           onSelect={this.onSelect}
           selected={this.state.selectedDate}
@@ -41,7 +40,7 @@ class Calendar extends Component {
           width={window.innerWidth <= 650 ? window.innerWidth : 650}
           height={window.innerHeight - 250}
           rowHeight={70}
-        />, this;
+        />
       </div>
     );
   }

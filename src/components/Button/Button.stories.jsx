@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/react';
+import { action, storiesOf } from '@storybook/react';
 import React from 'react';
 import classNames from 'classnames';
 import Button from './Button';
@@ -9,18 +9,23 @@ import '../../../.storybook/base.css';
 storiesOf('Button', module)
   .add('default button', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'default')} displayText="default" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'default')}
+        displayText="default"
+      />
     </div>
   ))
   .add('link button', () => (
     <div>
-      <Button className="link" theme="link" displayText="link" />
+      <Button onClick={action('onClick')} className="link" theme="link" displayText="link" />
     </div>
   ))
   .add('ghost button', () => (
     <div>
       <Jumbotron cx="eightVH">
         <Button
+          onClick={action('onClick')}
           className={classNames('btn', 'btn-hover', 'ghost')}
           theme="ghost"
           displayText="ghost"
@@ -30,56 +35,100 @@ storiesOf('Button', module)
   ))
   .add('green gradient button', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-1')} displayText="green" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-1')}
+        displayText="color-1"
+      />
     </div>
   ))
-  .add('blue gradient button', () => (
+  .add('magenta gradient button', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-2')} displayText="blue" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-2')}
+        displayText="color-2"
+      />
     </div>
   ))
-  .add('button 3', () => (
+  .add('lilac :: purple', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-3')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-3')}
+        displayText="color-3"
+      />
     </div>
   ))
-  .add('button 4', () => (
+  .add('pink :: orange', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-4')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-4')}
+        displayText="color-4"
+      />
     </div>
   ))
-  .add('button 5', () => (
+  .add('green :: aqua', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-5')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-5')}
+        displayText="color-5"
+      />
     </div>
   ))
-  .add('button 6', () => (
+  .add('green :: yellow', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-6')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-6')}
+        displayText="color-6"
+      />
     </div>
   ))
-  .add('button 7', () => (
+  .add('blue :: purple', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-7')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-7')}
+        displayText="color-7"
+      />
     </div>
   ))
-  .add('button 8', () => (
+  .add('aqua :: teal', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-8')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-8')}
+        displayText="color-8"
+      />
     </div>
   ))
-  .add('button 9', () => (
+  .add('light :: dark blue', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-9')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-9')}
+        displayText="color-9"
+      />
     </div>
   ))
-  .add('button 10', () => (
+  .add('pink :: peach', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-10')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-10')}
+        displayText="color-10"
+      />
     </div>
   ))
-  .add('button 11', () => (
+  .add('red :: pink', () => (
     <div className="container">
-      <Button className={classNames('btn', 'btn-hover', 'color-11')} displayText="orange" />
+      <Button
+        onClick={action('onClick')}
+        className={classNames('btn', 'btn-hover', 'color-11')}
+        displayText="color-11"
+      />
     </div>
   ));
