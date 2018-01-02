@@ -34,7 +34,7 @@ class Register extends Component {
         <div className="my-4">
           <h1 className={classNames('gradient3', 'text-center')}>Authentication</h1>
           <div className="social-buttons">
-            <GoogleAuth />
+            {/* <GoogleAuth /> */}
             {!username && (
               <div>
                 <FacebookAuth onLogin={this.onFacebookLogin}>

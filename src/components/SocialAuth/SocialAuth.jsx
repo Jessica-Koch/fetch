@@ -1,7 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import SocialLogin from 'react-social-login';
-import Button from '../Button';
+import GoogleButton from 'react-google-button';
 
-class SocialLogin extends Component {}
+const SocialAuth = ({ children, triggerLogin, ...props }) => (
+  <GoogleButton type="light" onClick={triggerLogin} {...props}>
+    {children}
+  </GoogleButton>
+);
 
-export default SocialAuth;
+export default SocialLogin(SocialAuth);
