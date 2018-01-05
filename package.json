@@ -44,7 +44,9 @@
       "!components/**/index.js",
       "!src/**/*.stories.jsx",
       "!src/**/index.js",
-      "!node_modules/"
+      "!node_modules/",
+      "!src/components/BgCalendar/*.{js,jsx}",
+      "!src/registerServiceWorker.js"
     ],
     "coverageThreshold": {
       "global": {

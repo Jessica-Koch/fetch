@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { string } from 'prop-types';
 import './FacebookAuth.css';
-import Loading from '../components/Loading';
+import Loader from '../components/Loader';
 
 class FacebookAuth extends Component {
   static propTypes = {
@@ -108,7 +108,7 @@ class FacebookAuth extends Component {
       <div>
         {loading && (
           <div className="loading">
-            <Loading visible />
+            <Loader visible />
           </div>
         )}
         <div id="fb-root" className="mx-1">

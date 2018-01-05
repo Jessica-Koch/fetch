@@ -26,7 +26,7 @@ class Calendar extends Component {
   onSelect = (date) => {
     this.setState({ selectedDate: date });
     this.props.onSelect(date);
-    console.log(`You selected: ${format(date, 'ddd, MMM Do YYYY')}`);
+    // console.log(`You selected: ${format(date, 'ddd, MMM Do YYYY')}`);
   };
 
   render() {

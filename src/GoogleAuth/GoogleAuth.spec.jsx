@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { renderTest } from '../../utils/testUtils';
+import GoogleAuth from './GoogleAuth';
+import GoogleAuth2 from './GoogleAuth2';
 
-class GoogleAuth extends Component {
-  handleLogin = user => console.log(user);
-
-  handleLoginFailure = (err) => {
-    console.log('LoginFailure: ', err);
-  };
-}
-
-export default GoogleAuth;
+describe('GoogleAuth', () => {
+  renderTest(GoogleAuth);
+  renderTest(GoogleAuth2);
+});

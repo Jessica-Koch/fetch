@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { DotLoader } from 'react-spinners';
 import { bool, number, string } from 'prop-types';
 
-class Loading extends PureComponent {
+class Loader extends PureComponent {
   static propTypes = {
     color: string,
     visible: bool.isRequired,
@@ -33,4 +33,4 @@ class Loading extends PureComponent {
   }
 }
 
-export default Loading;
+export default Loader;

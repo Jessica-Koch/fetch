@@ -13,9 +13,7 @@ import User from '../User';
 // });
 //
 const userShape = shape({
-  firstName: string,
-  lastName: string,
-  phoneNumber: string,
+  name: string,
   email: string,
   // dogs: arrayOf(dogShape),
 });
@@ -49,8 +47,7 @@ class UserList extends Component {
         <h1 className="gradient1">This is a User List Page</h1>
         <div className="grid-container">
           <div className="header-container">
-            <div className={classNames('gradient2', 't-header')}>First Name</div>
-            <div className={classNames('gradient2', 't-header')}>Last Name</div>
+            <div className={classNames('gradient2', 't-header')}> Name</div>
             <div className={classNames('gradient2', 't-header')}>email</div>
             <div className={classNames('gradient2', 't-header')}>Dogs</div>
           </div>
