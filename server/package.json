@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server for fetch client",
+  "main": "src/server.js",
+  "scripts": {
+    "start:dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js",
+    "test": "export NODE_ENV=test && jasmine"
+  },
+  "author": "Jessica Koch",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^3.2.0",
+    "nodemon": "^1.18.4"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
