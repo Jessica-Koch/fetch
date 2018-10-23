@@ -1,20 +1,19 @@
 {
-    "name": "fetch",
-    "version": "1.0.0",
-    "main": "index.js",
-    "license": "MIT",
-    "dependencies": {
-      "concurrently": "^4.0.1"
-    },
-    "engines": {
-      "node": "10.9.0"
-    },
-    "scripts": {
-      "install": "(cd client && npm install) && (cd server && npm install)",
-      "build": "concurrently \"cd client && npm run build\" \"cd server && npm run build\"",
-      "heroku-postbuild": "npm run build",
-      "dev": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
-      "start": "cd server && npm start"
-    }
+  "name": "fetch",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^4.0.1"
+  },
+  "engines": {
+    "node": "10.9.0"
+  },
+  "scripts": {
+    "install": "(cd client && npm install) && (cd server && npm install)",
+    "build": "concurrently \"cd client && npm run build\" \"cd server && npm run build\"",
+    "heroku-postbuild": "npm run build",
+    "dev": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
+    "start": "cd server && npm start"
   }
-  
+}
