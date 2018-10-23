@@ -67,11 +67,12 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js",
-    "test": "react-scripts test --env=jsdom --coverage",
+    "build": "node scripts/build.js",
+    "test": "react-scripts test --env=jsdom --coverage --colors",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --debug"
   },
   "proxy": "http://localhost:8000",
   "devDependencies": {
