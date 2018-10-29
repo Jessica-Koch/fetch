@@ -11,9 +11,9 @@
   },
   "scripts": {
     "install": "(cd client && npm install) && (cd server && npm install)",
-    "build": "concurrently \"cd client && yarn run build\" \"cd server && npm run build\"",
+    "build": "concurrently \"cd client && npm run build\" \"cd server && npm run build\"",
     "heroku-postbuild": "npm run build",
-    "dev": "concurrently \"cd client && yarn start\" \"cd server && npm start\"",
+    "dev": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
     "start": "cd server && npm start"
   }
 }
