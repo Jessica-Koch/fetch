@@ -10,7 +10,7 @@
     "node": "10.9.0"
   },
   "scripts": {
-    "install": "(cd client && yarn install) && (cd server && npm install)",
+    "install": "(cd client && npm install) && (cd server && npm install)",
     "build": "concurrently \"cd client && yarn run build\" \"cd server && npm run build\"",
     "heroku-postbuild": "npm run build",
     "dev": "concurrently \"cd client && yarn start\" \"cd server && npm start\"",
