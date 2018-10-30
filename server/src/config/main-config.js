@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const expressValidator = require('express-validator');
 const passportConfig = require('./passport-config');
 const session = require('express-session');

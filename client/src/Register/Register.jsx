@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import classNames from 'classnames';
 import Jumbotron from '../components/Jumbotron/';
 import './Register.css';
-import GoogleAuth from '../GoogleAuth';
+
 import FacebookAuth from '../FacebookAuth';
-import { Alert } from 'reactstrap';
+import {Alert} from 'reactstrap';
 
 class Register extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: null,
+      username: null
     };
   }
 
   onFacebookLogin = (loginStatus, resultObject) => {
     if (loginStatus === true) {
       this.setState({
-        username: resultObject.user.name,
+        username: resultObject.user.name
       });
     } else {
       return <Alert color="danger">Facebook login error</Alert>;
@@ -26,15 +26,16 @@ class Register extends Component {
   };
 
   render() {
-    const { username } = this.state;
+    const {username} = this.state;
 
     return (
       <div className="Register">
         <Jumbotron cx="eightVH" header="Join Our pack" />
         <div className="my-4">
-          <h1 className={classNames('gradient3', 'text-center')}>Authentication</h1>
+          <h1 className={classNames('gradient3', 'text-center')}>
+            Authentication
+          </h1>
           <div className="social-buttons">
-            {/* <GoogleAuth /> */}
             {!username && (
               <div>
                 <FacebookAuth onLogin={this.onFacebookLogin}>
