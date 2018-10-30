@@ -31,10 +31,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,json,css}": [
-      "prettier --single-quote --write",
-      "git add"
-    ]
+    "src/**/*.{js,jsx,json,css}": ["prettier --single-quote --write", "git add"]
   },
   "jest": {
     "collectCoverageFrom": [
@@ -62,7 +59,8 @@
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
     "coverage": "open ./coverage/lcov-report/index.html",
-    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "watch-css":
+      "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build-js": "react-scripts build",
@@ -71,7 +69,8 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --debug"
+    "test:debug":
+      "node --inspect-brk node_modules/.bin/jest --runInBand --debug"
   },
   "proxy": "http://localhost:8000",
   "devDependencies": {
@@ -89,10 +88,5 @@
     "enzyme-adapter-react-16": "^1.1.0",
     "storybook-addon-specifications": "^2.1.1"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }

@@ -18,7 +18,7 @@ module.exports = {
     );
 
     app.use(staticFiles);
-
+    console.log('staticfiles', staticFiles);
     app.use(staticRoutes);
     app.use(userRoutes);
   }
