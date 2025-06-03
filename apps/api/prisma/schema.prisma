@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"  // or "sqlite" for local dev
+  url      = env("DATABASE_URL")
+}
+
+model Dog {
+  id          String   @id @default(cuid())
+  name        String
+  breed       String
+  age         Int
+  weight      Float?
+  description String?
+  status      DogStatus @default(AVAILABLE)
+  placement   Placement @default(IN_FOSTER)
+  photos      String[] // Array of photo URLs
+  
+  // Petfinder integration
+  petfinderId String?  @unique
+  postedToPetfinder Boolean @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("dogs")
+}
+
+enum DogStatus {
+  AVAILABLE
+  PENDING
+  ADOPTED
+  HOLD
+  MEDICAL
+}
+
+enum Placement {
+  IN_FOSTER
+  BOARDING
+  FOSTER_TO_ADOPT
+}

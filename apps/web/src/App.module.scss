@@ -1,0 +1,74 @@
+// apps/web/src/App.module.scss
+
+// Variables
+$primary-color: #3b82f6;
+$success-color: #10b981;
+$success-bg: #d1fae5;
+$success-border: #a7f3d0;
+$error-color: #ef4444;
+$error-bg: #fee2e2;
+$error-border: #fecaca;
+$text-dark: #1f2937;
+$text-medium: #6b7280;
+$background: #f9fafb;
+
+// App container
+.app {
+  min-height: 100vh;
+  background: $background;
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Header
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-size: 3rem;
+  font-weight: 800;
+  color: $text-dark;
+  margin-bottom: 0.5rem;
+  
+  @media (max-width: 640px) {
+    font-size: 2.5rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: $text-medium;
+  font-weight: 500;
+  
+  @media (max-width: 640px) {
+    font-size: 1.125rem;
+  }
+}
+
+// Message alerts
+.message {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 2px solid;
+  font-weight: 500;
+  
+  &.success {
+    background: $success-bg;
+    border-color: $success-border;
+    color: darken($success-color, 20%);
+  }
+  
+  &.error {
+    background: $error-bg;
+    border-color: $error-border;
+    color: darken($error-color, 20%);
+  }
+}

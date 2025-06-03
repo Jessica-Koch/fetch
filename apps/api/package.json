@@ -1,0 +1,27 @@
+{
+  "name": "@fetch/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "@fastify/multipart": "^9.0.3",
+    "@fetch/shared": "workspace:*",
+    "@prisma/client": "^6.8.2",
+    "argon2": "^0.43.0",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.3",
+    "lucia": "^3.2.2",
+    "prisma": "^6.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "nodemon": "^3.1.10",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

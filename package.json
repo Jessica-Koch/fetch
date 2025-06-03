@@ -1,0 +1,14 @@
+{
+  "name": "fetch",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @fetch/api dev\" \"pnpm --filter @fetch/web dev\"",
+    "dev:api": "pnpm --filter @fetch/api dev",
+    "dev:web": "pnpm --filter @fetch/web dev",
+    "build": "pnpm --filter @fetch/shared build && pnpm --filter @fetch/api build && pnpm --filter @fetch/web build",
+    "build:shared": "pnpm --filter @fetch/shared build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
