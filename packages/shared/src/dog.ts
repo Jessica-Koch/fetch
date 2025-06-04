@@ -1,38 +1,38 @@
-export enum DogStatus {
-  AVAILABLE = 'AVAILABLE',
-  PENDING = 'PENDING',
-  ADOPTED = 'ADOPTED',
-  HOLD = 'HOLD',
-  MEDICAL = 'MEDICAL'
-}
+export const DogStatus = {
+  AVAILABLE :'AVAILABLE',
+  PENDING :'PENDING',
+  ADOPTED :'ADOPTED',
+  HOLD :'HOLD',
+  MEDICAL :'MEDICAL'
+} as const;
 
-export enum Placement {
-  IN_FOSTER = 'IN_FOSTER',
-  BOARDING = 'BOARDING',
-  FOSTER_TO_ADOPT = 'FOSTER_TO_ADOPT'
-}
+export const Placement = {
+  IN_FOSTER: 'IN_FOSTER',
+  BOARDING: 'BOARDING',
+  FOSTER_TO_ADOPT: 'FOSTER_TO_ADOPT'
+} as const;
 
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  UNKNOWN = 'UNKNOWN'
-}
+export const Gender= {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+  UNKNOWN: 'UNKNOWN'
+} as const ; 
 
-export enum Size {
-  SMALL = 'SMALL',
-  MEDIUM = 'MEDIUM',
-  LARGE = 'LARGE',
-  XLARGE = 'XLARGE'
-}
+export const Size = {
+  SMALL: 'SMALL',
+  MEDIUM: 'MEDIUM',
+  LARGE: 'LARGE',
+  XLARGE: 'XLARGE'
+} as const;
 
-export enum Coat {
-  HAIRLESS = 'HAIRLESS',
-  SHORT = 'SHORT',
-  MEDIUM = 'MEDIUM',
-  LONG = 'LONG',
-  WIRE = 'WIRE',
-  CURLY = 'CURLY'
-}
+export const Coat = {
+  HAIRLESS: 'HAIRLESS',
+  SHORT: 'SHORT',
+  MEDIUM: 'MEDIUM',
+  LONG: 'LONG',
+  WIRE: 'WIRE',
+  CURLY: 'CURLY'
+} as const
 
 export interface Dog {
   id: string;
@@ -49,16 +49,16 @@ export interface Dog {
   description?: string;
   
   // Physical characteristics
-  gender: Gender;
-  size: Size;
-  coat?: Coat;
+  gender: typeof Gender;
+  size: typeof Size;
+  coat?: typeof Coat;
   colorPrimary?: string;
   colorSecondary?: string;
   colorTertiary?: string;
   
   // Status and placement
-  status: DogStatus;
-  placement: Placement;
+  status: typeof DogStatus;
+  placement: typeof Placement;
   
   // Health and training attributes
   spayedNeutered: boolean;
@@ -98,9 +98,9 @@ export interface CreateDogRequest {
   age: number;
   weight?: number;
   description?: string;
-  gender: Gender;
-  size: Size;
-  coat?: Coat;
+  gender: typeof Gender;
+  size: typeof Size;
+  coat?: typeof Coat;
   colorPrimary?: string;
   colorSecondary?: string;
   colorTertiary?: string;
@@ -127,14 +127,14 @@ export interface UpdateDogRequest {
   age?: number;
   weight?: number;
   description?: string;
-  gender?: Gender;
-  size?: Size;
-  coat?: Coat;
+  gender?: typeof Gender;
+  size?: typeof Size;
+  coat?: typeof Coat;
   colorPrimary?: string;
   colorSecondary?: string;
   colorTertiary?: string;
-  status?: DogStatus;
-  placement?: Placement;
+  status?: typeof DogStatus;
+  placement?: typeof Placement;
   spayedNeutered?: boolean;
   houseTrained?: boolean;
   specialNeeds?: boolean;

@@ -13,13 +13,16 @@
     "@fetch/shared": "workspace:*",
     "@prisma/client": "^6.8.2",
     "argon2": "^0.43.0",
+    "basic-ftp": "^5.0.5",
     "dotenv": "^16.5.0",
     "fastify": "^5.3.3",
     "lucia": "^3.2.2",
-    "prisma": "^6.8.2"
+    "prisma": "^6.8.2",
+    "puppeteer": "^24.10.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",
+    "@types/puppeteer": "^7.0.4",
     "nodemon": "^3.1.10",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"

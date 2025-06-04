@@ -1,15 +1,15 @@
 // apps/web/src/components/DogForm/DogForm.tsx
 import { useState } from 'react';
-import type { CreateDogRequest, Gender, Size } from '@fetch/shared';
+import type { CreateDogWithPetfinderRequest, Gender, Size, Coat } from '@fetch/shared';
 import styles from './DogForm.module.scss';
 
 interface DogFormProps {
-  onSubmit: (dog: CreateDogRequest) => Promise<void>;
-  loading?: boolean;
+  readonly onSubmit: (dog: CreateDogWithPetfinderRequest) => Promise<void>;
+  readonly loading?: boolean;
 }
 
 export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
-  const [formData, setFormData] = useState<CreateDogRequest>({
+  const [formData, setFormData] = useState<CreateDogWithPetfinderRequest>({
     name: '',
     breed: '',
     breedSecondary: '',
@@ -35,7 +35,11 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     videos: [],
     tags: [],
     contactEmail: '',
-    contactPhone: ''
+    contactPhone: '',
+    // Petfinder options
+    autoUploadToPetfinder: false,
+    petfinderMethod: 'auto',
+    useFallback: true
   });
 
   const [tagInput, setTagInput] = useState('');
@@ -120,8 +124,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Add New Dog</h2>
+    <div className={styles.container} style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem', background: '#ffffff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+      <h2 className={styles.title} style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1f2937', marginBottom: '1.5rem', textAlign: 'center' }}>Add New Dog</h2>
       
       <form onSubmit={handleSubmit} className={styles.form}>
         {/* Basic Information */}
@@ -558,7 +562,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
         {/* Contact Information */}
         <fieldset className={styles.fieldset}>
-          <legend className={styles.legend}>Contact Information</legend>
+          <legend className={styles.legend}>Contact Information (Optional)</legend>
+          <p className={styles.sectionNote}>Override organization default contact info for this specific dog</p>
           
           <div className={styles.row}>
             <div className={styles.field}>
@@ -570,7 +575,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
                 value={formData.contactEmail || ''}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Optional override for this dog"
+                placeholder="dog-specific-email@rescue.org"
               />
             </div>
 
@@ -583,10 +588,66 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
                 value={formData.contactPhone || ''}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Optional override for this dog"
+                placeholder="(555) 123-4567"
               />
             </div>
           </div>
+        </fieldset>
+
+        {/* Petfinder Upload Options */}
+        <fieldset className={styles.fieldset}>
+          <legend className={styles.legend}>Petfinder Upload</legend>
+          
+          <div className={styles.field}>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                name="autoUploadToPetfinder"
+                checked={formData.autoUploadToPetfinder || false}
+                onChange={handleInputChange}
+                className={styles.checkbox}
+              />
+              Automatically upload to Petfinder after creating dog
+            </label>
+          </div>
+
+          {formData.autoUploadToPetfinder && (
+            <>
+              <div className={styles.field}>
+                <label htmlFor="petfinderMethod" className={styles.label}>Upload Method</label>
+                <select
+                  id="petfinderMethod"
+                  name="petfinderMethod"
+                  value={formData.petfinderMethod || 'auto'}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                >
+                  <option value="auto">Auto (Recommended)</option>
+                  <option value="ftp">FTP Upload</option>
+                  <option value="scraper">Web Scraper</option>
+                </select>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="useFallback"
+                    checked={formData.useFallback !== false}
+                    onChange={handleInputChange}
+                    className={styles.checkbox}
+                  />
+                  Use fallback method if primary fails
+                </label>
+              </div>
+
+              <div className={styles.petfinderNote}>
+                <p><strong>FTP:</strong> Bulk upload, processed within hours</p>
+                <p><strong>Scraper:</strong> Real-time upload, immediate Petfinder ID</p>
+                <p><strong>Auto:</strong> Tries the best available method</p>
+              </div>
+            </>
+          )}
         </fieldset>
 
         {/* Submit Button */}

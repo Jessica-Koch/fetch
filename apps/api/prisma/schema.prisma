@@ -61,6 +61,10 @@ model Dog {
   contactEmail String?
   contactPhone String?
   
+  petfinderSyncStatus String @default("NOT_SYNCED") // NOT_SYNCED, SYNCING, SYNCED, ERROR
+  petfinderLastSync DateTime?
+  petfinderErrors String[]
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
