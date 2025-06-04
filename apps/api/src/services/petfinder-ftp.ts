@@ -1,5 +1,6 @@
 // apps/api/src/services/petfinder-ftp.ts
 import { Client as FTPClient } from 'basic-ftp';
+import { Readable } from 'stream';
 import type { Dog } from '@fetch/shared';
 
 export interface PetfinderFTPConfig {
@@ -70,7 +71,7 @@ const dogToPetfinderCSV = (dog: Dog): string => {
     return genderMap[gender] ?? 'U';
   };
 
-  const getYesNoUnknown = (value: boolean | undefined): 'Y' | 'N' | 'U' => {
+  const getYesNoUnknown = (value: boolean | null): 'Y' | 'N' | 'U' => {
     if (value === true) return 'Y';
     if (value === false) return 'N';
     return 'U';
@@ -150,7 +151,9 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
         const csvContent = createCSVContent([dog]);
         const filename = generateFilename('dog', dog.id);
 
-        await client.uploadFrom(Buffer.from(csvContent), filename);
+        // FIX: Convert string to Readable stream instead of using Buffer
+        const csvStream = Readable.from([csvContent]);
+        await client.uploadFrom(csvStream, filename);
         
         console.log(`Successfully uploaded ${filename} to Petfinder FTP`);
       } catch (error) {
@@ -172,7 +175,9 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
         const csvContent = createCSVContent(dogs);
         const filename = generateFilename('dogs_bulk');
 
-        await client.uploadFrom(Buffer.from(csvContent), filename);
+        // FIX: Convert string to Readable stream instead of using Buffer
+        const csvStream = Readable.from([csvContent]);
+        await client.uploadFrom(csvStream, filename);
         
         console.log(`Successfully uploaded ${dogs.length} dogs in ${filename} to Petfinder FTP`);
       } catch (error) {

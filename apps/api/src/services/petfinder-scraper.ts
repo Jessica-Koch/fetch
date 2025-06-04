@@ -140,26 +140,31 @@ export const createPetfinderScraper = (config: PetfinderScraperConfig): Petfinde
       return 'Senior';
     };
 
+    // Helper function to convert null to undefined
+    const nullToUndefined = <T>(value: T | null): T | undefined => {
+      return value === null ? undefined : value;
+    };
+
     return {
       name: dog.name,
       animalType: 'Dog',
       breedPrimary: dog.breed,
-      breedSecondary: dog.breedSecondary,
+      breedSecondary: nullToUndefined(dog.breedSecondary),
       gender: getGender(dog.gender),
       size: getSize(dog.size),
       age: getAge(dog.age),
-      description: dog.description,
-      colorPrimary: dog.colorPrimary,
-      colorSecondary: dog.colorSecondary,
+      description: nullToUndefined(dog.description),
+      colorPrimary: nullToUndefined(dog.colorPrimary),
+      colorSecondary: nullToUndefined(dog.colorSecondary),
       spayedNeutered: dog.spayedNeutered,
       houseTrained: dog.houseTrained,
       shotsCurrent: dog.shotsCurrent,
       specialNeeds: dog.specialNeeds,
-      goodWithChildren: dog.goodWithChildren,
-      goodWithDogs: dog.goodWithDogs,
-      goodWithCats: dog.goodWithCats,
-      contactEmail: dog.contactEmail,
-      contactPhone: dog.contactPhone
+      goodWithChildren: nullToUndefined(dog.goodWithChildren),
+      goodWithDogs: nullToUndefined(dog.goodWithDogs),
+      goodWithCats: nullToUndefined(dog.goodWithCats),
+      contactEmail: nullToUndefined(dog.contactEmail),
+      contactPhone: nullToUndefined(dog.contactPhone)
     };
   };
 

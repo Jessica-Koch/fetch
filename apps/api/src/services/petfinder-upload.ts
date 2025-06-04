@@ -108,9 +108,10 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const actualMethod = method === 'auto' ? 'ftp' : method as 'ftp' | 'scraper';
         return {
           success: false,
-          method: method === "auto" ? "auto" : method as "ftp" | "scraper",
+          method: actualMethod,
           error: errorMessage,
           message: `Failed to upload ${dog.name}: ${errorMessage}`
         };
@@ -146,22 +147,39 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
     // Upload with fallback (try one method, fall back to the other)
     uploadDogWithFallback: async (dog: Dog): Promise<UploadResult> => {
       // Try FTP first
-      let result = await this.uploadDog(dog, 'ftp');
-      
-      if (result.success) {
-        return result;
+      try {
+        const selectedMethod = await determineMethod('ftp');
+        
+        if (selectedMethod === 'ftp') {
+          await ftpService.uploadDog(dog);
+          return {
+            success: true,
+            method: 'ftp',
+            message: `Successfully uploaded ${dog.name} via FTP. Processing may take a few hours.`
+          };
+        }
+      } catch (error) {
+        console.log('FTP upload failed, trying scraper fallback...');
       }
-
-      console.log('FTP upload failed, trying scraper fallback...');
       
       // Fall back to scraper
-      result = await this.uploadDog(dog, 'scraper');
-      
-      if (result.success) {
-        result.message += ' (FTP failed, used scraper fallback)';
+      try {
+        const petfinderId = await scraperService.uploadDog(dog);
+        return {
+          success: true,
+          method: 'scraper',
+          petfinderId,
+          message: `Successfully uploaded ${dog.name} via web scraper. Petfinder ID: ${petfinderId} (FTP failed, used scraper fallback)`
+        };
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        return {
+          success: false,
+          method: 'scraper',
+          error: errorMessage,
+          message: `Failed to upload ${dog.name}: ${errorMessage}`
+        };
       }
-
-      return result;
     },
 
     // Test both connection methods
