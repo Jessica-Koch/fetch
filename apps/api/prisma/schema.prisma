@@ -1,26 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"  // or "sqlite" for local dev
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Dog {
   id          String   @id @default(cuid())
   name        String
-  breed       String
+  
+  // Basic info
+  breed       String   // Primary breed
+  breedSecondary String? // Secondary breed (for mixed breeds)
+  breedMixed  Boolean  @default(false)
+  breedUnknown Boolean @default(false)
+  
   age         Int
   weight      Float?
   description String?
+  
+  // Physical characteristics
+  gender      Gender
+  size        Size
+  coat        Coat?
+  colorPrimary String?
+  colorSecondary String?
+  colorTertiary String?
+  
+  // Status and placement
   status      DogStatus @default(AVAILABLE)
   placement   Placement @default(IN_FOSTER)
+  
+  // Health and training attributes
+  spayedNeutered Boolean @default(false)
+  houseTrained   Boolean @default(false)
+  declawed       Boolean? // null for dogs (cats only)
+  specialNeeds   Boolean @default(false)
+  shotsCurrent   Boolean @default(false)
+  
+  // Environment compatibility
+  goodWithChildren Boolean?
+  goodWithDogs     Boolean?
+  goodWithCats     Boolean?
+  
+  // Media and tags
   photos      String[] // Array of photo URLs
+  videos      String[] // Array of video URLs/embeds
+  tags        String[] // Descriptive tags
   
   // Petfinder integration
   petfinderId String?  @unique
   postedToPetfinder Boolean @default(false)
+  
+  // Contact info (can be different from org default)
+  contactEmail String?
+  contactPhone String?
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -40,4 +79,26 @@ enum Placement {
   IN_FOSTER
   BOARDING
   FOSTER_TO_ADOPT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+enum Size {
+  SMALL
+  MEDIUM
+  LARGE
+  XLARGE
+}
+
+enum Coat {
+  HAIRLESS
+  SHORT
+  MEDIUM
+  LONG
+  WIRE
+  CURLY
 }
