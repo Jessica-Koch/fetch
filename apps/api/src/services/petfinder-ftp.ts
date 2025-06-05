@@ -10,31 +10,34 @@ export interface PetfinderFTPConfig {
   readonly organizationId: string;
 }
 
-interface PetfinderCSVRow {
-  readonly id: string;
-  readonly name: string;
-  readonly breed1: string;
-  readonly breed2: string;
-  readonly mixed: 'Y' | 'N';
-  readonly age: 'Baby' | 'Young' | 'Adult' | 'Senior';
-  readonly gender: 'M' | 'F' | 'U';
-  readonly size: 'S' | 'M' | 'L' | 'XL';
-  readonly color1: string;
-  readonly color2: string;
-  readonly description: string;
-  readonly altered: 'Y' | 'N' | 'U';
-  readonly houseTrained: 'Y' | 'N' | 'U';
-  readonly shots: 'Y' | 'N' | 'U';
-  readonly specialNeeds: 'Y' | 'N' | 'U';
-  readonly goodWithKids: 'Y' | 'N' | 'U';
-  readonly goodWithDogs: 'Y' | 'N' | 'U';
-  readonly goodWithCats: 'Y' | 'N' | 'U';
-  readonly email: string;
-  readonly phone: string;
-  readonly photos: string;
-  readonly tags: string;
-  readonly status: 'A' | 'P' | 'X';
-  readonly dateAdded: string;
+// Petfinder CSV specification based on actual requirements
+interface PetfinderCSVRecord {
+  readonly animalID: string;          // Unique ID (required)
+  readonly animalName: string;        // Pet name (required)
+  readonly primaryBreed: string;      // Primary breed (required)
+  readonly secondaryBreed: string;    // Secondary breed
+  readonly animalSpecies: string;     // Dog/Cat (required)
+  readonly animalSex: string;         // M/F (required)
+  readonly animalGeneralAge: string;  // Baby/Young/Adult/Senior (required)
+  readonly animalGeneralSizePotential: string; // S/M/L/XL (required)
+  readonly animalDescription: string; // Description
+  readonly animalStatus: string;      // Available/Hold/Adopted
+  readonly animalshots: string;      // Y/N
+  readonly animalAltered: string;     // Y/N (spayed/neutered)
+  readonly animalHousetrained: string; // Y/N
+  readonly animalDeclawed: string;    // Y/N
+  readonly animalSpecialNeeds: string; // Y/N
+  readonly animalMix: string;         // Y/N (mixed breed)
+  readonly animalNoDogs: string;      // Y/N (opposite of good with dogs)
+  readonly animalNoCats: string;      // Y/N (opposite of good with cats)
+  readonly animalNoKids: string;      // Y/N (opposite of good with kids)
+  readonly photo1: string;            // Photo URL
+  readonly photo2: string;            // Photo URL
+  readonly photo3: string;            // Photo URL
+  readonly animalColor: string;       // Primary color
+  readonly animalCoat: string;        // Coat type
+  readonly animalPattern: string;     // Color pattern
+  readonly rescueID: string;          // Optional rescue-specific ID
 }
 
 export interface PetfinderFTPService {
@@ -44,103 +47,158 @@ export interface PetfinderFTPService {
 }
 
 // Convert dog to Petfinder CSV format
-const dogToPetfinderCSV = (dog: Dog): string => {
-  const getPetfinderAge = (age: number): PetfinderCSVRow['age'] => {
+const dogToPetfinderCSV = (dog: Dog): PetfinderCSVRecord => {
+  const getPetfinderAge = (age: number): string => {
     if (age < 1) return 'Baby';
     if (age < 3) return 'Young';
     if (age < 8) return 'Adult';
     return 'Senior';
   };
 
-  const getPetfinderSize = (size: string): PetfinderCSVRow['size'] => {
-    const sizeMap: Record<string, PetfinderCSVRow['size']> = {
+  const getPetfinderSize = (size: string): string => {
+    const sizeMap: Record<string, string> = {
       'SMALL': 'S',
       'MEDIUM': 'M',
       'LARGE': 'L',
       'XLARGE': 'XL'
-    } as const;
+    };
     return sizeMap[size] ?? 'M';
   };
 
-  const getPetfinderGender = (gender: string): PetfinderCSVRow['gender'] => {
-    const genderMap: Record<string, PetfinderCSVRow['gender']> = {
+  const getPetfinderGender = (gender: string): string => {
+    const genderMap: Record<string, string> = {
       'MALE': 'M',
       'FEMALE': 'F',
-      'UNKNOWN': 'U'
-    } as const;
-    return genderMap[gender] ?? 'U';
+      'UNKNOWN': 'M' // Default to M if unknown
+    };
+    return genderMap[gender] ?? 'M';
   };
 
-  const getYesNoUnknown = (value: boolean | null): 'Y' | 'N' | 'U' => {
-    if (value === true) return 'Y';
-    if (value === false) return 'N';
-    return 'U';
+  const getYesNo = (value: boolean | null | undefined): string => {
+    return value === true ? 'Y' : 'N';
   };
 
-  const csvRow: PetfinderCSVRow = {
-    id: dog.id,
-    name: dog.name,
-    breed1: dog.breed,
-    breed2: dog.breedSecondary ?? '',
-    mixed: dog.breedMixed ? 'Y' : 'N',
-    age: getPetfinderAge(dog.age),
-    gender: getPetfinderGender(dog.gender),
-    size: getPetfinderSize(dog.size),
-    color1: dog.colorPrimary ?? '',
-    color2: dog.colorSecondary ?? '',
-    description: dog.description ?? '',
-    altered: getYesNoUnknown(dog.spayedNeutered),
-    houseTrained: getYesNoUnknown(dog.houseTrained),
-    shots: getYesNoUnknown(dog.shotsCurrent),
-    specialNeeds: getYesNoUnknown(dog.specialNeeds),
-    goodWithKids: getYesNoUnknown(dog.goodWithChildren),
-    goodWithDogs: getYesNoUnknown(dog.goodWithDogs),
-    goodWithCats: getYesNoUnknown(dog.goodWithCats),
-    email: dog.contactEmail ?? '',
-    phone: dog.contactPhone ?? '',
-    photos: dog.photos.join('|'),
-    tags: dog.tags.join(','),
-    status: 'A',
-    dateAdded: new Date().toISOString().split('T')[0]!
+  // Get opposite for "No" fields (Petfinder uses negative logic for some fields)
+  const getNoValue = (value: boolean | null | undefined): string => {
+    return value === false ? 'Y' : 'N';
   };
 
-  return Object.values(csvRow)
-    .map((field): string => `"${String(field).replace(/"/g, '""')}"`)
-    .join(',');
+  const getPetfinderCoat = (coat?: string): string => {
+    if (!coat) return '';
+    const coatMap: Record<string, string> = {
+      'HAIRLESS': 'Hairless',
+      'SHORT': 'Short',
+      'MEDIUM': 'Medium', 
+      'LONG': 'Long',
+      'WIRE': 'Wire',
+      'CURLY': 'Curly'
+    };
+    return coatMap[coat] ?? '';
+  };
+
+  return {
+    animalID: dog.id,
+    animalName: dog.name,
+    primaryBreed: dog.breed,
+    secondaryBreed: dog.breedSecondary || '',
+    animalSpecies: 'Dog',
+    animalSex: getPetfinderGender(dog.gender),
+    animalGeneralAge: getPetfinderAge(dog.age),
+    animalGeneralSizePotential: getPetfinderSize(dog.size),
+    animalDescription: dog.description || '',
+    animalStatus: 'Available', // Always available for new uploads
+    animalShots: getYesNo(dog.shotsCurrent),
+    animalAltered: getYesNo(dog.spayedNeutered),
+    animalHousetrained: getYesNo(dog.houseTrained),
+    animalDeclawed: 'N', // Dogs are not declawed
+    animalSpecialNeeds: getYesNo(dog.specialNeeds),
+    animalMix: getYesNo(dog.breedMixed),
+    animalNoDogs: getNoValue(dog.goodWithDogs),
+    animalNoCats: getNoValue(dog.goodWithCats), 
+    animalNoKids: getNoValue(dog.goodWithChildren),
+    photo1: dog.photos[0] || '',
+    photo2: dog.photos[1] || '',
+    photo3: dog.photos[2] || '',
+    animalColor: dog.colorPrimary || '',
+    animalCoat: getPetfinderCoat(dog.coat),
+    animalPattern: dog.colorSecondary || '',
+    rescueID: dog.id // Use our internal ID as rescue ID
+  };
 };
 
 const createCSVContent = (dogs: readonly Dog[]): string => {
-  const headers: readonly (keyof PetfinderCSVRow)[] = [
-    'id', 'name', 'breed1', 'breed2', 'mixed', 'age', 'gender', 'size',
-    'color1', 'color2', 'description', 'altered', 'houseTrained', 'shots',
-    'specialNeeds', 'goodWithKids', 'goodWithDogs', 'goodWithCats',
-    'email', 'phone', 'photos', 'tags', 'status', 'dateAdded'
-  ] as const;
+  // CSV headers matching Petfinder specification
+  const headers = [
+    'animalID',
+    'animalName', 
+    'primaryBreed',
+    'secondaryBreed',
+    'animalSpecies',
+    'animalSex',
+    'animalGeneralAge',
+    'animalGeneralSizePotential',
+    'animalDescription',
+    'animalStatus',
+    'animalShots',
+    'animalAltered',
+    'animalHousetrained',
+    'animalDeclawed',
+    'animalSpecialNeeds',
+    'animalMix',
+    'animalNoDogs',
+    'animalNoCats', 
+    'animalNoKids',
+    'photo1',
+    'photo2',
+    'photo3',
+    'animalColor',
+    'animalCoat',
+    'animalPattern',
+    'rescueID'
+  ];
 
-  const csvHeader = headers.join(',');
-  const csvRows = dogs.map(dogToPetfinderCSV);
-  
-  return [csvHeader, ...csvRows].join('\n');
+  const csvRows = dogs.map(dog => {
+    const record = dogToPetfinderCSV(dog);
+    return headers.map(header => {
+      const value = record[header as keyof PetfinderCSVRecord] || '';
+      // Escape CSV values properly
+      if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value;
+    }).join(',');
+  });
+
+  return [headers.join(','), ...csvRows].join('\n');
 };
 
-const generateFilename = (prefix: string, dogId?: string): string => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const dogPart = dogId ? `_${dogId}` : '';
-  return `${prefix}${dogPart}_${timestamp}.csv`;
+const generateFilename = (prefix: string): string => {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').split('.')[0];
+  return `${prefix}_${timestamp}.csv`;
 };
 
 export const createPetfinderFTPService = (config: PetfinderFTPConfig): PetfinderFTPService => {
   const connectToFTP = async (): Promise<FTPClient> => {
     const client = new FTPClient();
+    client.ftp.verbose = true; // Enable logging for debugging
     
-    await client.access({
-      host: config.host,
-      user: config.username,
-      password: config.password,
-      secure: false // Set to true if using FTPS
-    });
+    try {
+      await client.access({
+        host: config.host,
+        user: config.username,
+        password: config.password,
+        secure: false, // Most Petfinder FTP servers use regular FTP
+        secureOptions: {
+          rejectUnauthorized: false
+        }
+      });
 
-    return client;
+      console.log(`Successfully connected to Petfinder FTP: ${config.host}`);
+      return client;
+    } catch (error) {
+      console.error('FTP connection failed:', error);
+      throw new Error(`Failed to connect to Petfinder FTP: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
   return {
@@ -149,15 +207,29 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
       
       try {
         const csvContent = createCSVContent([dog]);
-        const filename = generateFilename('dog', dog.id);
+        const filename = generateFilename('pet_upload');
 
-        // FIX: Convert string to Readable stream instead of using Buffer
+        console.log(`Uploading ${filename} to Petfinder FTP...`);
+        console.log('CSV Content Preview:', csvContent.split('\n').slice(0, 3).join('\n'));
+
+        // Navigate to import directory (standard for Petfinder)
+        try {
+          await client.ensureDir('import');
+          console.log('Successfully navigated to import directory');
+        } catch (dirError) {
+          console.log('Import directory may not exist, uploading to root directory');
+        }
+
+        // Convert string to stream for upload
         const csvStream = Readable.from([csvContent]);
         await client.uploadFrom(csvStream, filename);
         
         console.log(`Successfully uploaded ${filename} to Petfinder FTP`);
+        console.log('Note: Petfinder typically processes uploaded files within 1-2 hours');
+        
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error('FTP upload error:', errorMessage);
         throw new Error(`Failed to upload to Petfinder FTP: ${errorMessage}`);
       } finally {
         client.close();
@@ -173,16 +245,29 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
       
       try {
         const csvContent = createCSVContent(dogs);
-        const filename = generateFilename('dogs_bulk');
+        const filename = generateFilename('pets_bulk_upload');
 
-        // FIX: Convert string to Readable stream instead of using Buffer
+        console.log(`Uploading bulk file ${filename} with ${dogs.length} dogs to Petfinder FTP...`);
+
+        // Navigate to import directory
+        try {
+          await client.ensureDir('import');
+          console.log('Successfully navigated to import directory');
+        } catch (dirError) {
+          console.log('Import directory may not exist, uploading to root directory');
+        }
+
+        // Convert string to stream for upload
         const csvStream = Readable.from([csvContent]);
         await client.uploadFrom(csvStream, filename);
         
         console.log(`Successfully uploaded ${dogs.length} dogs in ${filename} to Petfinder FTP`);
+        console.log('Note: Petfinder typically processes uploaded files within 1-2 hours');
+        
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        throw new Error(`Failed to upload to Petfinder FTP: ${errorMessage}`);
+        console.error('FTP bulk upload error:', errorMessage);
+        throw new Error(`Failed to upload bulk data to Petfinder FTP: ${errorMessage}`);
       } finally {
         client.close();
       }
@@ -193,7 +278,19 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
       
       try {
         client = await connectToFTP();
-        await client.list(); // Try to list directory
+        
+        // Test directory listing
+        const list = await client.list();
+        console.log('FTP connection test successful. Available directories:', list.map(item => item.name));
+        
+        // Check for import directory
+        const hasImportDir = list.some(item => item.name === 'import' && item.isDirectory);
+        if (hasImportDir) {
+          console.log('✓ Import directory found - uploads will go to /import/');
+        } else {
+          console.log('ℹ Import directory not found - uploads will go to root directory');
+        }
+        
         return true;
       } catch (error) {
         console.error('FTP connection test failed:', error);

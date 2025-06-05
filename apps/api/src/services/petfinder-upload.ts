@@ -6,13 +6,13 @@ import type { Dog } from '@fetch/shared';
 export type UploadMethod = 'ftp' | 'scraper' | 'auto';
 
 interface PetfinderUploadConfig {
-  // FTP credentials
+  // FTP credentials (for CSV uploads)
   ftp: {
     host: string;
     username: string;
     password: string;
   };
-  // Scraper credentials  
+  // Scraper credentials (for dashboard automation)
   scraper: {
     username: string;
     password: string;
@@ -73,7 +73,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
     const connections = await testConnections();
     
     if (connections.ftp && connections.scraper) {
-      // Both work - prefer FTP (more reliable)
+      // Both work - prefer FTP (more reliable and faster processing)
       return 'ftp';
     } else if (connections.ftp) {
       return 'ftp';
@@ -95,7 +95,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
           return {
             success: true,
             method: 'ftp',
-            message: `Successfully uploaded ${dog.name} via FTP. Processing may take a few hours.`
+            message: `Successfully uploaded ${dog.name} via FTP. Petfinder will process the file within 1-2 hours.`
           };
         } else {
           const petfinderId = await scraperService.uploadDog(dog);
@@ -103,7 +103,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
             success: true,
             method: 'scraper',
             petfinderId,
-            message: `Successfully uploaded ${dog.name} via web scraper. Petfinder ID: ${petfinderId}`
+            message: `Successfully uploaded ${dog.name} via dashboard scraper. Petfinder ID: ${petfinderId}`
           };
         }
       } catch (error) {
@@ -131,7 +131,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
         return {
           success: true,
           method: 'ftp',
-          message: `Successfully uploaded ${dogs.length} dogs via FTP. Processing may take a few hours.`
+          message: `Successfully uploaded ${dogs.length} dogs via FTP. Petfinder will process the file within 1-2 hours.`
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -146,20 +146,20 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
 
     // Upload with fallback (try one method, fall back to the other)
     uploadDogWithFallback: async (dog: Dog): Promise<UploadResult> => {
-      // Try FTP first
+      // Try FTP first (more reliable)
       try {
-        const selectedMethod = await determineMethod('ftp');
+        const ftpConnected = await ftpService.testConnection();
         
-        if (selectedMethod === 'ftp') {
+        if (ftpConnected) {
           await ftpService.uploadDog(dog);
           return {
             success: true,
             method: 'ftp',
-            message: `Successfully uploaded ${dog.name} via FTP. Processing may take a few hours.`
+            message: `Successfully uploaded ${dog.name} via FTP. Petfinder will process the file within 1-2 hours.`
           };
         }
       } catch (error) {
-        console.log('FTP upload failed, trying scraper fallback...');
+        console.log('FTP upload failed, trying scraper fallback...', error);
       }
       
       // Fall back to scraper
@@ -169,7 +169,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
           success: true,
           method: 'scraper',
           petfinderId,
-          message: `Successfully uploaded ${dog.name} via web scraper. Petfinder ID: ${petfinderId} (FTP failed, used scraper fallback)`
+          message: `Successfully uploaded ${dog.name} via dashboard scraper. Petfinder ID: ${petfinderId} (FTP failed, used scraper fallback)`
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -177,7 +177,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
           success: false,
           method: 'scraper',
           error: errorMessage,
-          message: `Failed to upload ${dog.name}: ${errorMessage}`
+          message: `Failed to upload ${dog.name}: Both FTP and scraper methods failed. ${errorMessage}`
         };
       }
     },

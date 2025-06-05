@@ -1,6 +1,6 @@
 // apps/web/src/components/DogForm/DogForm.tsx
 import { useState } from 'react';
-import type { CreateDogWithPetfinderRequest, Gender, Size, Coat } from '@fetch/shared';
+import type { CreateDogWithPetfinderRequest, GenderType, SizeType, CoatType } from '@fetch/shared';
 import styles from './DogForm.module.scss';
 
 interface DogFormProps {
@@ -18,8 +18,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     age: 1,
     weight: undefined,
     description: '',
-    gender: 'UNKNOWN' as Gender,
-    size: 'MEDIUM' as Size,
+    gender: 'UNKNOWN' as GenderType,
+    size: 'MEDIUM' as SizeType,
     coat: undefined,
     colorPrimary: '',
     colorSecondary: '',
@@ -57,8 +57,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
       age: 1,
       weight: undefined,
       description: '',
-      gender: 'UNKNOWN' as Gender,
-      size: 'MEDIUM' as Size,
+      gender: 'UNKNOWN' as GenderType,
+      size: 'MEDIUM' as SizeType,
       coat: undefined,
       colorPrimary: '',
       colorSecondary: '',

@@ -1,3 +1,4 @@
+// packages/shared/src/dog.ts
 export const DogStatus = {
   AVAILABLE :'AVAILABLE',
   PENDING :'PENDING',
