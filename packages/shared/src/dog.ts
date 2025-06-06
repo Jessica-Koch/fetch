@@ -35,43 +35,50 @@ export const Coat = {
   CURLY: 'CURLY'
 } as const
 
+// Type exports for frontend
+export type GenderType = keyof typeof Gender;
+export type SizeType = keyof typeof Size;
+export type CoatType = keyof typeof Coat;
+export type DogStatusType = keyof typeof DogStatus;
+export type PlacementType = keyof typeof Placement;
+
 export interface Dog {
   id: string;
   name: string;
   
   // Basic info
   breed: string;
-  breedSecondary?: string;
+  breedSecondary: string | null;
   breedMixed: boolean;
   breedUnknown: boolean;
   
   age: number;
-  weight?: number;
-  description?: string;
+  weight: number | null;
+  description: string | null;
   
   // Physical characteristics
-  gender: typeof Gender;
-  size: typeof Size;
-  coat?: typeof Coat;
-  colorPrimary?: string;
-  colorSecondary?: string;
-  colorTertiary?: string;
+  gender: keyof typeof Gender;
+  size: keyof typeof Size;
+  coat: keyof typeof Coat | null;
+  colorPrimary: string | null;
+  colorSecondary: string | null;
+  colorTertiary: string | null;
   
   // Status and placement
-  status: typeof DogStatus;
-  placement: typeof Placement;
+  status: keyof typeof DogStatus;
+  placement: keyof typeof Placement;
   
   // Health and training attributes
   spayedNeutered: boolean;
   houseTrained: boolean;
-  declawed?: boolean;
+  declawed: boolean | null;
   specialNeeds: boolean;
   shotsCurrent: boolean;
   
   // Environment compatibility
-  goodWithChildren?: boolean;
-  goodWithDogs?: boolean;
-  goodWithCats?: boolean;
+  goodWithChildren: boolean | null;
+  goodWithDogs: boolean | null;
+  goodWithCats: boolean | null;
   
   // Media and tags
   photos: string[];
@@ -79,12 +86,17 @@ export interface Dog {
   tags: string[];
   
   // Petfinder integration
-  petfinderId?: string;
+  petfinderId: string | null;
   postedToPetfinder: boolean;
   
   // Contact info
-  contactEmail?: string;
-  contactPhone?: string;
+  contactEmail: string | null;
+  contactPhone: string | null;
+  
+  // Petfinder sync tracking
+  petfinderSyncStatus: string;
+  petfinderLastSync: Date | null;
+  petfinderErrors: string[];
   
   createdAt: Date;
   updatedAt: Date;
@@ -99,9 +111,9 @@ export interface CreateDogRequest {
   age: number;
   weight?: number;
   description?: string;
-  gender: typeof Gender;
-  size: typeof Size;
-  coat?: typeof Coat;
+  gender: keyof typeof Gender;
+  size: keyof typeof Size;
+  coat?: keyof typeof Coat;
   colorPrimary?: string;
   colorSecondary?: string;
   colorTertiary?: string;
@@ -128,14 +140,14 @@ export interface UpdateDogRequest {
   age?: number;
   weight?: number;
   description?: string;
-  gender?: typeof Gender;
-  size?: typeof Size;
-  coat?: typeof Coat;
+  gender?: keyof typeof Gender;
+  size?: keyof typeof Size;
+  coat?: keyof typeof Coat;
   colorPrimary?: string;
   colorSecondary?: string;
   colorTertiary?: string;
-  status?: typeof DogStatus;
-  placement?: typeof Placement;
+  status?: keyof typeof DogStatus;
+  placement?: keyof typeof Placement;
   spayedNeutered?: boolean;
   houseTrained?: boolean;
   specialNeeds?: boolean;

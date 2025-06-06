@@ -1,6 +1,6 @@
 // apps/web/src/components/DogForm/DogForm.tsx
 import { useState } from 'react';
-import type { CreateDogWithPetfinderRequest, GenderType, SizeType, CoatType } from '@fetch/shared';
+import type { CreateDogWithPetfinderRequest, GenderType, SizeType } from '@fetch/shared';
 import styles from './DogForm.module.scss';
 
 interface DogFormProps {
@@ -10,31 +10,31 @@ interface DogFormProps {
 
 export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
   const [formData, setFormData] = useState<CreateDogWithPetfinderRequest>({
-    name: '',
-    breed: '',
+    name: 'test',
+    breed: 'Siberian Husky',
     breedSecondary: '',
     breedMixed: false,
     breedUnknown: false,
     age: 1,
-    weight: undefined,
-    description: '',
-    gender: 'UNKNOWN' as GenderType,
+    weight: 20,
+    description: 'hi',
+    gender: 'MALE' as GenderType,
     size: 'MEDIUM' as SizeType,
-    coat: undefined,
-    colorPrimary: '',
+    coat: "MEDIUM",
+    colorPrimary: 'Black',
     colorSecondary: '',
     colorTertiary: '',
     spayedNeutered: false,
     houseTrained: false,
     specialNeeds: false,
     shotsCurrent: false,
-    goodWithChildren: undefined,
+    goodWithChildren: true,
     goodWithDogs: undefined,
     goodWithCats: undefined,
     photos: [],
     videos: [],
     tags: [],
-    contactEmail: '',
+    contactEmail: 'adoptions@loveslegacyrescue.com',
     contactPhone: '',
     // Petfinder options
     autoUploadToPetfinder: false,
@@ -49,31 +49,31 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     await onSubmit(formData);
     // Reset form after successful submission
     setFormData({
-      name: '',
-      breed: '',
+      name: 'test',
+      breed: 'Siberian Husky',
       breedSecondary: '',
       breedMixed: false,
       breedUnknown: false,
       age: 1,
-      weight: undefined,
+      weight: 20,
       description: '',
-      gender: 'UNKNOWN' as GenderType,
+      gender: 'MALE' as GenderType,
       size: 'MEDIUM' as SizeType,
-      coat: undefined,
-      colorPrimary: '',
+      coat: 'MEDIUM',
+      colorPrimary: 'Black',
       colorSecondary: '',
       colorTertiary: '',
       spayedNeutered: false,
       houseTrained: false,
       specialNeeds: false,
       shotsCurrent: false,
-      goodWithChildren: undefined,
+      goodWithChildren: true,
       goodWithDogs: undefined,
       goodWithCats: undefined,
       photos: [],
       videos: [],
       tags: [],
-      contactEmail: '',
+      contactEmail: 'adoptions@loveslegacyrescue.com',
       contactPhone: ''
     });
     setTagInput('');
