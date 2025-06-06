@@ -97,9 +97,9 @@ function formatDogForManualEntry(dog: Dog) {
     
     // Physical Characteristics
     age: mapAgeToCategory(dog.age),
-    gender: mapGender(dog.gender),
-    size: mapSize(dog.size),
-    coat: mapCoat(dog.coat),
+    gender: dog.gender,
+    size: dog.size,
+    coat: dog.coat || '',
     color_primary: dog.colorPrimary || '',
     color_secondary: dog.colorSecondary || '',
     color_tertiary: dog.colorTertiary || '',

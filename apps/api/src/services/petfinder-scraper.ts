@@ -224,10 +224,10 @@ export const createPetfinderScraper = (config: PetfinderScraperConfig): Petfinde
       breedSecondary: dog.breedSecondary ?? undefined,
       breedMixed: dog.breedMixed,
       breedUnknown: dog.breedUnknown,
-      gender: getGender(dog.gender.toString()),
-      size: getSize(dog.size.toString()),
+      gender: getGender(dog.gender),
+      size: getSize(dog.size),
       age: getAge(dog.age),
-      coat: getCoat(dog.coat),
+      coat: getCoat(dog.coat || ''),
       description: dog.description ?? undefined,
       colorPrimary: dog.colorPrimary ?? undefined,
       colorSecondary: dog.colorSecondary ?? undefined,
@@ -433,7 +433,7 @@ export const createPetfinderScraper = (config: PetfinderScraperConfig): Petfinde
       }
       
       // Look for pet ID in page content
-      await page.waitForTimeout(2000); // Give page time to load
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Give page time to load
       
       const petIdSelectors = [
         '[data-pet-id]',

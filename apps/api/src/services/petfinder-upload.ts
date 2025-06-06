@@ -27,6 +27,7 @@ export interface UploadResult {
   petfinderId?: string;
   error?: string;
   message: string;
+  manualUploadUrl?: string;
 }
 
 export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {

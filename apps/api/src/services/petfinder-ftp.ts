@@ -102,12 +102,12 @@ const dogToPetfinderCSV = (dog: Dog): PetfinderCSVRecord => {
     primaryBreed: dog.breed,
     secondaryBreed: dog.breedSecondary || '',
     animalSpecies: 'Dog',
-    animalSex: getPetfinderGender(dog.gender),
+    animalSex: dog.gender,
     animalGeneralAge: getPetfinderAge(dog.age),
-    animalGeneralSizePotential: getPetfinderSize(dog.size),
+    animalGeneralSizePotential: dog.size,
     animalDescription: dog.description || '',
     animalStatus: 'Available', // Always available for new uploads
-    animalShots: getYesNo(dog.shotsCurrent),
+    animalshots: getYesNo(dog.shotsCurrent),
     animalAltered: getYesNo(dog.spayedNeutered),
     animalHousetrained: getYesNo(dog.houseTrained),
     animalDeclawed: 'N', // Dogs are not declawed
@@ -120,7 +120,7 @@ const dogToPetfinderCSV = (dog: Dog): PetfinderCSVRecord => {
     photo2: dog.photos[1] || '',
     photo3: dog.photos[2] || '',
     animalColor: dog.colorPrimary || '',
-    animalCoat: getPetfinderCoat(dog.coat),
+    animalCoat: dog.coat || '',
     animalPattern: dog.colorSecondary || '',
     rescueID: dog.id // Use our internal ID as rescue ID
   };
@@ -222,10 +222,18 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
 
         // Convert string to stream for upload
         const csvStream = Readable.from([csvContent]);
-        await client.uploadFrom(csvStream, filename);
-        
-        console.log(`Successfully uploaded ${filename} to Petfinder FTP`);
-        console.log('Note: Petfinder typically processes uploaded files within 1-2 hours');
+        const ftpResp = await client.uploadFrom(csvStream, filename);
+        console.log('FTP_RESP: ', ftpResp)
+        console.log(`✅ SUCCESS: Uploaded ${filename} to Petfinder FTP`);
+        console.log(`📊 Upload Details:`);
+        console.log(`   - Dog ID: ${dog.id}`);
+        console.log(`   - Dog Name: ${dog.name}`);
+        console.log(`   - File: ${filename}`);
+        console.log(`   - FTP Response: ${ftpResp.code} - ${ftpResp.message}`);
+        console.log(`⏳ Next Steps:`);
+        console.log(`   - Wait 1-2 hours for Petfinder processing`);
+        console.log(`   - Check ${dog.name} appears on petfinder.com`);
+        console.log(`   - Monitor database petfinderSyncStatus field`);
         
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
