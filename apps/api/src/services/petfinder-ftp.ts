@@ -10,43 +10,58 @@ export interface PetfinderFTPConfig {
   readonly organizationId: string;
 }
 
-// Petfinder CSV specification based on actual requirements
+// Petfinder CSV specification - Official Import Standard Template
+// CSV must be in exact order as specified by Petfinder documentation
 interface PetfinderCSVRecord {
-  readonly animalID: string;          // Unique ID (required)
-  readonly animalName: string;        // Pet name (required)
-  readonly primaryBreed: string;      // Primary breed (required)
-  readonly secondaryBreed: string;    // Secondary breed
-  readonly animalSpecies: string;     // Dog/Cat (required)
-  readonly animalSex: string;         // M/F (required)
-  readonly animalGeneralAge: string;  // Baby/Young/Adult/Senior (required)
-  readonly animalGeneralSizePotential: string; // S/M/L/XL (required)
-  readonly animalDescription: string; // Description
-  readonly animalStatus: string;      // Available/Hold/Adopted
-  readonly animalshots: string;      // Y/N
-  readonly animalAltered: string;     // Y/N (spayed/neutered)
-  readonly animalHousetrained: string; // Y/N
-  readonly animalDeclawed: string;    // Y/N
-  readonly animalSpecialNeeds: string; // Y/N
-  readonly animalMix: string;         // Y/N (mixed breed)
-  readonly animalNoDogs: string;      // Y/N (opposite of good with dogs)
-  readonly animalNoCats: string;      // Y/N (opposite of good with cats)
-  readonly animalNoKids: string;      // Y/N (opposite of good with kids)
-  readonly photo1: string;            // Photo URL
-  readonly photo2: string;            // Photo URL
-  readonly photo3: string;            // Photo URL
-  readonly animalColor: string;       // Primary color
-  readonly animalCoat: string;        // Coat type
-  readonly animalPattern: string;     // Color pattern
-  readonly rescueID: string;          // Optional rescue-specific ID
+  readonly ID: string;                 // Unique Pet ID (required)
+  readonly Internal: string;           // Internal field - can be anything
+  readonly AnimalName: string;         // Pet name (required)
+  readonly PrimaryBreed: string;       // Primary breed (required) - see breeds doc
+  readonly SecondaryBreed: string;     // Secondary breed - see breeds doc
+  readonly Sex: string;                // M, F (required)
+  readonly Size: string;               // S, M, L, XL (required)
+  readonly Age: string;                // Baby, Young, Adult, Senior (required)
+  readonly Desc: string;               // Description - plain text, use &#10; for line breaks
+  readonly Type: string;               // "Dog", "Cat", "Barnyard", etc. (required)
+  readonly Status: string;             // A, H, X, P, F (A=adoptable, H=hold, X=adopted, P=pending, F=found)
+  readonly Shots: string;              // 1 or blank
+  readonly Altered: string;            // 1 or blank (spayed/neutered)
+  readonly NoDogs: string;             // 1/y/yes/t/true = Not good fit, 0/n/no/f/false = Good fit, blank = Unknown
+  readonly NoCats: string;             // 1/y/yes/t/true = Not good fit, 0/n/no/f/false = Good fit, blank = Unknown
+  readonly NoKids: string;             // 1/y/yes/t/true = Not good fit, 0/n/no/f/false = Good fit, blank = Unknown
+  readonly Housetrained: string;       // 1 or blank
+  readonly Declawed: string;           // 1 or blank (dogs cannot be declawed)
+  readonly specialNeeds: string;       // 1 or blank
+  readonly Mix: string;                // 1 or blank (mixed breed)
+  readonly photo1: string;             // Photo URL or file reference
+  readonly photo2: string;             // Photo URL or file reference
+  readonly photo3: string;             // Photo URL or file reference
+  readonly photo4: string;             // Photo URL or file reference
+  readonly photo5: string;             // Photo URL or file reference
+  readonly photo6: string;             // Photo URL or file reference
+  readonly arrival_date: string;       // YYYY-MM-DD format
+  readonly birth_date: string;         // YYYY-MM-DD format
+  readonly primaryColor: string;       // See breeds/coat/color documentation
+  readonly secondaryColor: string;     // See breeds/coat/color documentation
+  readonly tertiaryColor: string;      // See breeds/coat/color documentation
+  readonly coat_length: string;        // See breeds/coat/color documentation
+  readonly adoption_fee: string;       // Numeric, can have decimal, no $ or commas
+  readonly display_adoption_fee: string; // 1/y/yes/t/true or 0/n/no/f/false
+  readonly adoption_fee_waived: string; // 1/y/yes/t/true or 0/n/no/f/false
+  readonly special_needs_notes: string; // Text description if specialNeeds is true
+  readonly no_other: string;           // Not good fit w/ other pets: 1/y/yes/t/true or 0/n/no/f/false
+  readonly no_other_note: string;      // Description if no_other is true
+  readonly tags: string;               // Personality traits: comma-delimited list in quotes
 }
 
 export interface PetfinderFTPService {
   uploadDog(dog: Dog): Promise<void>;
   uploadDogs(dogs: readonly Dog[]): Promise<void>;
+  uploadPhoto(petId: string, photoBuffer: Buffer, photoIndex: number): Promise<string>;
   testConnection(): Promise<boolean>;
 }
 
-// Convert dog to Petfinder CSV format
+// Convert dog to Petfinder CSV format using official specification
 const dogToPetfinderCSV = (dog: Dog): PetfinderCSVRecord => {
   const getPetfinderAge = (age: number): string => {
     if (age < 1) return 'Baby';
@@ -74,21 +89,41 @@ const dogToPetfinderCSV = (dog: Dog): PetfinderCSVRecord => {
     return genderMap[gender] ?? 'M';
   };
 
-  const getYesNo = (value: boolean | null | undefined): string => {
-    return value === true ? 'Y' : 'N';
+  // Convert boolean to 1 or blank (Petfinder format)
+  const getBooleanValue = (value: boolean | null | undefined): string => {
+    return value === true ? '1' : '';
   };
 
-  // Get opposite for "No" fields (Petfinder uses negative logic for some fields)
-  const getNoValue = (value: boolean | null | undefined): string => {
-    return value === false ? 'Y' : 'N';
+  // Convert good with values to Petfinder format
+  // 1 = Not good fit, 0 = Good fit, blank = Unknown
+  const getGoodWithValue = (value: boolean | null | undefined): string => {
+    if (value === true) return '0';  // Good fit
+    if (value === false) return '1'; // Not good fit
+    return '';  // Unknown
   };
 
-  const getPetfinderCoat = (coat?: string): string => {
+  // Format description with proper line breaks
+  const formatDescription = (desc: string | null | undefined): string => {
+    if (!desc) return '';
+    // Replace newlines with Petfinder's HTML entity for line breaks
+    return desc.replace(/\n/g, '&#10;');
+  };
+
+  // Format date to YYYY-MM-DD
+  const formatDate = (date?: Date | string): string => {
+    if (!date) return '';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+  };
+
+  // Convert internal coat enum to Petfinder format
+  const getPetfinderCoatLength = (coat: string | null | undefined): string => {
     if (!coat) return '';
     const coatMap: Record<string, string> = {
       'HAIRLESS': 'Hairless',
       'SHORT': 'Short',
-      'MEDIUM': 'Medium', 
+      'MEDIUM': 'Medium',
       'LONG': 'Long',
       'WIRE': 'Wire',
       'CURLY': 'Curly'
@@ -96,85 +131,124 @@ const dogToPetfinderCSV = (dog: Dog): PetfinderCSVRecord => {
     return coatMap[coat] ?? '';
   };
 
+  // Generate tags from available dog properties
+  const generateTags = (dog: Dog): string => {
+    const tags: string[] = [];
+    if (dog.goodWithDogs === true) tags.push('good with dogs');
+    if (dog.goodWithCats === true) tags.push('good with cats');
+    if (dog.goodWithChildren === true) tags.push('good with kids');
+    if (dog.houseTrained === true) tags.push('house trained');
+    if (dog.specialNeeds === true) tags.push('special needs');
+    // Add existing tags from the dog record
+    if (dog.tags && dog.tags.length > 0) {
+      tags.push(...dog.tags);
+    }
+    return tags.join(', ');
+  };
+
   return {
-    animalID: dog.id,
-    animalName: dog.name,
-    primaryBreed: dog.breed,
-    secondaryBreed: dog.breedSecondary || '',
-    animalSpecies: 'Dog',
-    animalSex: dog.gender,
-    animalGeneralAge: getPetfinderAge(dog.age),
-    animalGeneralSizePotential: dog.size,
-    animalDescription: dog.description || '',
-    animalStatus: 'Available', // Always available for new uploads
-    animalshots: getYesNo(dog.shotsCurrent),
-    animalAltered: getYesNo(dog.spayedNeutered),
-    animalHousetrained: getYesNo(dog.houseTrained),
-    animalDeclawed: 'N', // Dogs are not declawed
-    animalSpecialNeeds: getYesNo(dog.specialNeeds),
-    animalMix: getYesNo(dog.breedMixed),
-    animalNoDogs: getNoValue(dog.goodWithDogs),
-    animalNoCats: getNoValue(dog.goodWithCats), 
-    animalNoKids: getNoValue(dog.goodWithChildren),
+    ID: dog.id,
+    Internal: dog.id, // Use our ID as internal reference
+    AnimalName: dog.name,
+    PrimaryBreed: dog.breed,
+    SecondaryBreed: dog.breedSecondary || '',
+    Sex: getPetfinderGender(dog.gender),
+    Size: getPetfinderSize(dog.size),
+    Age: getPetfinderAge(dog.age),
+    Desc: formatDescription(dog.description),
+    Type: 'Dog',
+    Status: 'A', // A = adoptable (default for new uploads)
+    Shots: getBooleanValue(dog.shotsCurrent),
+    Altered: getBooleanValue(dog.spayedNeutered),
+    NoDogs: getGoodWithValue(dog.goodWithDogs),
+    NoCats: getGoodWithValue(dog.goodWithCats),
+    NoKids: getGoodWithValue(dog.goodWithChildren),
+    Housetrained: getBooleanValue(dog.houseTrained),
+    Declawed: '', // Dogs cannot be declawed
+    specialNeeds: getBooleanValue(dog.specialNeeds),
+    Mix: getBooleanValue(dog.breedMixed),
     photo1: dog.photos[0] || '',
     photo2: dog.photos[1] || '',
     photo3: dog.photos[2] || '',
-    animalColor: dog.colorPrimary || '',
-    animalCoat: dog.coat || '',
-    animalPattern: dog.colorSecondary || '',
-    rescueID: dog.id // Use our internal ID as rescue ID
+    photo4: dog.photos[3] || '',
+    photo5: dog.photos[4] || '',
+    photo6: dog.photos[5] || '',
+    arrival_date: '', // Not available in our schema
+    birth_date: '', // Calculate from age if needed
+    primaryColor: dog.colorPrimary || '',
+    secondaryColor: dog.colorSecondary || '',
+    tertiaryColor: dog.colorTertiary || '',
+    coat_length: getPetfinderCoatLength(dog.coat),
+    adoption_fee: '', // Not available in our schema
+    display_adoption_fee: '0', // Not available in our schema
+    adoption_fee_waived: '', // Not available in our schema
+    special_needs_notes: dog.specialNeeds ? 'Special needs - see description' : '',
+    no_other: '', // Not available in our schema
+    no_other_note: '',
+    tags: generateTags(dog)
   };
 };
 
 const createCSVContent = (dogs: readonly Dog[]): string => {
-  // CSV headers matching Petfinder specification
+  // CSV headers in EXACT order as specified by Petfinder Import Standard Template
   const headers = [
-    'animalID',
-    'animalName', 
-    'primaryBreed',
-    'secondaryBreed',
-    'animalSpecies',
-    'animalSex',
-    'animalGeneralAge',
-    'animalGeneralSizePotential',
-    'animalDescription',
-    'animalStatus',
-    'animalShots',
-    'animalAltered',
-    'animalHousetrained',
-    'animalDeclawed',
-    'animalSpecialNeeds',
-    'animalMix',
-    'animalNoDogs',
-    'animalNoCats', 
-    'animalNoKids',
+    'ID',
+    'Internal',
+    'AnimalName',
+    'PrimaryBreed',
+    'SecondaryBreed',
+    'Sex',
+    'Size',
+    'Age',
+    'Desc',
+    'Type',
+    'Status',
+    'Shots',
+    'Altered',
+    'NoDogs',
+    'NoCats',
+    'NoKids',
+    'Housetrained',
+    'Declawed',
+    'specialNeeds',
+    'Mix',
     'photo1',
     'photo2',
     'photo3',
-    'animalColor',
-    'animalCoat',
-    'animalPattern',
-    'rescueID'
+    'photo4',
+    'photo5',
+    'photo6',
+    'arrival_date',
+    'birth_date',
+    'primaryColor',
+    'secondaryColor',
+    'tertiaryColor',
+    'coat_length',
+    'adoption_fee',
+    'display_adoption_fee',
+    'adoption_fee_waived',
+    'special_needs_notes',
+    'no_other',
+    'no_other_note',
+    'tags'
   ];
 
   const csvRows = dogs.map(dog => {
     const record = dogToPetfinderCSV(dog);
     return headers.map(header => {
       const value = record[header as keyof PetfinderCSVRecord] || '';
-      // Escape CSV values properly
-      if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
-        return `"${value.replace(/"/g, '""')}"`;
-      }
-      return value;
+      // All values must be surrounded by double quotes per Petfinder spec
+      return `"${value.toString().replace(/"/g, '""')}"`;
     }).join(',');
   });
 
-  return [headers.join(','), ...csvRows].join('\n');
+  return csvRows.join('\n');
 };
 
-const generateFilename = (prefix: string): string => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').split('.')[0];
-  return `${prefix}_${timestamp}.csv`;
+const generateFilename = (organizationId: string): string => {
+  // Petfinder requires filename format: SHELTERID.csv (with state abbreviation in CAPS)
+  // For now, use the organizationId. In production, this should be the actual shelter ID
+  return `${organizationId.toUpperCase()}.csv`;
 };
 
 export const createPetfinderFTPService = (config: PetfinderFTPConfig): PetfinderFTPService => {
@@ -207,17 +281,22 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
       
       try {
         const csvContent = createCSVContent([dog]);
-        const filename = generateFilename('pet_upload');
+        const filename = generateFilename(config.organizationId);
 
         console.log(`Uploading ${filename} to Petfinder FTP...`);
         console.log('CSV Content Preview:', csvContent.split('\n').slice(0, 3).join('\n'));
 
-        // Navigate to import directory (standard for Petfinder)
+        // Navigate to import directory (required by Petfinder specification)
         try {
           await client.ensureDir('import');
-          console.log('Successfully navigated to import directory');
+          console.log('Successfully navigated to /import directory');
         } catch (dirError) {
-          console.log('Import directory may not exist, uploading to root directory');
+          console.warn('Could not access /import directory, creating it...');
+          try {
+            await client.ensureDir('import');
+          } catch (createError) {
+            throw new Error('Unable to access or create /import directory required by Petfinder');
+          }
         }
 
         // Convert string to stream for upload
@@ -253,16 +332,21 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
       
       try {
         const csvContent = createCSVContent(dogs);
-        const filename = generateFilename('pets_bulk_upload');
+        const filename = generateFilename(config.organizationId);
 
         console.log(`Uploading bulk file ${filename} with ${dogs.length} dogs to Petfinder FTP...`);
 
-        // Navigate to import directory
+        // Navigate to import directory (required by Petfinder specification)
         try {
           await client.ensureDir('import');
-          console.log('Successfully navigated to import directory');
+          console.log('Successfully navigated to /import directory');
         } catch (dirError) {
-          console.log('Import directory may not exist, uploading to root directory');
+          console.warn('Could not access /import directory, creating it...');
+          try {
+            await client.ensureDir('import');
+          } catch (createError) {
+            throw new Error('Unable to access or create /import directory required by Petfinder');
+          }
         }
 
         // Convert string to stream for upload
@@ -281,6 +365,36 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
       }
     },
 
+    uploadPhoto: async (petId: string, photoBuffer: Buffer, photoIndex: number): Promise<string> => {
+      const client = await connectToFTP();
+      
+      try {
+        // Ensure import/photos directory exists (required by Petfinder)
+        await client.ensureDir('import');
+        await client.ensureDir('import/photos');
+        console.log('Successfully navigated to /import/photos directory');
+        
+        // Photo filename format: ID-sortorder.jpg (per Petfinder spec)
+        const filename = `${petId}-${photoIndex}.jpg`;
+        
+        console.log(`Uploading photo ${filename} to Petfinder FTP...`);
+        
+        // Convert buffer to stream for upload
+        const photoStream = Readable.from(photoBuffer);
+        await client.uploadFrom(photoStream, filename);
+        
+        console.log(`✅ SUCCESS: Uploaded photo ${filename} to /import/photos/`);
+        return filename;
+        
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error('Photo upload error:', errorMessage);
+        throw new Error(`Failed to upload photo to Petfinder FTP: ${errorMessage}`);
+      } finally {
+        client.close();
+      }
+    },
+
     testConnection: async (): Promise<boolean> => {
       let client: FTPClient | null = null;
       
@@ -291,12 +405,25 @@ export const createPetfinderFTPService = (config: PetfinderFTPConfig): Petfinder
         const list = await client.list();
         console.log('FTP connection test successful. Available directories:', list.map(item => item.name));
         
-        // Check for import directory
+        // Check for required Petfinder directories
         const hasImportDir = list.some(item => item.name === 'import' && item.isDirectory);
         if (hasImportDir) {
-          console.log('✓ Import directory found - uploads will go to /import/');
+          console.log('✓ /import directory found');
+          
+          // Check for photos subdirectory
+          await client.cd('import');
+          const importContents = await client.list();
+          const hasPhotosDir = importContents.some(item => item.name === 'photos' && item.isDirectory);
+          
+          if (hasPhotosDir) {
+            console.log('✓ /import/photos directory found');
+          } else {
+            console.log('ℹ /import/photos directory not found - will be created on first photo upload');
+          }
+          
+          await client.cd('..');
         } else {
-          console.log('ℹ Import directory not found - uploads will go to root directory');
+          console.log('ℹ /import directory not found - will be created on first upload');
         }
         
         return true;
