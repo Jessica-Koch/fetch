@@ -1,4 +1,5 @@
 // apps/web/src/App.module.scss
+@use 'sass:color';
 
 // Variables
 $primary-color: #3b82f6;
@@ -63,12 +64,12 @@ $background: #f9fafb;
   &.success {
     background: $success-bg;
     border-color: $success-border;
-    color: darken($success-color, 20%);
+    color: color.adjust($success-color, $lightness: -20%);
   }
   
   &.error {
     background: $error-bg;
     border-color: $error-border;
-    color: darken($error-color, 20%);
+    color: color.adjust($error-color, $lightness: -20%);
   }
 }

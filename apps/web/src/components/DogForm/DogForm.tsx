@@ -1,6 +1,7 @@
 // apps/web/src/components/DogForm/DogForm.tsx
 import { useState } from 'react';
 import type { CreateDogWithPetfinderRequest, GenderType, SizeType } from '@fetch/shared';
+import { DOG_BREEDS, DOG_COLORS, AGE_CATEGORIES } from '@fetch/shared';
 import styles from './DogForm.module.scss';
 
 interface DogFormProps {
@@ -15,7 +16,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     breedSecondary: '',
     breedMixed: false,
     breedUnknown: false,
-    age: 1,
+    age: 2, // Will be overridden by age category
     weight: 20,
     description: 'hi',
     gender: 'MALE' as GenderType,
@@ -43,10 +44,27 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
   });
 
   const [tagInput, setTagInput] = useState('');
+  const [ageCategory, setAgeCategory] = useState('Young');
+
+  // Convert age category to numeric age for backend
+  const getNumericAge = (category: string): number => {
+    switch (category) {
+      case 'Baby': return 0.5;
+      case 'Young': return 2;
+      case 'Adult': return 5;
+      case 'Senior': return 10;
+      default: return 2;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
+    // Convert age category to numeric age before submission
+    const submissionData = {
+      ...formData,
+      age: getNumericAge(ageCategory)
+    };
+    await onSubmit(submissionData);
     // Reset form after successful submission
     setFormData({
       name: 'test',
@@ -54,7 +72,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
       breedSecondary: '',
       breedMixed: false,
       breedUnknown: false,
-      age: 1,
+      age: 2, // Will be overridden by age category
       weight: 20,
       description: '',
       gender: 'MALE' as GenderType,
@@ -74,9 +92,14 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
       videos: [],
       tags: [],
       contactEmail: 'adoptions@loveslegacyrescue.com',
-      contactPhone: ''
+      contactPhone: '',
+      // Petfinder options
+      autoUploadToPetfinder: false,
+      petfinderMethod: 'auto',
+      useFallback: true
     });
     setTagInput('');
+    setAgeCategory('Young');
   };
 
   const handleInputChange = (
@@ -90,7 +113,35 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     } else if (type === 'number') {
       setFormData(prev => ({ ...prev, [name]: value ? Number(value) : undefined }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value || undefined }));
+      setFormData(prev => {
+        const newData = { ...prev, [name]: value || undefined };
+        
+        // If changing primary breed to match secondary breed, clear secondary
+        if (name === 'breed' && value && value === prev.breedSecondary) {
+          newData.breedSecondary = '';
+        }
+        
+        // Handle color conflicts
+        if (name === 'colorPrimary' && value) {
+          // Clear secondary color if it matches new primary
+          if (value === prev.colorSecondary) {
+            newData.colorSecondary = '';
+          }
+          // Clear tertiary color if it matches new primary
+          if (value === prev.colorTertiary) {
+            newData.colorTertiary = '';
+          }
+        }
+        
+        if (name === 'colorSecondary' && value) {
+          // Clear tertiary color if it matches new secondary
+          if (value === prev.colorTertiary) {
+            newData.colorTertiary = '';
+          }
+        }
+        
+        return newData;
+      });
     }
   };
 
@@ -148,18 +199,21 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
           <div className={styles.row}>
             <div className={styles.field}>
-              <label htmlFor="age" className={styles.label}>Age (years) *</label>
-              <input
-                type="number"
-                id="age"
-                name="age"
-                value={formData.age}
-                onChange={handleInputChange}
+              <label htmlFor="ageCategory" className={styles.label}>Age Category *</label>
+              <select
+                id="ageCategory"
+                name="ageCategory"
+                value={ageCategory}
+                onChange={(e) => setAgeCategory(e.target.value)}
                 required
-                min="0"
-                max="25"
-                className={styles.input}
-              />
+                className={styles.select}
+              >
+                {AGE_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className={styles.field}>
@@ -198,29 +252,39 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
           
           <div className={styles.field}>
             <label htmlFor="breed" className={styles.label}>Primary Breed *</label>
-            <input
-              type="text"
+            <select
               id="breed"
               name="breed"
               value={formData.breed}
               onChange={handleInputChange}
               required
-              className={styles.input}
-              placeholder="e.g., Golden Retriever, Labrador"
-            />
+              className={styles.select}
+            >
+              <option value="">Select a breed</option>
+              {DOG_BREEDS.map((breed) => (
+                <option key={breed} value={breed}>
+                  {breed}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.field}>
             <label htmlFor="breedSecondary" className={styles.label}>Secondary Breed</label>
-            <input
-              type="text"
+            <select
               id="breedSecondary"
               name="breedSecondary"
               value={formData.breedSecondary || ''}
               onChange={handleInputChange}
-              className={styles.input}
-              placeholder="For mixed breeds"
-            />
+              className={styles.select}
+            >
+              <option value="">None (select for mixed breeds)</option>
+              {DOG_BREEDS.filter(breed => breed !== formData.breed).map((breed) => (
+                <option key={breed} value={breed}>
+                  {breed}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.checkboxRow}>
@@ -287,7 +351,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="coat" className={styles.label}>Coat</label>
+              <label htmlFor="coat" className={styles.label}>Coat Length</label>
               <select
                 id="coat"
                 name="coat"
@@ -295,7 +359,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
                 onChange={handleInputChange}
                 className={styles.select}
               >
-                <option value="">Select coat type</option>
+                <option value="">Select coat length</option>
                 <option value="HAIRLESS">Hairless</option>
                 <option value="SHORT">Short</option>
                 <option value="MEDIUM">Medium</option>
@@ -309,41 +373,58 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
           <div className={styles.row}>
             <div className={styles.field}>
               <label htmlFor="colorPrimary" className={styles.label}>Primary Color</label>
-              <input
-                type="text"
+              <select
                 id="colorPrimary"
                 name="colorPrimary"
                 value={formData.colorPrimary || ''}
                 onChange={handleInputChange}
-                className={styles.input}
-                placeholder="e.g., Black, Golden"
-              />
+                className={styles.select}
+              >
+                <option value="">Select primary color</option>
+                {DOG_COLORS.map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className={styles.field}>
               <label htmlFor="colorSecondary" className={styles.label}>Secondary Color</label>
-              <input
-                type="text"
+              <select
                 id="colorSecondary"
                 name="colorSecondary"
                 value={formData.colorSecondary || ''}
                 onChange={handleInputChange}
-                className={styles.input}
-                placeholder="Optional"
-              />
+                className={styles.select}
+              >
+                <option value="">None (optional)</option>
+                {DOG_COLORS.filter(color => color !== formData.colorPrimary).map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className={styles.field}>
               <label htmlFor="colorTertiary" className={styles.label}>Tertiary Color</label>
-              <input
-                type="text"
+              <select
                 id="colorTertiary"
                 name="colorTertiary"
                 value={formData.colorTertiary || ''}
                 onChange={handleInputChange}
-                className={styles.input}
-                placeholder="Optional"
-              />
+                className={styles.select}
+              >
+                <option value="">None (optional)</option>
+                {DOG_COLORS.filter(color => 
+                  color !== formData.colorPrimary && color !== formData.colorSecondary
+                ).map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </fieldset>
