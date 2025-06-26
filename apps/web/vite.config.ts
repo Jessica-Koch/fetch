@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,6 +8,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@fetch/shared': path.resolve(__dirname, '../../packages/shared/src'),
+      theme: path.resolve(__dirname, 'src/theme'),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use 'theme' as theme;`, // <--- fix here!
+      },
     },
   },
   server: {
@@ -15,8 +23,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    }
-  }
-})
+        changeOrigin: true,
+      },
+    },
+  },
+});
