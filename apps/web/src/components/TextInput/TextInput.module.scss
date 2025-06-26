@@ -1,0 +1,15 @@
+.textInput {
+  @include theme.body-text();
+  border-radius: 2px;
+  border: 2px solid theme.$eerie-black;
+  color: theme.$eerie-black;
+  padding: 0.5rem 1rem;
+  transition: all 0.25s ease-in-out;
+
+  &:focus {
+    box-shadow: 10px 10px 0 -3px theme.$background 10px 10px theme.$eerie-black;
+    box-shadow: 4px 4px 1px 0px theme.$eerie-black;
+    outline: none;
+    transform: translate(-3px, -3px);
+  }
+}
