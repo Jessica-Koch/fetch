@@ -1,0 +1,1 @@
+export { AdoptionForm } from './AdoptionForm';

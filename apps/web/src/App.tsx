@@ -1,6 +1,7 @@
 // apps/web/src/App.tsx
 import { useState } from 'react';
 import { DogForm } from './components/DogForm';
+import { AdoptionForm } from './components/AdoptionForm/AdoptionForm';
 import { dogApi, isApiError } from './services/api';
 import type { CreateDogRequest } from '@fetch/shared';
 import styles from './App.module.scss';
@@ -20,19 +21,19 @@ function App() {
       const response = await dogApi.create(dogData);
       setMessage({
         type: 'success',
-        text: `${dogData.name} has been added successfully!`
+        text: `${dogData.name} has been added successfully!`,
       });
       console.log('Dog created:', response.data);
     } catch (error) {
       console.error('Failed to create dog:', error);
-      
+
       const errorMessage = isApiError(error)
-        ? error.message 
+        ? error.message
         : 'Something went wrong. Please try again.';
-      
+
       setMessage({
         type: 'error',
-        text: errorMessage
+        text: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -42,24 +43,17 @@ function App() {
   return (
     <div className={styles.app}>
       <div className={styles.container}>
-        {/* Header */}
         <header className={styles.header}>
-          <h1 className={styles.logo}>
-            🐕 Fetch
-          </h1>
-          <p className={styles.subtitle}>
-            Rescue Management System
-          </p>
+          <h1 className={styles.logo}>Fetch</h1>
         </header>
 
-        {/* Message Display */}
         {message && (
           <div className={`${styles.message} ${styles[message.type]}`}>
             {message.text}
           </div>
         )}
+        <AdoptionForm />
 
-        {/* Dog Form */}
         <DogForm onSubmit={handleAddDog} loading={loading} />
       </div>
     </div>

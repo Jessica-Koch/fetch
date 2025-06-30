@@ -1,23 +1,12 @@
-// apps/web/src/App.module.scss
 @use 'sass:color';
-
-// Variables
-$primary-color: #3b82f6;
-$success-color: #10b981;
-$success-bg: #d1fae5;
-$success-border: #a7f3d0;
-$error-color: #ef4444;
-$error-bg: #fee2e2;
-$error-border: #fecaca;
-$text-dark: #1f2937;
-$text-medium: #6b7280;
-$background: #f9fafb;
+@use './theme/colors.scss';
 
 // App container
 .app {
   min-height: 100vh;
-  background: $background;
-  padding: 2rem 1rem;
+  width: 100%;
+  background-color: colors.$white;
+  font-family: theme.$font-primary default;
 }
 
 .container {
@@ -27,28 +16,22 @@ $background: #f9fafb;
 
 // Header
 .header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 2rem;
+  width: 100%;
+  border-bottom: 2px solid colors.$eerie-black;
+  display: flex;
+  align-items: center;
 }
 
 .logo {
   font-size: 3rem;
   font-weight: 800;
-  color: $text-dark;
   margin-bottom: 0.5rem;
-  
+  font-family: theme.$font-secondary;
+  padding: 0 4rem;
   @media (max-width: 640px) {
     font-size: 2.5rem;
-  }
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: $text-medium;
-  font-weight: 500;
-  
-  @media (max-width: 640px) {
-    font-size: 1.125rem;
   }
 }
 
@@ -60,16 +43,15 @@ $background: #f9fafb;
   border-radius: 8px;
   border: 2px solid;
   font-weight: 500;
-  
+
   &.success {
-    background: $success-bg;
-    border-color: $success-border;
-    color: color.adjust($success-color, $lightness: -20%);
+    background: colors.$sea-foam-green;
+    border-color: colors.$dark-liver;
   }
-  
+
   &.error {
-    background: $error-bg;
-    border-color: $error-border;
-    color: color.adjust($error-color, $lightness: -20%);
+    background: colors.$light-salmon;
+    border-color: colors.$dark-liver;
+    color: color.adjust(colors.$light-salmon, $lightness: -20%);
   }
 }
