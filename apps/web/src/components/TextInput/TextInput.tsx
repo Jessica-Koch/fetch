@@ -6,6 +6,7 @@ type TextInputProps = {
   max?: number;
   min?: number;
   name: string;
+  hasError: boolean;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -17,6 +18,7 @@ type TextInputProps = {
 export const TextInput = ({
   className,
   disabled,
+  hasError,
   max,
   min,
   name,
@@ -25,10 +27,13 @@ export const TextInput = ({
   type,
   value,
 }: TextInputProps) => {
+  console.log('%c hasError: ', 'color: crimson; font-weight: bold;', hasError);
   return type === 'textarea' ? (
     <>
       <textarea
-        className={`${styles.textInput} ${className}`}
+        className={`${styles.textInput} ${className} ${
+          hasError ? styles.error : ''
+        }`}
         required={required}
         value={value}
         name={name}
@@ -40,7 +45,9 @@ export const TextInput = ({
   ) : (
     <>
       <input
-        className={`${styles.textInput} ${className}`}
+        className={`${styles.textInput} ${className} ${
+          hasError ? styles.error : ''
+        }`}
         disabled={disabled}
         max={max}
         min={min}

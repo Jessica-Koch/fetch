@@ -1,80 +1,19 @@
-// .textInput {
-//   @include theme.body-text();
-//   border-radius: 2px;
-//   border: 2px solid theme.$eerie-black;
-//   color: theme.$white;
-//   padding: 0.5rem 1rem;
-//   transition: all 0.25s ease-in-out;
+.textInput {
+  @include theme.body-text();
+  border-radius: 2px;
+  border: 2px solid theme.$eerie-black;
+  color: theme.$eerie-black;
+  padding: 0.5rem 1rem;
+  transition: all 0.25s ease-in-out;
 
-//   &:focus {
-//     // box-shadow: 10px 10px 0 -3px theme.$background, 10px 10px theme.$eerie-black;
-//     border-top-left-radius: 15px;
-//     border-bottom-right-radius: 15px;
-//     outline: none;
-//     transform: translate(-3px, -3px);
-//   }
-// }
-
-// Glassmorphism
-// .textInput {
-//   background: rgba(255, 255, 255, 0.5);
-//   border: 1.5px solid #e0e0e0;
-//   border-radius: 1.25rem;
-//   backdrop-filter: blur(4px);
-//   box-shadow: 0 2px 16px 0 rgba(46, 54, 80, 0.09);
-//   padding: 0.75em 1.5em;
-//   font-size: 1.1rem;
-//   transition: box-shadow 0.2s;
-
-//   &:focus {
-//     outline: none;
-//     border-color: #b983ff;
-//     box-shadow: 0 0 0 2px #b983ff33;
-//     background: rgba(255, 255, 255, 0.7);
-//   }
-// }
-
-.textInput ~ .focus-border:before,
-.textInput ~ .focus-border:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: #3399ff;
-  transition: 0.3s;
+  &:focus {
+    // box-shadow: 10px 10px 0 -3px theme.$background, 10px 10px theme.$eerie-black;
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    outline: none;
+    transform: translate(-3px, -3px);
+  }
 }
-.textInput ~ .focus-border:after {
-  top: auto;
-  bottom: 0;
-  left: auto;
-  right: 0;
-}
-.textInput ~ .focus-border i:before,
-.textInput ~ .focus-border i:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2px;
-  height: 0;
-  background-color: #3399ff;
-  transition: 0.4s;
-}
-.textInput ~ .focus-border i:after {
-  left: auto;
-  right: 0;
-  top: auto;
-  bottom: 0;
-}
-.textInput:focus ~ .focus-border:before,
-.textInput:focus ~ .focus-border:after {
-  width: 100%;
-  transition: 0.3s;
-}
-.textInput:focus ~ .focus-border i:before,
-.effect-8:focus ~ .focus-border i:after {
-  height: 100%;
-  transition: 0.4s;
+.error {
+  border-color: theme.$pink;
 }
