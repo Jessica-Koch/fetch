@@ -1,72 +1,75 @@
-// apps/api/src/index.ts
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { PrismaClient } from '@prisma/client';
-import { DogStatus, Placement, Gender, Size, Coat, type CreateDogWithPetfinderRequest } from '@fetch/shared';
-import { createPetfinderUploadService, type UploadMethod } from './services/petfinder-upload';
+import {
+  DogStatus,
+  Placement,
+  Gender,
+  Size,
+  Coat,
+  type CreateDogWithPetfinderRequest,
+} from '@fetch/shared';
+import {
+  createPetfinderUploadService,
+  type UploadMethod,
+} from './services/petfinder-upload';
 
 const fastify = Fastify({
-  logger: true
+  logger: true,
 });
 
 // Initialize Prisma
 const prisma = new PrismaClient();
 
-// Initialize Petfinder Upload Service (if credentials are provided)
-const petfinderUploadService = process.env.PETFINDER_FTP_HOST && process.env.PETFINDER_FTP_USERNAME
-  ? createPetfinderUploadService({
-      ftp: {
-        host: process.env.PETFINDER_FTP_HOST,
-        username: process.env.PETFINDER_FTP_USERNAME,
-        password: process.env.PETFINDER_FTP_PASSWORD || ''
-      },
-      scraper: {
-        username: process.env.PETFINDER_USERNAME || '',
-        password: process.env.PETFINDER_PASSWORD || ''
-      },
-      organizationId: process.env.PETFINDER_ORGANIZATION_ID || 'YOUR_ORG_ID',
-      defaultMethod: 'auto'
-    })
-  : null;
+// Initialize Petfinder Upload Service (if FTP credentials are provided)
+const petfinderUploadService =
+  process.env.PETFINDER_FTP_HOST && process.env.PETFINDER_FTP_USERNAME
+    ? createPetfinderUploadService({
+        ftp: {
+          host: process.env.PETFINDER_FTP_HOST,
+          username: process.env.PETFINDER_FTP_USERNAME,
+          password: process.env.PETFINDER_FTP_PASSWORD || '',
+        },
+        organizationId: process.env.PETFINDER_ORGANIZATION_ID || 'YOUR_ORG_ID',
+        defaultMethod: 'ftp',
+      })
+    : null;
 
 const ORGANIZATION_ID = process.env.PETFINDER_ORGANIZATION_ID || 'YOUR_ORG_ID';
 
-// Build server with all plugins and routes
-const buildServer = async () => {
-  // Register plugins
+// Build server with plugins and routes
+type Server = typeof fastify;
+const buildServer = async (): Promise<Server> => {
+  // Register CORS
   await fastify.register(cors, {
-    origin: ['http://localhost:3000'], // React dev server
-    credentials: true
+    origin: ['http://localhost:3000'],
+    credentials: true,
   });
 
-  // Routes
-  fastify.get('/api/health', async () => {
-    return { 
-      status: 'ok', 
-      message: 'Fetch API is running!',
-      petfinderEnabled: !!petfinderUploadService,
-      petfinderNote: petfinderUploadService 
-        ? 'Petfinder integration available via FTP upload and dashboard scraper'
-        : 'Petfinder integration disabled - FTP credentials not configured'
-    };
-  });
+  // Health check
+  fastify.get('/api/health', async () => ({
+    status: 'ok',
+    message: 'Fetch API is running!',
+    petfinderEnabled: !!petfinderUploadService,
+    petfinderNote: petfinderUploadService
+      ? 'Petfinder integration available via FTP upload'
+      : 'Petfinder integration disabled - FTP credentials not configured',
+  }));
 
   // Get all dogs
   fastify.get('/api/dogs', async () => {
-    const dogs = await prisma.dog.findMany({
-      orderBy: { createdAt: 'desc' }
-    });
+    const dogs = await prisma.dog.findMany({ orderBy: { createdAt: 'desc' } });
     return { data: dogs };
   });
 
-  // Create a new dog (with optional Petfinder upload)
-  fastify.post<{ 
-    Body: CreateDogWithPetfinderRequest
+  // Create a new dog (with optional Petfinder FTP upload)
+  fastify.post<{
+    Body: CreateDogWithPetfinderRequest;
   }>('/api/dogs', async (request, reply) => {
     try {
-      const { autoUploadToPetfinder, petfinderMethod, useFallback, ...dogData } = request.body;
+      const { autoUploadToPetfinder, ...dogData } = request.body;
 
-      // Create dog in database first
+      // Create dog in database
       const dog = await prisma.dog.create({
         data: {
           name: dogData.name,
@@ -97,38 +100,29 @@ const buildServer = async () => {
           tags: dogData.tags || [],
           contactEmail: dogData.contactEmail,
           contactPhone: dogData.contactPhone,
-          // Set initial Petfinder sync status
           petfinderSyncStatus: autoUploadToPetfinder ? 'SYNCING' : 'NOT_SYNCED',
-          petfinderErrors: []
-        }
+          petfinderErrors: [],
+        },
       });
 
       let petfinderResult = null;
 
-      // Upload to Petfinder if requested and service is available
       if (autoUploadToPetfinder && petfinderUploadService) {
         try {
-          console.log(`Auto-uploading ${dog.name} to Petfinder via ${petfinderMethod || 'scraper'}...`);
-          
-          const method = petfinderMethod || 'auto';
-          const shouldUseFallback = useFallback !== false; // Default to true
-
-          // Upload with chosen method
-          const uploadResult = shouldUseFallback 
-            ? await petfinderUploadService.uploadDogWithFallback(dog)
-            : await petfinderUploadService.uploadDog(dog, method);
+          const uploadResult = await petfinderUploadService.uploadDog(
+            dog,
+            'ftp'
+          );
 
           if (uploadResult.success) {
-            // Update database with success
             const updatedDog = await prisma.dog.update({
               where: { id: dog.id },
               data: {
                 petfinderId: uploadResult.petfinderId || null,
-                postedToPetfinder: method === 'scraper', // Only true for successful scraper uploads
                 petfinderSyncStatus: 'SYNCED',
                 petfinderLastSync: new Date(),
-                petfinderErrors: []
-              }
+                petfinderErrors: [],
+              },
             });
 
             petfinderResult = {
@@ -136,238 +130,190 @@ const buildServer = async () => {
               method: uploadResult.method,
               message: uploadResult.message,
               petfinderId: uploadResult.petfinderId,
-              manualUploadUrl: uploadResult.manualUploadUrl
+              manualUploadUrl: uploadResult.manualUploadUrl,
             };
 
             reply.code(201);
-            return { 
-              data: updatedDog, 
-              message: `Dog created successfully! ${uploadResult.message}`,
-              petfinderResult
+            return {
+              data: updatedDog,
+              message: uploadResult.message,
+              petfinderResult,
             };
           } else {
-            // Update database with error
             await prisma.dog.update({
               where: { id: dog.id },
               data: {
                 petfinderSyncStatus: 'ERROR',
-                petfinderErrors: [uploadResult.error || 'Unknown error']
-              }
+                petfinderErrors: [uploadResult.error || 'Unknown error'],
+              },
             });
 
             petfinderResult = {
               success: false,
               error: uploadResult.error,
-              message: uploadResult.message
+              message: uploadResult.message,
             };
 
-            // Still return success for dog creation, but note Petfinder failure
             reply.code(201);
-            return { 
-              data: dog, 
-              message: 'Dog created successfully, but Petfinder upload failed',
+            return {
+              data: dog,
+              message: 'Dog created, but Petfinder upload failed',
               petfinderResult,
-              warning: 'Petfinder upload failed - you can try uploading manually via the organization dashboard'
+              warning: 'Petfinder upload failed - please check FTP credentials',
             };
           }
-        } catch (petfinderError) {
-          console.error('Petfinder upload error:', petfinderError);
-          
-          // Update database with error
+        } catch (err) {
+          console.error('Petfinder upload error:', err);
           await prisma.dog.update({
             where: { id: dog.id },
             data: {
               petfinderSyncStatus: 'ERROR',
-              petfinderErrors: [petfinderError instanceof Error ? petfinderError.message : 'Unknown error']
-            }
+              petfinderErrors: [
+                err instanceof Error ? err.message : 'Unknown error',
+              ],
+            },
           });
 
           petfinderResult = {
             success: false,
-            error: petfinderError instanceof Error ? petfinderError.message : 'Unknown error',
-            message: 'Petfinder upload failed due to technical error'
+            error: err instanceof Error ? err.message : 'Unknown error',
+            message: 'Petfinder upload failed due to technical error',
           };
 
-          // Still return success for dog creation
           reply.code(201);
-          return { 
-            data: dog, 
-            message: 'Dog created successfully, but Petfinder upload failed',
+          return {
+            data: dog,
+            message: 'Dog created, but Petfinder upload failed',
             petfinderResult,
-            warning: 'Petfinder upload failed - you can try uploading manually via the organization dashboard'
+            warning: 'Petfinder upload failed - please check FTP credentials',
           };
         }
       }
 
-      // Regular creation without Petfinder upload
+      // Creation without upload or when service not configured
       reply.code(201);
       if (autoUploadToPetfinder && !petfinderUploadService) {
-        return { 
-          data: dog, 
+        return {
+          data: dog,
           message: 'Dog created successfully!',
-          petfinderResult: { 
-            success: false, 
+          petfinderResult: {
+            success: false,
             error: 'Petfinder service not configured',
-            message: 'Dog created but Petfinder upload was not attempted. Please configure PETFINDER_USERNAME and PETFINDER_PASSWORD environment variables.'
+            message: 'Configure FTP credentials to enable Petfinder upload',
           },
-          warning: 'Petfinder credentials not configured'
+          warning: 'Petfinder credentials not configured',
         };
       }
 
-      return { 
-        data: dog, 
-        message: 'Dog created successfully!'
-      };
+      return { data: dog, message: 'Dog created successfully!' };
     } catch (error) {
       console.error('Error creating dog:', error);
       reply.code(500);
-      return { 
-        error: 'Failed to create dog', 
-        message: error instanceof Error ? error.message : 'Unknown error'
+      return {
+        error: 'Failed to create dog',
+        message: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   });
 
   // Get a specific dog
-  fastify.get<{ Params: { id: string } }>('/api/dogs/:id', async (request, reply) => {
-    try {
-      const dog = await prisma.dog.findUnique({
-        where: { id: request.params.id }
-      });
-
-      if (!dog) {
-        reply.code(404);
-        return { error: 'Dog not found' };
-      }
-
-      return { data: dog };
-    } catch (error) {
-      console.error('Error fetching dog:', error);
-      reply.code(500);
-      return { error: 'Failed to fetch dog' };
-    }
-  });
-
-  // Manually upload a dog to Petfinder
-  fastify.post<{ 
-    Params: { id: string };
-    Body: { 
-      method?: 'scraper' | 'manual';
-    }
-  }>('/api/dogs/:id/upload-to-petfinder', async (request, reply) => {
-    try {
-      if (!petfinderUploadService) {
-        reply.code(503);
-        return { 
-          error: 'Petfinder service not configured',
-          message: 'Please configure PETFINDER_USERNAME and PETFINDER_PASSWORD environment variables'
-        };
-      }
-
-      const dog = await prisma.dog.findUnique({
-        where: { id: request.params.id }
-      });
-
-      if (!dog) {
-        reply.code(404);
-        return { error: 'Dog not found' };
-      }
-
-      const { method = 'scraper' } = request.body;
-
-      // Update status to syncing
-      await prisma.dog.update({
-        where: { id: dog.id },
-        data: { petfinderSyncStatus: 'SYNCING' }
-      });
-
-      const uploadResult = await petfinderUploadService.uploadDog(dog, method === 'manual' ? 'ftp' : 'scraper');
-
-      if (uploadResult.success) {
-        // Update database with success
-        const updatedDog = await prisma.dog.update({
-          where: { id: dog.id },
-          data: {
-            petfinderId: uploadResult.petfinderId || null,
-            postedToPetfinder: method === 'scraper',
-            petfinderSyncStatus: 'SYNCED',
-            petfinderLastSync: new Date(),
-            petfinderErrors: []
-          }
+  fastify.get<{ Params: { id: string } }>(
+    '/api/dogs/:id',
+    async (request, reply) => {
+      try {
+        const dog = await prisma.dog.findUnique({
+          where: { id: request.params.id },
         });
+        if (!dog) {
+          reply.code(404);
+          return { error: 'Dog not found' };
+        }
+        return { data: dog };
+      } catch (error) {
+        console.error('Error fetching dog:', error);
+        reply.code(500);
+        return { error: 'Failed to fetch dog' };
+      }
+    }
+  );
 
-        return {
-          success: true,
-          data: updatedDog,
-          method: uploadResult.method,
-          message: uploadResult.message,
-          petfinderId: uploadResult.petfinderId,
-          manualUploadUrl: uploadResult.manualUploadUrl
-        };
-      } else {
-        // Update database with error
+  // Manually upload a dog to Petfinder via FTP
+  fastify.post<{ Params: { id: string } }>(
+    '/api/dogs/:id/upload-to-petfinder',
+    async (request, reply) => {
+      try {
+        if (!petfinderUploadService) {
+          reply.code(503);
+          return {
+            error: 'Petfinder service not configured',
+            message: 'Please configure FTP credentials',
+          };
+        }
+
+        const dog = await prisma.dog.findUnique({
+          where: { id: request.params.id },
+        });
+        if (!dog) {
+          reply.code(404);
+          return { error: 'Dog not found' };
+        }
+
+        const uploadResult = await petfinderUploadService.uploadDog(dog, 'ftp');
+        if (uploadResult.success) {
+          const updatedDog = await prisma.dog.update({
+            where: { id: dog.id },
+            data: {
+              petfinderId: uploadResult.petfinderId || null,
+              petfinderSyncStatus: 'SYNCED',
+              petfinderLastSync: new Date(),
+              petfinderErrors: [],
+            },
+          });
+
+          return {
+            success: true,
+            data: updatedDog,
+            method: uploadResult.method,
+            message: uploadResult.message,
+            petfinderId: uploadResult.petfinderId,
+            manualUploadUrl: uploadResult.manualUploadUrl,
+          };
+        } else {
+          await prisma.dog.update({
+            where: { id: dog.id },
+            data: {
+              petfinderSyncStatus: 'ERROR',
+              petfinderErrors: [uploadResult.error || 'Unknown error'],
+            },
+          });
+
+          reply.code(400);
+          return {
+            success: false,
+            error: uploadResult.error,
+            message: uploadResult.message,
+          };
+        }
+      } catch (error) {
+        console.error('Error uploading to Petfinder:', error);
         await prisma.dog.update({
-          where: { id: dog.id },
+          where: { id: request.params.id },
           data: {
             petfinderSyncStatus: 'ERROR',
-            petfinderErrors: [uploadResult.error || 'Unknown error']
-          }
+            petfinderErrors: [
+              error instanceof Error ? error.message : 'Unknown error',
+            ],
+          },
         });
-
-        reply.code(400);
+        reply.code(500);
         return {
           success: false,
-          error: uploadResult.error,
-          message: uploadResult.message
+          error: 'Failed to upload to Petfinder',
+          message: error instanceof Error ? error.message : 'Unknown error',
         };
       }
-    } catch (error) {
-      console.error('Error uploading to Petfinder:', error);
-      
-      // Update database with error
-      await prisma.dog.update({
-        where: { id: request.params.id },
-        data: {
-          petfinderSyncStatus: 'ERROR',
-          petfinderErrors: [error instanceof Error ? error.message : 'Unknown error']
-        }
-      });
-
-      reply.code(500);
-      return { 
-        success: false,
-        error: 'Failed to upload to Petfinder', 
-        message: error instanceof Error ? error.message : 'Unknown error'
-      };
     }
-  });
-
-  // Test Petfinder connection
-  fastify.get('/api/petfinder/test', async (request, reply) => {
-    if (!petfinderUploadService) {
-      reply.code(503);
-      return { 
-        connected: false,
-        error: 'Petfinder service not configured',
-        message: 'Please configure PETFINDER_USERNAME and PETFINDER_PASSWORD environment variables'
-      };
-    }
-
-    try {
-      // Test connection by attempting to create services
-      return {
-        connected: true,
-        message: 'Petfinder upload service is configured and ready'
-      };
-    } catch (error) {
-      reply.code(500);
-      return {
-        connected: false,
-        error: 'Connection test failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  });
+  );
 
   return fastify;
 };
@@ -378,17 +324,12 @@ const start = async () => {
     const server = await buildServer();
     await server.listen({ port: 3001, host: '0.0.0.0' });
     console.log('🚀 Fetch API server running on http://localhost:3001');
-    console.log('🐕 Petfinder integration:', petfinderUploadService ? '✅ Enabled' : '❌ Disabled (missing credentials)');
-    
-    if (petfinderUploadService) {
-      console.log('📝 Petfinder upload methods: FTP and Organization dashboard scraper');
-      console.log('ℹ️  Note: Petfinder API v2 is read-only. Uploads use FTP and dashboard automation.');
-    } else {
-      console.log('⚠️  To enable Petfinder integration, set environment variables:');
-      console.log('   - PETFINDER_USERNAME (your organization account username)');
-      console.log('   - PETFINDER_PASSWORD (your organization account password)');
-      console.log('   - PETFINDER_ORGANIZATION_ID (your organization ID)');
-    }
+    console.log(
+      '🐕 Petfinder integration:',
+      petfinderUploadService
+        ? '✅ Enabled (FTP only)'
+        : '❌ Disabled (missing FTP credentials)'
+    );
   } catch (err) {
     console.error('Failed to start server:', err);
     process.exit(1);

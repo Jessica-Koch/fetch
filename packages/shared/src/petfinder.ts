@@ -158,6 +158,6 @@ export interface PetfinderBreed {
 // Integration types for our system
 export interface CreateDogWithPetfinderRequest extends CreateDogRequest {
   autoUploadToPetfinder?: boolean;
-  petfinderMethod?: 'ftp' | 'scraper' | 'auto';
+  petfinderMethod?: 'ftp' | 'auto';
   useFallback?: boolean;
 }
