@@ -20,7 +20,7 @@ export const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${styles.button} ${styles.borderOutlineOut} ${className}`}
+      className={`${styles.button} ${className}`}
     >
       {label}
     </button>

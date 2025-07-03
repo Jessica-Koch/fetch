@@ -2,54 +2,25 @@
   -webkit-appearance: none;
   align-items: center;
   appearance: none;
-  background-color: theme.$white;
+  background-color: theme.$primary;
   border-radius: 100px;
   border: none;
-  box-shadow: inset 0px 0px 0px 3px theme.$purple,
-    inset 0px 0px 0px 8px theme.$pink;
-  color: theme.$eerie-black;
+  font-weight: 500;
+  color: theme.$white;
+  cursor: pointer;
   display: flex;
-
   justify-content: center;
-  position: absolute;
-  transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
   padding: 1rem 2rem;
+
+  transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
 
   &:focus {
     outline: 0;
   }
   &:active {
-    transform: scale(0.9);
     outline: 0;
   }
   &:disabled {
     cursor: none;
   }
-}
-
-.borderOutlineOut {
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  position: relative;
-}
-.borderOutlineOut:before {
-  content: '';
-  position: absolute;
-  border: theme.$blue solid 4px;
-  border-radius: 100px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: top, right, bottom, left;
-  transition-property: top, right, bottom, left;
-}
-
-.borderOutlineOut:hover:before {
-  top: -10px;
-  right: -10px;
-  bottom: -10px;
-  left: -10px;
 }
