@@ -1,33 +1,9 @@
 # 🐕 Fetch - Rescue Management System
 
-A modern web application for managing rescue dogs, built with cutting-edge technologies.
-
-## ✨ Features
-
-- **Dog Management** - Add, view, and manage rescue dogs
-- **Modern UI** - Clean, responsive interface built with React 19
-- **Type Safety** - Full TypeScript coverage across frontend and backend
-- **Real-time Updates** - Fast development with Vite and hot reload
-- **Database Integration** - PostgreSQL with Prisma ORM
-
-## 🚀 Tech Stack
-
-### Frontend
-- **React 19** - Latest React with new features and optimizations
-- **TypeScript** - Type-safe JavaScript
-- **Vite** - Ultra-fast build tool and dev server
-- **SCSS Modules** - Scoped styling with Sass features
-- **Native Fetch** - Modern HTTP client
-
-### Backend
-- **Fastify** - High-performance Node.js web framework
-- **TypeScript** - Type-safe server development
-- **Prisma** - Modern database ORM with type safety
-- **PostgreSQL** - Robust relational database
-- **Argon2** - Modern password hashing
-- **Lucia** - Secure session management
+Under construction
 
 ### Development
+
 - **pnpm Workspaces** - Efficient monorepo management
 - **tsx** - Fast TypeScript execution
 - **Docker** - Containerized database
@@ -57,22 +33,26 @@ fetch/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/fetch.git
    cd fetch
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Start PostgreSQL database**
+
    ```bash
    docker-compose up -d
    ```
 
 4. **Set up database**
+
    ```bash
    cd apps/api
    cp .env.example .env  # Update with your database URL
@@ -89,28 +69,32 @@ fetch/
 ### Running the Application
 
 **Start both frontend and backend:**
+
 ```bash
 pnpm run dev
 ```
 
 **Or start individually:**
+
 ```bash
 # Backend only (http://localhost:3001)
 pnpm run dev:api
 
-# Frontend only (http://localhost:3000)  
+# Frontend only (http://localhost:3000)
 pnpm run dev:web
 ```
 
 ## 🌟 Key Features
 
 ### Dog Management
+
 - Add new rescue dogs with details (name, breed, age, weight, description)
 - Track dog status (Available, Pending, Adopted, Hold, Medical)
 - Monitor placement (In Foster, Boarding, Foster-to-Adopt)
 - Form validation and error handling
 
 ### Modern Architecture
+
 - **Monorepo structure** - Organized codebase with shared types
 - **Type-safe APIs** - Shared TypeScript interfaces between frontend/backend
 - **Component architecture** - Reusable React components with SCSS modules
@@ -135,6 +119,7 @@ pnpm run db:studio    # Open Prisma Studio
 ## 📝 Environment Variables
 
 ### Backend (`apps/api/.env`)
+
 ```env
 DATABASE_URL="postgresql://postgres:password@localhost:5432/fetch_db"
 PETFINDER_API_KEY="your_key_here"
