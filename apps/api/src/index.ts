@@ -9,10 +9,8 @@ import {
   Coat,
   type CreateDogWithPetfinderRequest,
 } from '@fetch/shared';
-import {
-  createPetfinderUploadService,
-  type UploadMethod,
-} from './services/petfinder-upload';
+import { createPetfinderUploadService } from './services/petfinder-upload';
+import { createPetfinderImporter } from './services/petfinder-importer';
 
 const fastify = Fastify({
   logger: true,
@@ -36,6 +34,18 @@ const petfinderUploadService =
     : null;
 
 const ORGANIZATION_ID = process.env.PETFINDER_ORGANIZATION_ID || 'YOUR_ORG_ID';
+
+// Initialize Petfinder importer (if credentials are provided)
+const petfinderImporter =
+  process.env.PETFINDER_API_KEY && process.env.PETFINDER_SECRET
+    ? createPetfinderImporter(
+        {
+          clientId: process.env.PETFINDER_API_KEY,
+          clientSecret: process.env.PETFINDER_SECRET,
+        },
+        prisma
+      )
+    : null;
 
 // Build server with plugins and routes
 type Server = typeof fastify;
@@ -315,6 +325,133 @@ const buildServer = async (): Promise<Server> => {
     }
   );
 
+  // Test Petfinder connection
+  fastify.get('/api/petfinder/test', async (request, reply) => {
+    try {
+      if (!petfinderImporter) {
+        reply.code(400);
+        return { error: 'Petfinder API not configured' };
+      }
+
+      const isConnected = await petfinderImporter.testConnection();
+
+      return {
+        connected: isConnected,
+        message: isConnected
+          ? 'Petfinder API connection successful'
+          : 'Failed to connect to Petfinder API',
+      };
+    } catch (error) {
+      console.error('Error testing Petfinder connection:', error);
+      reply.code(500);
+      return {
+        error: 'Failed to test connection',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  });
+
+  // Import dogs from organization
+  fastify.post<{ Body: { organizationId: string } }>(
+    '/api/petfinder/import/organization',
+    async (request, reply) => {
+      try {
+        if (!petfinderImporter) {
+          reply.code(400);
+          return { error: 'Petfinder API not configured' };
+        }
+
+        const { organizationId } = request.body;
+
+        if (!organizationId) {
+          reply.code(400);
+          return { error: 'Organization ID is required' };
+        }
+
+        console.log(`Starting import for organization: ${organizationId}`);
+
+        const result = await petfinderImporter.importFromOrganization(
+          organizationId
+        );
+
+        return {
+          success: true,
+          message: `Import completed: ${result.imported} dogs imported, ${result.skipped} skipped`,
+          ...result,
+        };
+      } catch (error) {
+        console.error('Error importing from organization:', error);
+        reply.code(500);
+        return {
+          error: 'Failed to import dogs',
+          message: error instanceof Error ? error.message : 'Unknown error',
+        };
+      }
+    }
+  );
+
+  // Import dogs from search criteria
+  fastify.post<{
+    Body: {
+      location?: string;
+      breed?: string;
+      age?: string;
+      size?: string;
+      gender?: string;
+      distance?: number;
+    };
+  }>('/api/petfinder/import/search', async (request, reply) => {
+    try {
+      if (!petfinderImporter) {
+        reply.code(400);
+        return { error: 'Petfinder API not configured' };
+      }
+
+      const searchParams = request.body;
+
+      console.log('Starting import with search criteria:', searchParams);
+
+      const result = await petfinderImporter.importFromSearch(searchParams);
+
+      return {
+        success: true,
+        message: `Import completed: ${result.imported} dogs imported, ${result.skipped} skipped`,
+        ...result,
+      };
+    } catch (error) {
+      console.error('Error importing from search:', error);
+      reply.code(500);
+      return {
+        error: 'Failed to import dogs',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  });
+
+  // Get import status/stats
+  fastify.get('/api/petfinder/stats', async () => {
+    try {
+      const totalDogs = await prisma.dog.count();
+      const petfinderDogs = await prisma.dog.count({
+        where: { postedToPetfinder: true },
+      });
+      const localDogs = totalDogs - petfinderDogs;
+
+      return {
+        totalDogs,
+        petfinderDogs,
+        localDogs,
+        petfinderPercentage:
+          totalDogs > 0 ? Math.round((petfinderDogs / totalDogs) * 100) : 0,
+      };
+    } catch (error) {
+      console.error('Error getting stats:', error);
+      return {
+        error: 'Failed to get stats',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  });
   return fastify;
 };
 
