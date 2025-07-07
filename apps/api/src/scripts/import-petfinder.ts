@@ -59,9 +59,9 @@ const main = async () => {
   }
   try {
     switch (command) {
-      case 'org':
+      case 'get':
       case 'organization': {
-        const orgId = args[1];
+        const orgId = process.env.PETFINDER_ORGANIZATION_ID;
         if (!orgId) {
           console.error('❌ Organization ID is required');
           console.error(
