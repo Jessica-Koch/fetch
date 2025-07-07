@@ -10,8 +10,7 @@ $text-medium: #6b7280;
 $text-light: #9ca3af;
 $border-color: #d1d5db;
 $border-focus: #3b82f6;
-$background: #ffffff;
-$background-light: #f9fafb;
+
 $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 // Mixins
@@ -40,7 +39,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  background: $background;
   border-radius: 12px;
   box-shadow: $shadow;
 }
@@ -66,7 +64,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 1.5rem;
-  background: $background-light;
   margin-bottom: 1.5rem;
 }
 
@@ -91,7 +88,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 1.5rem;
-  background: $background-light;
   margin-bottom: 1.5rem;
 }
 
@@ -105,7 +101,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 // Missing select styles
 .select {
   @extend .input;
-  background-color: white;
   cursor: pointer;
 }
 
@@ -125,7 +120,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 .input {
   padding: 0.75rem;
-  border: 2px solid $border-color;
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
@@ -141,7 +135,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 .select {
   @extend .input;
-  background-color: white;
   cursor: pointer;
 }
 
@@ -246,7 +239,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 .tagAddButton {
   @include button-base;
-  background: $primary-color;
   color: white;
   padding: 0.75rem 1.5rem;
   white-space: nowrap;
@@ -344,8 +336,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 // Petfinder upload section
 .petfinderNote {
-  background: #f0f9ff;
-  border: 1px solid #e0f2fe;
   border-radius: 6px;
   padding: 1rem;
   margin-top: 1rem;

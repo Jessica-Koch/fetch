@@ -1,15 +1,19 @@
-// apps/web/src/components/DogForm/DogForm.tsx
 import { useState } from 'react';
-import type { CreateDogWithPetfinderRequest, GenderType, SizeType } from '@fetch/shared';
+import type {
+  CreateDogWithPetfinderRequest,
+  GenderType,
+  SizeType,
+} from '@fetch/shared';
 import { DOG_BREEDS, DOG_COLORS, AGE_CATEGORIES } from '@fetch/shared';
-import styles from './DogForm.module.scss';
+import styles from './Intake.module.scss';
+import { Button } from '../Button/Button';
 
-interface DogFormProps {
+interface IntakeProps {
   readonly onSubmit: (dog: CreateDogWithPetfinderRequest) => Promise<void>;
   readonly loading?: boolean;
 }
 
-export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
+export const Intake = ({ onSubmit, loading = false }: IntakeProps) => {
   const [formData, setFormData] = useState<CreateDogWithPetfinderRequest>({
     name: 'test',
     breed: 'Siberian Husky',
@@ -21,7 +25,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     description: 'hi',
     gender: 'MALE' as GenderType,
     size: 'MEDIUM' as SizeType,
-    coat: "MEDIUM",
+    coat: 'MEDIUM',
     colorPrimary: 'Black',
     colorSecondary: '',
     colorTertiary: '',
@@ -40,7 +44,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     // Petfinder options
     autoUploadToPetfinder: false,
     petfinderMethod: 'auto',
-    useFallback: true
+    useFallback: true,
   });
 
   const [tagInput, setTagInput] = useState('');
@@ -49,11 +53,16 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
   // Convert age category to numeric age for backend
   const getNumericAge = (category: string): number => {
     switch (category) {
-      case 'Baby': return 0.5;
-      case 'Young': return 2;
-      case 'Adult': return 5;
-      case 'Senior': return 10;
-      default: return 2;
+      case 'Baby':
+        return 0.5;
+      case 'Young':
+        return 2;
+      case 'Adult':
+        return 5;
+      case 'Senior':
+        return 10;
+      default:
+        return 2;
     }
   };
 
@@ -62,7 +71,7 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
     // Convert age category to numeric age before submission
     const submissionData = {
       ...formData,
-      age: getNumericAge(ageCategory)
+      age: getNumericAge(ageCategory),
     };
     await onSubmit(submissionData);
     // Reset form after successful submission
@@ -96,31 +105,36 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
       // Petfinder options
       autoUploadToPetfinder: false,
       petfinderMethod: 'auto',
-      useFallback: true
+      useFallback: true,
     });
     setTagInput('');
     setAgeCategory('Young');
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, type } = e.target;
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ ...prev, [name]: checked }));
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     } else if (type === 'number') {
-      setFormData(prev => ({ ...prev, [name]: value ? Number(value) : undefined }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value ? Number(value) : undefined,
+      }));
     } else {
-      setFormData(prev => {
+      setFormData((prev) => {
         const newData = { ...prev, [name]: value || undefined };
-        
+
         // If changing primary breed to match secondary breed, clear secondary
         if (name === 'breed' && value && value === prev.breedSecondary) {
           newData.breedSecondary = '';
         }
-        
+
         // Handle color conflicts
         if (name === 'colorPrimary' && value) {
           // Clear secondary color if it matches new primary
@@ -132,38 +146,39 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
             newData.colorTertiary = '';
           }
         }
-        
+
         if (name === 'colorSecondary' && value) {
           // Clear tertiary color if it matches new secondary
           if (value === prev.colorTertiary) {
             newData.colorTertiary = '';
           }
         }
-        
+
         return newData;
       });
     }
   };
 
   const handleTriStateChange = (fieldName: string, value: string) => {
-    const boolValue = value === 'true' ? true : value === 'false' ? false : undefined;
-    setFormData(prev => ({ ...prev, [fieldName]: boolValue }));
+    const boolValue =
+      value === 'true' ? true : value === 'false' ? false : undefined;
+    setFormData((prev) => ({ ...prev, [fieldName]: boolValue }));
   };
 
   const addTag = () => {
     if (tagInput.trim() && !formData.tags?.includes(tagInput.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tags: [...(prev.tags || []), tagInput.trim()]
+        tags: [...(prev.tags || []), tagInput.trim()],
       }));
       setTagInput('');
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
+      tags: prev.tags?.filter((tag) => tag !== tagToRemove) || [],
     }));
   };
 
@@ -175,20 +190,43 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
   };
 
   return (
-    <div className={styles.container} style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem', background: '#ffffff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-      <h2 className={styles.title} style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1f2937', marginBottom: '1.5rem', textAlign: 'center' }}>Add New Dog</h2>
-      
+    <div
+      className={styles.container}
+      style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        padding: '2rem',
+        background: '#ffffff',
+        borderRadius: '12px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <h2
+        className={styles.title}
+        style={{
+          fontSize: '1.75rem',
+          fontWeight: '700',
+          color: '#1f2937',
+          marginBottom: '1.5rem',
+          textAlign: 'center',
+        }}
+      >
+        Add New Dog
+      </h2>
+
       <form onSubmit={handleSubmit} className={styles.form}>
         {/* Basic Information */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Basic Information</legend>
-          
+
           <div className={styles.field}>
-            <label htmlFor="name" className={styles.label}>Name *</label>
+            <label htmlFor='name' className={styles.label}>
+              Name *
+            </label>
             <input
-              type="text"
-              id="name"
-              name="name"
+              type='text'
+              id='name'
+              name='name'
               value={formData.name}
               onChange={handleInputChange}
               required
@@ -199,10 +237,12 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
           <div className={styles.row}>
             <div className={styles.field}>
-              <label htmlFor="ageCategory" className={styles.label}>Age Category *</label>
+              <label htmlFor='ageCategory' className={styles.label}>
+                Age Category *
+              </label>
               <select
-                id="ageCategory"
-                name="ageCategory"
+                id='ageCategory'
+                name='ageCategory'
                 value={ageCategory}
                 onChange={(e) => setAgeCategory(e.target.value)}
                 required
@@ -217,26 +257,30 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="weight" className={styles.label}>Weight (lbs)</label>
+              <label htmlFor='weight' className={styles.label}>
+                Weight (lbs)
+              </label>
               <input
-                type="number"
-                id="weight"
-                name="weight"
+                type='number'
+                id='weight'
+                name='weight'
                 value={formData.weight || ''}
                 onChange={handleInputChange}
-                min="0"
-                step="0.1"
+                min='0'
+                step='0.1'
                 className={styles.input}
-                placeholder="Optional"
+                placeholder='Optional'
               />
             </div>
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="description" className={styles.label}>Description</label>
+            <label htmlFor='description' className={styles.label}>
+              Description
+            </label>
             <textarea
-              id="description"
-              name="description"
+              id='description'
+              name='description'
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
@@ -249,18 +293,20 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
         {/* Breed Information */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Breed Information</legend>
-          
+
           <div className={styles.field}>
-            <label htmlFor="breed" className={styles.label}>Primary Breed *</label>
+            <label htmlFor='breed' className={styles.label}>
+              Primary Breed *
+            </label>
             <select
-              id="breed"
-              name="breed"
+              id='breed'
+              name='breed'
               value={formData.breed}
               onChange={handleInputChange}
               required
               className={styles.select}
             >
-              <option value="">Select a breed</option>
+              <option value=''>Select a breed</option>
               {DOG_BREEDS.map((breed) => (
                 <option key={breed} value={breed}>
                   {breed}
@@ -270,28 +316,32 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="breedSecondary" className={styles.label}>Secondary Breed</label>
+            <label htmlFor='breedSecondary' className={styles.label}>
+              Secondary Breed
+            </label>
             <select
-              id="breedSecondary"
-              name="breedSecondary"
+              id='breedSecondary'
+              name='breedSecondary'
               value={formData.breedSecondary || ''}
               onChange={handleInputChange}
               className={styles.select}
             >
-              <option value="">None (select for mixed breeds)</option>
-              {DOG_BREEDS.filter(breed => breed !== formData.breed).map((breed) => (
-                <option key={breed} value={breed}>
-                  {breed}
-                </option>
-              ))}
+              <option value=''>None (select for mixed breeds)</option>
+              {DOG_BREEDS.filter((breed) => breed !== formData.breed).map(
+                (breed) => (
+                  <option key={breed} value={breed}>
+                    {breed}
+                  </option>
+                )
+              )}
             </select>
           </div>
 
           <div className={styles.checkboxRow}>
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="breedMixed"
+                type='checkbox'
+                name='breedMixed'
                 checked={formData.breedMixed}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -301,8 +351,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="breedUnknown"
+                type='checkbox'
+                name='breedUnknown'
                 checked={formData.breedUnknown}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -315,72 +365,80 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
         {/* Physical Characteristics */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Physical Characteristics</legend>
-          
+
           <div className={styles.row}>
             <div className={styles.field}>
-              <label htmlFor="gender" className={styles.label}>Gender *</label>
+              <label htmlFor='gender' className={styles.label}>
+                Gender *
+              </label>
               <select
-                id="gender"
-                name="gender"
+                id='gender'
+                name='gender'
                 value={formData.gender}
                 onChange={handleInputChange}
                 required
                 className={styles.select}
               >
-                <option value="UNKNOWN">Unknown</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
+                <option value='UNKNOWN'>Unknown</option>
+                <option value='MALE'>Male</option>
+                <option value='FEMALE'>Female</option>
               </select>
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="size" className={styles.label}>Size *</label>
+              <label htmlFor='size' className={styles.label}>
+                Size *
+              </label>
               <select
-                id="size"
-                name="size"
+                id='size'
+                name='size'
                 value={formData.size}
                 onChange={handleInputChange}
                 required
                 className={styles.select}
               >
-                <option value="SMALL">Small</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LARGE">Large</option>
-                <option value="XLARGE">Extra Large</option>
+                <option value='SMALL'>Small</option>
+                <option value='MEDIUM'>Medium</option>
+                <option value='LARGE'>Large</option>
+                <option value='XLARGE'>Extra Large</option>
               </select>
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="coat" className={styles.label}>Coat Length</label>
+              <label htmlFor='coat' className={styles.label}>
+                Coat Length
+              </label>
               <select
-                id="coat"
-                name="coat"
+                id='coat'
+                name='coat'
                 value={formData.coat || ''}
                 onChange={handleInputChange}
                 className={styles.select}
               >
-                <option value="">Select coat length</option>
-                <option value="HAIRLESS">Hairless</option>
-                <option value="SHORT">Short</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LONG">Long</option>
-                <option value="WIRE">Wire</option>
-                <option value="CURLY">Curly</option>
+                <option value=''>Select coat length</option>
+                <option value='HAIRLESS'>Hairless</option>
+                <option value='SHORT'>Short</option>
+                <option value='MEDIUM'>Medium</option>
+                <option value='LONG'>Long</option>
+                <option value='WIRE'>Wire</option>
+                <option value='CURLY'>Curly</option>
               </select>
             </div>
           </div>
 
           <div className={styles.row}>
             <div className={styles.field}>
-              <label htmlFor="colorPrimary" className={styles.label}>Primary Color</label>
+              <label htmlFor='colorPrimary' className={styles.label}>
+                Primary Color
+              </label>
               <select
-                id="colorPrimary"
-                name="colorPrimary"
+                id='colorPrimary'
+                name='colorPrimary'
                 value={formData.colorPrimary || ''}
                 onChange={handleInputChange}
                 className={styles.select}
               >
-                <option value="">Select primary color</option>
+                <option value=''>Select primary color</option>
                 {DOG_COLORS.map((color) => (
                   <option key={color} value={color}>
                     {color}
@@ -390,16 +448,20 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="colorSecondary" className={styles.label}>Secondary Color</label>
+              <label htmlFor='colorSecondary' className={styles.label}>
+                Secondary Color
+              </label>
               <select
-                id="colorSecondary"
-                name="colorSecondary"
+                id='colorSecondary'
+                name='colorSecondary'
                 value={formData.colorSecondary || ''}
                 onChange={handleInputChange}
                 className={styles.select}
               >
-                <option value="">None (optional)</option>
-                {DOG_COLORS.filter(color => color !== formData.colorPrimary).map((color) => (
+                <option value=''>None (optional)</option>
+                {DOG_COLORS.filter(
+                  (color) => color !== formData.colorPrimary
+                ).map((color) => (
                   <option key={color} value={color}>
                     {color}
                   </option>
@@ -408,17 +470,21 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="colorTertiary" className={styles.label}>Tertiary Color</label>
+              <label htmlFor='colorTertiary' className={styles.label}>
+                Tertiary Color
+              </label>
               <select
-                id="colorTertiary"
-                name="colorTertiary"
+                id='colorTertiary'
+                name='colorTertiary'
                 value={formData.colorTertiary || ''}
                 onChange={handleInputChange}
                 className={styles.select}
               >
-                <option value="">None (optional)</option>
-                {DOG_COLORS.filter(color => 
-                  color !== formData.colorPrimary && color !== formData.colorSecondary
+                <option value=''>None (optional)</option>
+                {DOG_COLORS.filter(
+                  (color) =>
+                    color !== formData.colorPrimary &&
+                    color !== formData.colorSecondary
                 ).map((color) => (
                   <option key={color} value={color}>
                     {color}
@@ -432,12 +498,12 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
         {/* Health & Training */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Health & Training</legend>
-          
+
           <div className={styles.checkboxGrid}>
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="spayedNeutered"
+                type='checkbox'
+                name='spayedNeutered'
                 checked={formData.spayedNeutered}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -447,8 +513,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="houseTrained"
+                type='checkbox'
+                name='houseTrained'
                 checked={formData.houseTrained}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -458,8 +524,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="specialNeeds"
+                type='checkbox'
+                name='specialNeeds'
                 checked={formData.specialNeeds}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -469,8 +535,8 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="shotsCurrent"
+                type='checkbox'
+                name='shotsCurrent'
                 checked={formData.shotsCurrent}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -483,37 +549,43 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
         {/* Environment Compatibility */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Good With</legend>
-          
+
           <div className={styles.triStateGrid}>
             <div className={styles.triStateField}>
               <label className={styles.label}>Children</label>
               <div className={styles.triStateOptions}>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithChildren"
+                    type='radio'
+                    name='goodWithChildren'
                     checked={formData.goodWithChildren === true}
-                    onChange={() => handleTriStateChange('goodWithChildren', 'true')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithChildren', 'true')
+                    }
                     className={styles.radio}
                   />
                   Yes
                 </label>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithChildren"
+                    type='radio'
+                    name='goodWithChildren'
                     checked={formData.goodWithChildren === false}
-                    onChange={() => handleTriStateChange('goodWithChildren', 'false')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithChildren', 'false')
+                    }
                     className={styles.radio}
                   />
                   No
                 </label>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithChildren"
+                    type='radio'
+                    name='goodWithChildren'
                     checked={formData.goodWithChildren === undefined}
-                    onChange={() => handleTriStateChange('goodWithChildren', 'unknown')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithChildren', 'unknown')
+                    }
                     className={styles.radio}
                   />
                   Unknown
@@ -526,30 +598,36 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
               <div className={styles.triStateOptions}>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithDogs"
+                    type='radio'
+                    name='goodWithDogs'
                     checked={formData.goodWithDogs === true}
-                    onChange={() => handleTriStateChange('goodWithDogs', 'true')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithDogs', 'true')
+                    }
                     className={styles.radio}
                   />
                   Yes
                 </label>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithDogs"
+                    type='radio'
+                    name='goodWithDogs'
                     checked={formData.goodWithDogs === false}
-                    onChange={() => handleTriStateChange('goodWithDogs', 'false')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithDogs', 'false')
+                    }
                     className={styles.radio}
                   />
                   No
                 </label>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithDogs"
+                    type='radio'
+                    name='goodWithDogs'
                     checked={formData.goodWithDogs === undefined}
-                    onChange={() => handleTriStateChange('goodWithDogs', 'unknown')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithDogs', 'unknown')
+                    }
                     className={styles.radio}
                   />
                   Unknown
@@ -562,30 +640,36 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
               <div className={styles.triStateOptions}>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithCats"
+                    type='radio'
+                    name='goodWithCats'
                     checked={formData.goodWithCats === true}
-                    onChange={() => handleTriStateChange('goodWithCats', 'true')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithCats', 'true')
+                    }
                     className={styles.radio}
                   />
                   Yes
                 </label>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithCats"
+                    type='radio'
+                    name='goodWithCats'
                     checked={formData.goodWithCats === false}
-                    onChange={() => handleTriStateChange('goodWithCats', 'false')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithCats', 'false')
+                    }
                     className={styles.radio}
                   />
                   No
                 </label>
                 <label className={styles.radioLabel}>
                   <input
-                    type="radio"
-                    name="goodWithCats"
+                    type='radio'
+                    name='goodWithCats'
                     checked={formData.goodWithCats === undefined}
-                    onChange={() => handleTriStateChange('goodWithCats', 'unknown')}
+                    onChange={() =>
+                      handleTriStateChange('goodWithCats', 'unknown')
+                    }
                     className={styles.radio}
                   />
                   Unknown
@@ -598,27 +682,27 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
         {/* Tags */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Tags</legend>
-          
+
           <div className={styles.field}>
-            <label htmlFor="tagInput" className={styles.label}>Add Tags</label>
+            <label htmlFor='tagInput' className={styles.label}>
+              Add Tags
+            </label>
             <div className={styles.tagInputContainer}>
               <input
-                type="text"
-                id="tagInput"
+                type='text'
+                id='tagInput'
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={handleTagKeyPress}
                 className={styles.input}
-                placeholder="e.g., Friendly, Playful, House Trained"
+                placeholder='e.g., Friendly, Playful, House Trained'
               />
-              <button
-                type="button"
+              <Button
                 onClick={addTag}
                 className={styles.tagAddButton}
                 disabled={!tagInput.trim()}
-              >
-                Add
-              </button>
+                label='Add'
+              />
             </div>
           </div>
 
@@ -626,15 +710,12 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
             <div className={styles.tagList}>
               {formData.tags.map((tag, index) => (
                 <span key={index} className={styles.tag}>
-                  {tag}
-                  <button
-                    type="button"
+                  <Button
                     onClick={() => removeTag(tag)}
                     className={styles.tagRemove}
                     aria-label={`Remove ${tag} tag`}
-                  >
-                    ×
-                  </button>
+                    label='x'
+                  />
                 </span>
               ))}
             </div>
@@ -643,33 +724,41 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
 
         {/* Contact Information */}
         <fieldset className={styles.fieldset}>
-          <legend className={styles.legend}>Contact Information (Optional)</legend>
-          <p className={styles.sectionNote}>Override organization default contact info for this specific dog</p>
-          
+          <legend className={styles.legend}>
+            Contact Information (Optional)
+          </legend>
+          <p className={styles.sectionNote}>
+            Override organization default contact info for this specific dog
+          </p>
+
           <div className={styles.row}>
             <div className={styles.field}>
-              <label htmlFor="contactEmail" className={styles.label}>Contact Email</label>
+              <label htmlFor='contactEmail' className={styles.label}>
+                Contact Email
+              </label>
               <input
-                type="email"
-                id="contactEmail"
-                name="contactEmail"
+                type='email'
+                id='contactEmail'
+                name='contactEmail'
                 value={formData.contactEmail || ''}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="dog-specific-email@rescue.org"
+                placeholder='dog-specific-email@rescue.org'
               />
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="contactPhone" className={styles.label}>Contact Phone</label>
+              <label htmlFor='contactPhone' className={styles.label}>
+                Contact Phone
+              </label>
               <input
-                type="tel"
-                id="contactPhone"
-                name="contactPhone"
+                type='tel'
+                id='contactPhone'
+                name='contactPhone'
                 value={formData.contactPhone || ''}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="(555) 123-4567"
+                placeholder='(555) 123-4567'
               />
             </div>
           </div>
@@ -678,12 +767,12 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
         {/* Petfinder Upload Options */}
         <fieldset className={styles.fieldset}>
           <legend className={styles.legend}>Petfinder Upload</legend>
-          
+
           <div className={styles.field}>
             <label className={styles.checkboxLabel}>
               <input
-                type="checkbox"
-                name="autoUploadToPetfinder"
+                type='checkbox'
+                name='autoUploadToPetfinder'
                 checked={formData.autoUploadToPetfinder || false}
                 onChange={handleInputChange}
                 className={styles.checkbox}
@@ -695,25 +784,26 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
           {formData.autoUploadToPetfinder && (
             <>
               <div className={styles.field}>
-                <label htmlFor="petfinderMethod" className={styles.label}>Upload Method</label>
+                <label htmlFor='petfinderMethod' className={styles.label}>
+                  Upload Method
+                </label>
                 <select
-                  id="petfinderMethod"
-                  name="petfinderMethod"
+                  id='petfinderMethod'
+                  name='petfinderMethod'
                   value={formData.petfinderMethod || 'auto'}
                   onChange={handleInputChange}
                   className={styles.select}
                 >
-                  <option value="auto">Auto (Recommended)</option>
-                  <option value="ftp">FTP Upload</option>
-                  <option value="scraper">Web Scraper</option>
+                  <option value='auto'>Auto (Recommended)</option>
+                  <option value='ftp'>FTP Upload</option>
                 </select>
               </div>
 
               <div className={styles.field}>
                 <label className={styles.checkboxLabel}>
                   <input
-                    type="checkbox"
-                    name="useFallback"
+                    type='checkbox'
+                    name='useFallback'
                     checked={formData.useFallback !== false}
                     onChange={handleInputChange}
                     className={styles.checkbox}
@@ -723,22 +813,24 @@ export const DogForm = ({ onSubmit, loading = false }: DogFormProps) => {
               </div>
 
               <div className={styles.petfinderNote}>
-                <p><strong>FTP:</strong> Bulk upload, processed within hours</p>
-                <p><strong>Scraper:</strong> Real-time upload, immediate Petfinder ID</p>
-                <p><strong>Auto:</strong> Tries the best available method</p>
+                <p>
+                  <strong>FTP:</strong> Bulk upload, processed within hours
+                </p>
+                <p>
+                  <strong>Auto:</strong> Tries the best available method
+                </p>
               </div>
             </>
           )}
         </fieldset>
 
         {/* Submit Button */}
-        <button
-          type="submit"
+        <Button
+          onClick={handleSubmit}
           disabled={loading}
           className={`${styles.button} ${loading ? styles.loading : ''}`}
-        >
-          {loading ? 'Adding Dog...' : 'Add Dog'}
-        </button>
+          label={loading ? 'Adding Dog...' : 'Add Dog'}
+        />
       </form>
     </div>
   );
