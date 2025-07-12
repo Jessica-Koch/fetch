@@ -10,8 +10,10 @@
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 // Header
@@ -38,7 +40,6 @@
 // Message alerts
 .message {
   max-width: 600px;
-  margin: 0 auto 2rem;
   padding: 1rem 1.25rem;
   border-radius: 8px;
   border: 2px solid;

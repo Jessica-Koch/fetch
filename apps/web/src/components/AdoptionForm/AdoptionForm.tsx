@@ -51,6 +51,7 @@ export const AdoptionForm = () => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
   const totalSections = adoptionFields.length;
   const currentSection = adoptionFields[currentSectionIndex];
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // For file uploads
   const [photos, setPhotos] = useState<File[]>([]);
@@ -60,6 +61,11 @@ export const AdoptionForm = () => {
       ...prev,
       [field]: value,
     }));
+
+    setErrors((prev) => {
+      const { [field]: removed, ...rest } = prev;
+      return rest; // remove error for this field if it exists
+    });
   };
 
   // Handle repeated pets fields
@@ -87,6 +93,40 @@ export const AdoptionForm = () => {
   const safeTextInputValue = (val: FieldValue): string | number => {
     if (typeof val === 'string' || typeof val === 'number') return val;
     return '';
+  };
+
+  const validateSection = () => {
+    const activeSection = adoptionFields[currentSectionIndex];
+    const newErrors: Record<string, string> = {};
+
+    activeSection.fields.forEach((field) => {
+      if (field.required) {
+        // check if the field is conditionally hidden
+        if (typeof field.condition === 'function' && !field.condition(form)) {
+          return; // skip conditionally hidden fields
+        }
+
+        const val = form[field.name];
+        if (
+          val === undefined ||
+          val === null ||
+          (typeof val === 'string' && val.trim() === '') ||
+          (Array.isArray(val) && val.length === 0)
+        ) {
+          newErrors[field.name] = `${field.label} is required.`;
+        }
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onNextButtonClick = () => {
+    if (validateSection()) {
+      setErrors({}); // clear errors on valid section change
+      setCurrentSectionIndex((i) => i + 1);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -124,6 +164,7 @@ export const AdoptionForm = () => {
               {label}
               <TextInput
                 type={field.type}
+                hasError={!!errors[field.name]}
                 name={name}
                 required={field.required}
                 min={field.min}
@@ -131,6 +172,11 @@ export const AdoptionForm = () => {
                 value={safeTextInputValue(form[field.name])}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
               />
+              {errors[field.name] && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {errors[field.name]}
+                </div>
+              )}
             </label>
           </div>
         );
@@ -141,6 +187,7 @@ export const AdoptionForm = () => {
               {label}
               <TextInput
                 type='number'
+                hasError={!!errors[field.name]}
                 name={name}
                 required={field.required}
                 min={field.min}
@@ -148,6 +195,11 @@ export const AdoptionForm = () => {
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
                 value={safeTextInputValue(form[field.name])}
               />
+              {errors[field.name] && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {errors[field.name]}
+                </div>
+              )}
             </label>
           </div>
         );
@@ -203,12 +255,19 @@ export const AdoptionForm = () => {
           <div className={styles.formField} key={name}>
             <label>
               {label}
-              <textarea
+              <TextInput
                 name={name}
                 required={field.required}
                 value={safeTextInputValue(form[field.name])}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                hasError={!!errors[field.name]}
+                type='textarea'
               />
+              {errors[field.name] && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {errors[field.name]}
+                </div>
+              )}
             </label>
           </div>
         );
@@ -289,17 +348,7 @@ export const AdoptionForm = () => {
 
   // Render all fields in all sections
   return (
-    <form
-      className={styles.adoptionForm}
-      onSubmit={handleSubmit}
-      style={{
-        maxWidth: 500,
-        margin: '0 auto',
-        padding: 24,
-        background: '#fafafc',
-        borderRadius: 12,
-      }}
-    >
+    <form className={styles.adoptionForm} onSubmit={handleSubmit}>
       <h2 className={styles.adoptionAppHeader}>Adoption Application</h2>
       <div className={styles.formContainer}>
         <h3 className={styles.sectionHeading}>{currentSection.title}</h3>
@@ -314,11 +363,7 @@ export const AdoptionForm = () => {
           />
         )}
         {currentSectionIndex < totalSections - 1 ? (
-          <Button
-            type='button'
-            label='Next'
-            onClick={() => setCurrentSectionIndex((i) => i + 1)}
-          />
+          <Button type='button' label='Next' onClick={onNextButtonClick} />
         ) : (
           <Button type='submit' label='Submit' />
         )}

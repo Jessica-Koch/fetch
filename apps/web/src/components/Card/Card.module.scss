@@ -1,0 +1,34 @@
+.dogCard {
+  display: flex;
+
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%; /* fill its grid-track */
+  max-width: 300px;
+
+  .dogImage,
+  .dogInfo {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .dogImage {
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+  }
+
+  .dogInfo {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    background-color: #00000080; /* semi-transparent black */
+
+    color: theme.$white;
+    padding: 10px;
+    height: 100%;
+  }
+}

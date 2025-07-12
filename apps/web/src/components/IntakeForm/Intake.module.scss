@@ -28,7 +28,7 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   &:focus {
     @include focus-ring;
   }
@@ -37,7 +37,6 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 // Container
 .container {
   max-width: 800px;
-  margin: 0 auto;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: $shadow;
@@ -123,11 +122,11 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
-  
+
   &:focus {
     @include focus-ring;
   }
-  
+
   &::placeholder {
     color: $text-medium;
   }
@@ -149,7 +148,7 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
-  
+
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
   }
@@ -177,7 +176,7 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   font-size: 0.875rem;
   color: $text-dark;
   cursor: pointer;
-  
+
   &:hover {
     color: $primary-color;
   }
@@ -217,7 +216,7 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   font-size: 0.875rem;
   color: $text-dark;
   cursor: pointer;
-  
+
   &:hover {
     color: $primary-color;
   }
@@ -242,11 +241,11 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   color: white;
   padding: 0.75rem 1.5rem;
   white-space: nowrap;
-  
+
   &:hover:not(:disabled) {
     background: $primary-hover;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -280,7 +279,7 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   line-height: 1;
   padding: 0;
   margin-left: 0.25rem;
-  
+
   &:hover {
     opacity: 0.8;
   }
@@ -295,22 +294,22 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin-top: 1rem;
   padding: 1rem;
   font-size: 1.125rem;
-  
+
   &:hover:not(:disabled) {
     background: $primary-hover;
     transform: translateY(-1px);
   }
-  
+
   &:disabled,
   &.loading {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
   }
-  
+
   &.loading {
     position: relative;
-    
+
     &::after {
       content: '';
       position: absolute;
@@ -339,7 +338,7 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 6px;
   padding: 1rem;
   margin-top: 1rem;
-  
+
   p {
     margin: 0.25rem 0;
     font-size: 0.875rem;
@@ -353,25 +352,25 @@ $shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     padding: 1rem;
     margin: 1rem;
   }
-  
+
   .title {
     font-size: 1.5rem;
   }
-  
+
   .section {
     padding: 1rem;
   }
-  
+
   .triStateOptions {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .checkboxRow {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .tagInputContainer {
     flex-direction: column;
   }

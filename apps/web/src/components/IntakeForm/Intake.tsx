@@ -194,7 +194,6 @@ export const Intake = ({ onSubmit, loading = false }: IntakeProps) => {
       className={styles.container}
       style={{
         maxWidth: '800px',
-        margin: '0 auto',
         padding: '2rem',
         background: '#ffffff',
         borderRadius: '12px',
