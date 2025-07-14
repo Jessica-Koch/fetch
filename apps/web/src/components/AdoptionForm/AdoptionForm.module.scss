@@ -2,13 +2,6 @@
   border: 2px solid theme.$eerie-black;
 
   border-radius: 8px;
-  .adoptionAppHeader {
-    @include theme.heading(
-      $size: theme.$font-size-2xl,
-      $weight: theme.$font-weight-regular,
-      $lh: theme.$line-height-tight
-    );
-  }
 
   .formContainer {
     display: grid;

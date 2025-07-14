@@ -36,11 +36,8 @@ export const DogGrid = () => {
       {loading && <p>Loading...</p>}
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.grid}>
-        {dogs.map((dog) => (
-          <Card
-            onClick={() => console.log(`Clicked on ${dog.name}`)}
-            dog={dog}
-          />
+        {dogs.map((dog, i) => (
+          <Card key={`${dog.id}-${i}`} onClick={onDogClick} dog={dog} />
         ))}
       </div>
     </div>

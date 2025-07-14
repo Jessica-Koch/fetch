@@ -1,5 +1,4 @@
 .textInput {
-  @include theme.body-text();
   border-radius: 2px;
   border: 2px solid theme.$eerie-black;
   color: theme.$eerie-black;
@@ -15,5 +14,5 @@
   }
 }
 .error {
-  border-color: theme.$pink;
+  border-color: theme.$color-accent;
 }

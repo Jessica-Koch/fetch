@@ -1,69 +1,469 @@
-// Font families
-$font-primary: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-$font-secondary: 'Jost', sans-serif;
+@use './colors';
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+/* ================================
+   TYPOGRAPHY-ONLY VARIABLES
+   ================================ */
+$font-display: 'Outfit', sans-serif;
+$font-body: 'Source Serif Pro', serif;
 
-// Font weights
-$font-weight-regular: 400;
-$font-weight-medium: 500;
-$font-weight-bold: 700;
+// Font Sizes
+$font-size-mega: clamp(4rem, 12vw, 8rem);
+$font-size-hero: clamp(2.5rem, 8vw, 5rem);
+$font-size-xl: clamp(2rem, 5vw, 3.5rem);
+$font-size-lg: clamp(1.5rem, 4vw, 2.5rem);
+$font-size-md: clamp(1.25rem, 3vw, 1.75rem);
+$font-size-base: 1.125rem;
+$font-size-sm: 1rem;
+$font-size-xs: 0.875rem;
+$font-size-tiny: 0.75rem;
 
-// Font sizes (use px or rem, up to you)
-$font-size-xs: 0.75rem; // 12px
-$font-size-sm: 0.875rem; // 14px
-$font-size-md: 1rem; // 16px
-$font-size-lg: 1.25rem; // 20px
-$font-size-xl: 1.5rem; // 24px
-$font-size-2xl: 2rem; // 32px
-$font-size-3xl: 2.5rem; // 40px
+// Font Weights
+$weight-thin: 300;
+$weight-normal: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+$weight-extrabold: 800;
+$weight-black: 900;
 
-// Line heights
-$line-height-tight: 1.1;
-$line-height-normal: 1.4;
-$line-height-relaxed: 1.6;
+$font-display: 'Outfit', sans-serif;
+$font-body: 'Source Serif Pro', serif;
 
-// Letter spacing
-$letter-spacing-tight: -0.02em;
-$letter-spacing-normal: 0;
-$letter-spacing-wide: 0.05em;
+// Font Sizes
+$font-size-mega: clamp(4rem, 12vw, 8rem);
+$font-size-hero: clamp(2.5rem, 8vw, 5rem);
+$font-size-xl: clamp(2rem, 5vw, 3.5rem);
+$font-size-lg: clamp(1.5rem, 4vw, 2.5rem);
+$font-size-md: clamp(1.25rem, 3vw, 1.75rem);
+$font-size-base: 1.125rem;
+$font-size-sm: 1rem;
+$font-size-xs: 0.875rem;
+$font-size-tiny: 0.75rem;
 
-// Example of responsive type scale (optional)
-$h1-size: $font-size-3xl;
-$h2-size: $font-size-2xl;
-$h3-size: $font-size-xl;
-$body-size: $font-size-md;
-$small-size: $font-size-xs;
+// Font Weights
+$weight-thin: 300;
+$weight-normal: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+$weight-extrabold: 800;
+$weight-black: 900;
 
-// Mixin for headings
-@mixin heading($size, $weight: $font-weight-bold, $lh: $line-height-tight) {
-  font-family: $font-secondary;
-  font-size: $size;
-  font-weight: $weight;
-  line-height: $lh;
-  margin: 0;
-}
+/* ================================
+   MIXINS
+   ================================ */
 
-// Mixin for body text
-@mixin body-text(
-  $size: $body-size,
-  $weight: $font-weight-regular,
-  $lh: $line-height-normal
+@mixin text-gradient(
+  $color1: colors.$color-primary,
+  $color2: colors.$color-accent
 ) {
-  font-family: $font-primary;
-  font-size: $size;
-  font-weight: $weight;
-  line-height: $lh;
+  background: linear-gradient(135deg, $color1 0%, $color2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-// Responsive example (optional)
-@mixin responsive-type {
-  html {
-    font-size: 16px; // Base font size
+@mixin wobble-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-    @media (max-width: 600px) {
-      font-size: 15px;
-    }
-    @media (max-width: 400px) {
-      font-size: 14px;
-    }
+  &:hover {
+    transform: rotate(-2deg) scale(1.05);
+  }
+}
+
+/* ================================
+   DISPLAY HEADINGS
+   ================================ */
+
+.mega {
+  font-family: $font-display;
+  font-size: $font-size-mega;
+  font-weight: $weight-black;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  @include text-gradient;
+  margin: 0;
+  text-align: center;
+}
+
+.hero {
+  font-family: $font-display;
+  font-size: $font-size-hero;
+  font-weight: $weight-extrabold;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: colors.$color-text;
+  margin: 0 0 0.5em 0;
+}
+
+/* ================================
+   STANDARD HEADINGS
+   ================================ */
+
+.h1 {
+  font-family: $font-display;
+  font-size: $font-size-xl;
+  font-weight: $weight-bold;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: colors.$color-text;
+  margin: 0 0 0.75em 0;
+}
+
+.h2 {
+  font-family: $font-display;
+  font-size: $font-size-lg;
+  font-weight: $weight-semibold;
+  line-height: 1.2;
+  color: colors.$color-primary;
+  margin: 1.5em 0 0.5em 0;
+}
+
+.h3 {
+  font-family: $font-body;
+  font-size: $font-size-md;
+  font-weight: $weight-semibold;
+  font-style: italic;
+  color: colors.$color-text;
+  margin: 1.25em 0 0.5em 0;
+}
+
+.h4 {
+  font-family: $font-display;
+  font-size: $font-size-base;
+  font-weight: $weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: colors.$color-text-light;
+  margin: 1em 0 0.5em 0;
+}
+
+.h5 {
+  font-family: $font-display;
+  font-size: $font-size-sm;
+  font-weight: $weight-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: colors.$color-text-light;
+  margin: 0.75em 0 0.25em 0;
+}
+
+.h6 {
+  font-family: $font-display;
+  font-size: $font-size-xs;
+  font-weight: $weight-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: colors.$color-text-lighter;
+  margin: 0.5em 0 0.25em 0;
+}
+
+/* ================================
+   BODY TEXT
+   ================================ */
+
+.bodyText {
+  font-family: $font-body;
+  font-size: $font-size-base;
+  line-height: 1.7;
+  color: colors.$color-text;
+  margin-bottom: 1.5em;
+}
+
+.lead {
+  font-family: $font-body;
+  font-size: $font-size-md;
+  font-weight: $weight-normal;
+  font-style: italic;
+  color: colors.$color-text-light;
+  line-height: 1.6;
+  margin-bottom: 2em;
+}
+
+.small {
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: colors.$color-text-light;
+  line-height: 1.5;
+}
+
+.tiny {
+  font-family: $font-display;
+  font-size: $font-size-tiny;
+  font-weight: $weight-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: colors.$color-text-lighter;
+}
+
+/* ================================
+   PERSONALITY VARIANTS
+   ================================ */
+
+.headingFun {
+  @include text-gradient;
+  transform: rotate(-1deg);
+  position: relative;
+
+  &::after {
+    content: '🎉';
+    position: absolute;
+    right: -0.7em;
+    top: -0.2em;
+    animation: spin 4s linear infinite;
+  }
+}
+
+.headingLove {
+  color: colors.$color-accent;
+  position: relative;
+
+  &::before {
+    content: '💕';
+    position: absolute;
+    left: -1.2em;
+    animation: heartbeat 2s ease-in-out infinite;
+  }
+}
+
+.headingUrgent {
+  color: colors.$color-warning;
+  font-weight: $weight-extrabold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: bounce 2s infinite;
+}
+
+.headingSuccess {
+  color: colors.$color-success;
+  position: relative;
+
+  &::before {
+    content: '✨';
+    position: absolute;
+    left: -1em;
+    animation: twinkle 1.5s ease-in-out infinite alternate;
+  }
+}
+
+/* ================================
+   DOG CARD SPECIFIC STYLES
+   ================================ */
+
+.dogName {
+  font-family: $font-display;
+  font-size: $font-size-lg;
+  font-weight: $weight-bold;
+  color: colors.$color-text;
+  margin: 0 0 0.25em 0;
+  line-height: 1.2;
+}
+
+.dogBreed {
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-style: italic;
+  color: colors.$color-text-light;
+  margin: 0 0 0.5em 0;
+}
+
+.dogAge {
+  font-family: $font-display;
+  font-size: $font-size-xs;
+  font-weight: $weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: colors.$color-primary;
+}
+
+.dogDescription {
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+  color: colors.$color-text;
+  margin: 0.75em 0;
+}
+
+.dogStatus {
+  font-family: $font-display;
+  font-size: $font-size-tiny;
+  font-weight: $weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.25em 0.5em;
+  border-radius: 12px;
+  display: inline-block;
+
+  &.available {
+    background-color: colors.$color-success-light;
+    color: colors.$color-success;
+  }
+
+  &.pending {
+    background-color: colors.$color-warning-light;
+    color: colors.$color-warning;
+  }
+
+  &.adopted {
+    background-color: colors.$color-accent-light;
+    color: colors.$color-accent;
+  }
+}
+
+/* ================================
+   FORM FIELD STYLES
+   ================================ */
+
+.formLabel {
+  font-family: $font-display;
+  font-size: $font-size-sm;
+  font-weight: $weight-semibold;
+  color: colors.$color-text;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.formInput {
+  font-family: $font-body;
+  font-size: $font-size-base;
+  color: colors.$color-text;
+  line-height: 1.5;
+}
+
+.formHelperText {
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: colors.$color-text-light;
+  margin-top: 0.25em;
+  line-height: 1.4;
+}
+
+.formError {
+  font-family: $font-display;
+  font-size: $font-size-xs;
+  font-weight: $weight-medium;
+  color: colors.$color-error;
+  margin-top: 0.25em;
+}
+
+.formSectionHeading {
+  font-family: $font-display;
+  font-size: $font-size-md;
+  font-weight: $weight-semibold;
+  color: colors.$color-primary;
+  margin: 2em 0 1em 0;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid colors.$color-primary-light;
+}
+
+/* ================================
+   BUTTON TEXT STYLES
+   ================================ */
+
+.buttonText {
+  font-family: $font-display;
+  font-weight: $weight-bold;
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.buttonTextLarge {
+  font-family: $font-display;
+  font-weight: $weight-bold;
+  font-size: $font-size-base;
+  letter-spacing: 0.05em;
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+
+.textCenter {
+  text-align: center;
+}
+.textLeft {
+  text-align: left;
+}
+.textRight {
+  text-align: right;
+}
+
+.weightThin {
+  font-weight: $weight-thin;
+}
+.weightNormal {
+  font-weight: $weight-normal;
+}
+.weightMedium {
+  font-weight: $weight-medium;
+}
+.weightSemibold {
+  font-weight: $weight-semibold;
+}
+.weightBold {
+  font-weight: $weight-bold;
+}
+.weightExtrabold {
+  font-weight: $weight-extrabold;
+}
+.weightBlack {
+  font-weight: $weight-black;
+}
+
+.italic {
+  font-style: italic;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.2);
   }
 }

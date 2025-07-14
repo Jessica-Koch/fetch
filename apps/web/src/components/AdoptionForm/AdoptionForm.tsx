@@ -11,6 +11,7 @@ import {
 import { TextInput } from '../TextInput/TextInput';
 import { Button } from '../Button/Button';
 import { PhotoVideoDropzone } from '../PhotoVideoDropzone/PhotoVideoDropzone';
+import { Dog } from '@fetch/shared';
 
 const getInitialState = (
   fields: AdoptionFieldConfig<AdoptionFormState>[]
@@ -52,9 +53,17 @@ export const AdoptionForm = () => {
   const totalSections = adoptionFields.length;
   const currentSection = adoptionFields[currentSectionIndex];
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [selectedDogs, setSelectedDogs] = useState<Dog[]>([]);
   // For file uploads
   const [photos, setPhotos] = useState<File[]>([]);
+
+  const onDogClick = (dog: Dog) => {
+    if (selectedDogs.includes(dog)) {
+      setSelectedDogs(selectedDogs.filter((d) => d !== dog));
+    } else {
+      setSelectedDogs([...selectedDogs, dog]);
+    }
+  };
 
   const handleFieldChange = (field: string, value: FieldValue) => {
     setForm((prev) => ({
@@ -349,9 +358,20 @@ export const AdoptionForm = () => {
   // Render all fields in all sections
   return (
     <form className={styles.adoptionForm} onSubmit={handleSubmit}>
-      <h2 className={styles.adoptionAppHeader}>Adoption Application</h2>
+      <h2 className={styles.h2}>Adoption Application</h2>
       <div className={styles.formContainer}>
         <h3 className={styles.sectionHeading}>{currentSection.title}</h3>
+        {selectedDogs.length > 0 && (
+          <div className={styles.selectedDogs}>
+            <h4>Selected Dogs:</h4>
+
+            {selectedDogs.map((dog) => (
+              <div key={dog.id}>
+                {dog.name} ({dog.breed})
+              </div>
+            ))}
+          </div>
+        )}
         <div className={styles.formSection}>
           {currentSection.fields.map((field) => renderField(field))}
         </div>

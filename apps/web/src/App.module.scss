@@ -6,7 +6,7 @@
   min-height: 100vh;
   width: 100%;
   background-color: colors.$white;
-  font-family: theme.$font-primary default;
+  // font-family: theme.$font-primary default;
 }
 
 .container {
@@ -30,7 +30,7 @@
   font-size: 3rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  font-family: theme.$font-secondary;
+  // font-family: theme.$font-secondary;
   padding: 0 4rem;
   @media (max-width: 640px) {
     font-size: 2.5rem;

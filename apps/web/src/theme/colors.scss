@@ -1,33 +1,259 @@
 // LLR Colors
-$primary: rgb(97, 130, 179);
-$secondary: rgb(75, 84, 139);
-$accent: rgb(255, 247, 173);
+// $primary: rgb(97, 130, 179);
+// $secondary: rgb(75, 84, 139);
+// $accent: rgb(255, 247, 173);
 
-//
-$purple: rgb(140 107 198);
-$pink: rgb(255 154 204);
-$peach: rgb(255 194 162);
-$yellow: #fffd95;
-$blue: #a5b1ff;
-$green: #bffea0;
-$white: #ffffff;
+/* ================================
+   COLORS.MODULE.SCSS
+   Dog Rescue Color System
+   ================================ */
 
-// Primary colors to set the mild and friendly vibe inside the app:
+/* ================================
+   CSS CUSTOM PROPERTIES
+   ================================ */
 
-$sea-foam-green: #abe5bc;
+:root {
+  /* Primary Brand Colors */
+  --color-primary: #6366f1; /* Vibrant indigo */
+  --color-primary-light: #a5b4fc; /* Light indigo */
+  --color-primary-dark: #4338ca; /* Dark indigo */
 
-$light-salmon: #ffa776;
+  /* Secondary Colors */
+  --color-secondary: #f59e0b; /* Sunny amber */
+  --color-secondary-light: #fcd34d; /* Light amber */
+  --color-secondary-dark: #d97706; /* Dark amber */
 
-$jasmine: #ffd787;
+  /* Accent Colors */
+  --color-accent: #ec4899; /* Pink pop */
+  --color-accent-light: #f9a8d4; /* Light pink */
+  --color-accent-dark: #be185d; /* Dark pink */
 
-$tropical-violet: #cfade8;
+  /* Status Colors */
+  --color-success: #10b981; /* Fresh green */
+  --color-success-light: #6ee7b7; /* Light green */
+  --color-success-dark: #047857; /* Dark green */
 
-$light-salmon-pink: #ffa89a;
+  --color-warning: #f97316; /* Orange energy */
+  --color-warning-light: #fdba74; /* Light orange */
+  --color-warning-dark: #c2410c; /* Dark orange */
 
-// Accent colors for text hierarchies:
+  --color-error: #ef4444; /* Alert red */
+  --color-error-light: #fca5a5; /* Light red */
+  --color-error-dark: #dc2626; /* Dark red */
 
-$dark-liver: #505050;
-$eerie-black: #1e1e1e;
-$floral-white: #fffaf0;
+  /* Text Colors */
+  --color-text: #1f2937; /* Primary text */
+  --color-text-light: #6b7280; /* Secondary text */
+  --color-text-lighter: #9ca3af; /* Muted text */
+  --color-text-inverse: #ffffff; /* White text */
 
-$background: $white;
+  /* Background Colors */
+  --color-bg: #ffffff; /* Page background */
+  --color-bg-gray: #f9fafb; /* Light gray bg */
+  --color-bg-dark: #111827; /* Dark background */
+
+  /* Border Colors */
+  --color-border: #e5e7eb; /* Default border */
+  --color-border-light: #f3f4f6; /* Light border */
+  --color-border-dark: #d1d5db; /* Dark border */
+}
+
+/* ================================
+   SCSS COLOR VARIABLES
+   ================================ */
+$white: #fff;
+$floral-white: #fff;
+// Primary Brand Colors
+$color-primary: #6366f1;
+$primary: #6366f1;
+$color-primary-light: #a5b4fc;
+$color-primary-dark: #4338ca;
+
+$color-secondary: #f59e0b;
+$color-secondary-light: #fcd34d;
+$color-secondary-dark: #d97706;
+
+$color-accent: #ec4899;
+$color-accent-light: #f9a8d4;
+$color-accent-dark: #be185d;
+
+// Status Colors
+$color-success: #10b981;
+$sea-foam-green: #10b981;
+$color-success-light: #6ee7b7;
+$color-success-dark: #047857;
+
+$color-warning: #f97316;
+$color-warning-light: #fdba74;
+$color-warning-dark: #c2410c;
+
+$color-error: #ef4444;
+$color-error-light: #fca5a5;
+$light-salmon: #fca5a5;
+$color-error-dark: #dc2626;
+
+// Text Colors
+$color-text: #1f2937;
+$dark-liver: #1f2937;
+$color-text-light: #6b7280;
+$color-text-lighter: #9ca3af;
+$color-text-inverse: #ffffff;
+
+// Background Colors
+$color-bg: #ffffff;
+$color-bg-gray: #f9fafb;
+$color-bg-dark: #111827;
+$eerie-black: #111827;
+
+// Border Colors
+$color-border: #e5e7eb;
+$color-border-light: #f3f4f6;
+$color-border-dark: #d1d5db;
+
+/* ================================
+   COLOR UTILITY CLASSES
+   ================================ */
+
+.colorPrimary {
+  color: var(--color-primary);
+}
+.colorPrimaryLight {
+  color: var(--color-primary-light);
+}
+.colorPrimaryDark {
+  color: var(--color-primary-dark);
+}
+
+.colorSecondary {
+  color: var(--color-secondary);
+}
+.colorSecondaryLight {
+  color: var(--color-secondary-light);
+}
+.colorSecondaryDark {
+  color: var(--color-secondary-dark);
+}
+
+.colorAccent {
+  color: var(--color-accent);
+}
+.colorAccentLight {
+  color: var(--color-accent-light);
+}
+.colorAccentDark {
+  color: var(--color-accent-dark);
+}
+
+.colorSuccess {
+  color: var(--color-success);
+}
+.colorSuccessLight {
+  color: var(--color-success-light);
+}
+.colorSuccessDark {
+  color: var(--color-success-dark);
+}
+
+.colorWarning {
+  color: var(--color-warning);
+}
+.colorWarningLight {
+  color: var(--color-warning-light);
+}
+.colorWarningDark {
+  color: var(--color-warning-dark);
+}
+
+.colorError {
+  color: var(--color-error);
+}
+.colorErrorLight {
+  color: var(--color-error-light);
+}
+.colorErrorDark {
+  color: var(--color-error-dark);
+}
+
+.colorText {
+  color: var(--color-text);
+}
+.colorTextLight {
+  color: var(--color-text-light);
+}
+.colorTextLighter {
+  color: var(--color-text-lighter);
+}
+.colorTextInverse {
+  color: var(--color-text-inverse);
+}
+
+/* ================================
+   BACKGROUND COLOR UTILITIES
+   ================================ */
+
+.bgPrimary {
+  background-color: var(--color-primary);
+}
+.bgPrimaryLight {
+  background-color: var(--color-primary-light);
+}
+.bgSecondary {
+  background-color: var(--color-secondary);
+}
+.bgAccent {
+  background-color: var(--color-accent);
+}
+.bgSuccess {
+  background-color: var(--color-success);
+}
+.bgWarning {
+  background-color: var(--color-warning);
+}
+.bgError {
+  background-color: var(--color-error);
+}
+.bgGray {
+  background-color: var(--color-bg-gray);
+}
+.bgWhite {
+  background-color: var(--color-bg);
+}
+
+/* ================================
+   DOG RESCUE SPECIFIC COLORS
+   ================================ */
+
+// Dog status colors
+.statusAvailable {
+  color: var(--color-success);
+  background-color: var(--color-success-light);
+}
+
+.statusPending {
+  color: var(--color-warning-dark);
+  background-color: var(--color-warning-light);
+}
+
+.statusAdopted {
+  color: var(--color-accent-dark);
+  background-color: var(--color-accent-light);
+}
+
+.statusUrgent {
+  color: var(--color-error);
+  background-color: var(--color-error-light);
+}
+
+// Emotion-based colors for content
+.colorLove {
+  color: var(--color-accent);
+}
+.colorJoy {
+  color: var(--color-secondary);
+}
+.colorTrust {
+  color: var(--color-primary);
+}
+.colorHope {
+  color: var(--color-success);
+}
