@@ -71,6 +71,78 @@ model Dog {
   @@map("dogs")
 }
 
+model Adopter {
+  id                  String     @id @default(cuid())
+  
+  // Personal Information
+  firstName           String
+  lastName            String
+  email               String     @unique
+  phone               String
+  phoneType           PhoneType  @default(MOBILE)
+  
+  // Address
+  address1            String
+  address2            String?
+  city                String
+  state               String
+  zipCode             String
+  
+  // Additional Info
+  socialMedia         String?
+  age                 String
+  occupation          String
+  employer            String
+  lengthOfEmployment  String
+  
+  // Applications
+  applicationIds      String[]   // MongoDB ObjectIds as strings
+  
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  
+  @@map("adopters")
+  ApplicationReference ApplicationReference[]
+  User User[]
+}
+
+enum PhoneType {
+  MOBILE
+  HOME
+  WORK
+}
+
+model ApplicationReference {
+  id          String   @id @default(cuid())
+  adopterId   String
+  mongoAppId  String
+
+  adopter     Adopter  @relation(fields: [adopterId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
+
+model User {
+  id            String     @id @default(cuid())
+  firstName     String
+  lastName      String
+  email         String     @unique
+  passwordHash  String?
+  role          Role       @default(FOSTER) // roles: ADMIN, FOSTER, ADOPTER
+  adopterId     String?    @unique          // Optional link to adopter profile
+  
+  adopter       Adopter?   @relation(fields: [adopterId], references: [id])
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+enum Role {
+  ADMIN
+  FOSTER
+  ADOPTER
+}
+
 enum DogStatus {
   AVAILABLE
   PENDING

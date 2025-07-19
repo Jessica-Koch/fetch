@@ -13,11 +13,13 @@
     "@fastify/multipart": "^9.0.3",
     "@fetch/shared": "workspace:*",
     "@prisma/client": "^6.8.2",
+    "@types/mongodb": "^4.0.7",
     "argon2": "^0.43.0",
     "basic-ftp": "^5.0.5",
     "dotenv": "^16.5.0",
     "fastify": "^5.3.3",
     "lucia": "^3.2.2",
+    "mongodb": "^6.17.0",
     "prisma": "^6.8.2",
     "puppeteer": "^24.10.0"
   },

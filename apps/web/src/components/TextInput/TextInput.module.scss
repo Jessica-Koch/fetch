@@ -6,11 +6,9 @@
   transition: all 0.25s ease-in-out;
 
   &:focus {
-    // box-shadow: 10px 10px 0 -3px theme.$background, 10px 10px theme.$eerie-black;
-    border-top-left-radius: 15px;
-    border-bottom-right-radius: 15px;
+    box-shadow: 10px 10px 0 -3px theme.$color-primary,
+      10px 10px theme.$eerie-black;
     outline: none;
-    transform: translate(-3px, -3px);
   }
 }
 .error {

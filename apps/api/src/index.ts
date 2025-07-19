@@ -11,6 +11,7 @@ import {
 } from '@fetch/shared';
 import { createPetfinderUploadService } from './services/petfinder-upload';
 import { createPetfinderImporter } from './services/petfinder-importer';
+import { connectToMongoDB } from './services/mongodb.service';
 
 const fastify = Fastify({
   logger: true,
@@ -18,6 +19,14 @@ const fastify = Fastify({
 
 // Initialize Prisma
 const prisma = new PrismaClient();
+
+// Initialize MongoDB connection
+connectToMongoDB()
+  .then(() => console.log('✅ MongoDB connection established'))
+  .catch((err) => {
+    console.error('❌ Failed to connect to MongoDB:', err);
+    process.exit(1);
+  });
 
 // Initialize Petfinder Upload Service (if FTP credentials are provided)
 const petfinderUploadService =

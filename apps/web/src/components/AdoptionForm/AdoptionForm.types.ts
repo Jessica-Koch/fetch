@@ -15,7 +15,7 @@ export type FieldType =
   | 'tel'
   | 'text'
   | 'textarea'
-  | 'dogSelector'; // New field type
+  | 'dogSelector';
 
 export interface AdoptionFieldConfig<T = FieldState> {
   name: string;
