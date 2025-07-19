@@ -1,3 +1,5 @@
+import { Dog } from '@fetch/shared/dist/dog';
+
 export type FieldType =
   | 'checkbox'
   | 'checkboxGroup'
@@ -12,7 +14,8 @@ export type FieldType =
   | 'select'
   | 'tel'
   | 'text'
-  | 'textarea';
+  | 'textarea'
+  | 'dogSelector'; // New field type
 
 export interface AdoptionFieldConfig<T = FieldState> {
   name: string;
@@ -38,10 +41,12 @@ export const adoptionFields: AdoptionFormSection<FieldState>[] = [
     title: 'Dog Information',
     fields: [
       {
-        name: 'dogName',
-        label: 'What is the name of the dog you wish to adopt?',
-        type: 'text',
+        name: 'selectedDogs',
+        label: 'Which dog(s) are you interested in adopting?',
+        type: 'dogSelector',
         required: true,
+        helperText:
+          'Select one or more dogs from our available pets, or choose "Other" if you saw a dog elsewhere.',
       },
       {
         name: 'isGift',
@@ -90,7 +95,6 @@ export const adoptionFields: AdoptionFormSection<FieldState>[] = [
       { name: 'address1', label: 'Address 1', type: 'text', required: true },
       { name: 'address2', label: 'Address 2', type: 'text' },
       { name: 'city', label: 'City', type: 'text', required: true },
-      { name: 'zip', label: 'Zip Code', type: 'text', required: true },
       { name: 'zipCode', label: 'Zipcode', type: 'text', required: true }, // If this is a dupe, you can drop one.
       {
         name: 'socialMedia',
@@ -757,7 +761,7 @@ export interface FormFieldValue<
 // Main state type (add this to your codebase)
 export interface AdoptionFormState {
   // Dog Info
-  dogName: FormFieldValue<string>;
+  selectedDogs: { dogs: Dog[]; other: string };
   isGift: FormFieldValue<'yes' | 'no'>;
   dogExperience: FormFieldValue<string>;
   breedExperience: FormFieldValue<string>;
@@ -867,7 +871,13 @@ export interface AdoptionFormState {
   signature: FormFieldValue<'yes' | 'no'>;
 }
 
-export type FieldValue = string | number | boolean | string[] | File[];
+export type FieldValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | File[]
+  | { dogs: string[]; other: string }; // Add this line;
 
 export type FieldState = Record<string, FieldValue>;
 export interface PetFields {

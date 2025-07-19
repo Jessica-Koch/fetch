@@ -1,7 +1,6 @@
 import { AdoptionForm } from './components/AdoptionForm/AdoptionForm';
 
 import styles from './App.module.scss';
-import { DogGrid } from './components/DogGrid/DogGrid';
 
 function App() {
   return (
@@ -10,8 +9,6 @@ function App() {
         <header className={styles.header}>
           <h1 className={styles.logo}>Fetch</h1>
         </header>
-
-        <DogGrid />
         <AdoptionForm />
       </div>
     </div>

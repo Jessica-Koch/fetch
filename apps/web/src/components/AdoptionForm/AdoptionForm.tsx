@@ -1,3 +1,4 @@
+// apps/web/src/components/AdoptionForm/AdoptionForm.tsx
 import { useEffect, useState } from 'react';
 import styles from './AdoptionForm.module.scss';
 import {
@@ -12,6 +13,8 @@ import { TextInput } from '../TextInput/TextInput';
 import { Button } from '../Button/Button';
 import { PhotoVideoDropzone } from '../PhotoVideoDropzone/PhotoVideoDropzone';
 import { Dog } from '@fetch/shared';
+import { DogSelector } from '../DogSelector/DogSelector';
+import { ProgressBar } from '../ProgressBar/ProgressBar';
 
 const getInitialState = (
   fields: AdoptionFieldConfig<AdoptionFormState>[]
@@ -30,6 +33,9 @@ const getInitialState = (
         state[field.name] = [];
         break;
       case 'file':
+        state[field.name] = [];
+        break;
+      case 'dogSelector':
         state[field.name] = [];
         break;
       case 'radio':
@@ -54,16 +60,12 @@ export const AdoptionForm = () => {
   const currentSection = adoptionFields[currentSectionIndex];
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedDogs, setSelectedDogs] = useState<Dog[]>([]);
+  const [otherDogName, setOtherDogName] = useState<string>('');
   // For file uploads
   const [photos, setPhotos] = useState<File[]>([]);
 
-  const onDogClick = (dog: Dog) => {
-    if (selectedDogs.includes(dog)) {
-      setSelectedDogs(selectedDogs.filter((d) => d !== dog));
-    } else {
-      setSelectedDogs([...selectedDogs, dog]);
-    }
-  };
+  // Get step titles for progress bar
+  const stepTitles = adoptionFields.map((section) => section.title);
 
   const handleFieldChange = (field: string, value: FieldValue) => {
     setForm((prev) => ({
@@ -75,6 +77,16 @@ export const AdoptionForm = () => {
       const { [field]: removed, ...rest } = prev;
       return rest; // remove error for this field if it exists
     });
+  };
+
+  const handleDogSelectionChange = (dogs: Dog[]) => {
+    setSelectedDogs(dogs);
+    handleFieldChange('selectedDogs', dogs);
+  };
+
+  const handleOtherDogNameChange = (name: string) => {
+    setOtherDogName(name);
+    handleFieldChange('otherDogName', name);
   };
 
   // Handle repeated pets fields
@@ -115,6 +127,15 @@ export const AdoptionForm = () => {
           return; // skip conditionally hidden fields
         }
 
+        if (field.type === 'dogSelector') {
+          // Special validation for dog selector
+          if (selectedDogs.length === 0 && !otherDogName.trim()) {
+            newErrors[field.name] =
+              'Please select at least one dog or specify "Other"';
+          }
+          return;
+        }
+
         const val = form[field.name];
         if (
           val === undefined ||
@@ -138,6 +159,10 @@ export const AdoptionForm = () => {
     }
   };
 
+  const onBackButtonClick = () => {
+    setCurrentSectionIndex((i) => Math.max(0, i - 1));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // validation example for photos:
@@ -146,7 +171,13 @@ export const AdoptionForm = () => {
       return;
     }
     // handle submit as you like
-    console.log('Form submitted:', { ...form, pets, photos });
+    console.log('Form submitted:', {
+      ...form,
+      pets,
+      photos,
+      selectedDogs,
+      otherDogName,
+    });
   };
 
   const renderField = (field: AdoptionFieldConfig, idx?: number) => {
@@ -163,6 +194,27 @@ export const AdoptionForm = () => {
     if (field.repeat && typeof idx === 'number') return null;
 
     switch (field.type) {
+      case 'dogSelector':
+        return (
+          <div className={styles.formField} key={name}>
+            <DogSelector
+              selectedDogs={selectedDogs}
+              onSelectionChange={handleDogSelectionChange}
+              otherDogName={otherDogName}
+              onOtherDogNameChange={handleOtherDogNameChange}
+              required={field.required}
+              error={errors[field.name]}
+            />
+            {field.helperText && (
+              <div
+                style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}
+              >
+                {field.helperText}
+              </div>
+            )}
+          </div>
+        );
+
       case 'text':
       case 'email':
       case 'tel':
@@ -355,42 +407,67 @@ export const AdoptionForm = () => {
     }
   };
 
-  // Render all fields in all sections
   return (
     <form className={styles.adoptionForm} onSubmit={handleSubmit}>
       <h2 className={styles.h2}>Adoption Application</h2>
+
+      {/* Progress Bar */}
+      <ProgressBar
+        currentStep={currentSectionIndex}
+        totalSteps={totalSections}
+        stepTitles={stepTitles}
+      />
+
       <div className={styles.formContainer}>
         <h3 className={styles.sectionHeading}>{currentSection.title}</h3>
-        {selectedDogs.length > 0 && (
-          <div className={styles.selectedDogs}>
-            <h4>Selected Dogs:</h4>
 
-            {selectedDogs.map((dog) => (
-              <div key={dog.id}>
-                {dog.name} ({dog.breed})
-              </div>
-            ))}
-          </div>
-        )}
         <div className={styles.formSection}>
           {currentSection.fields.map((field) => renderField(field))}
         </div>
-        {currentSectionIndex > 0 && (
-          <Button
-            type='button'
-            label='Back'
-            onClick={() => setCurrentSectionIndex((i) => i - 1)}
-          />
-        )}
-        {currentSectionIndex < totalSections - 1 ? (
-          <Button type='button' label='Next' onClick={onNextButtonClick} />
-        ) : (
-          <Button type='submit' label='Submit' />
-        )}
+
+        <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+          {currentSectionIndex > 0 && (
+            <Button type='button' label='Back' onClick={onBackButtonClick} />
+          )}
+          {currentSectionIndex < totalSections - 1 ? (
+            <Button type='button' label='Next' onClick={onNextButtonClick} />
+          ) : (
+            <Button type='submit' label='Submit Application' />
+          )}
+        </div>
       </div>
-      <pre style={{ background: '#eee', marginTop: 20, padding: 12 }}>
-        {JSON.stringify({ ...form, pets, photos }, null, 2)}
-      </pre>
+
+      {/* Debug output - remove in production */}
+      <details style={{ marginTop: '20px' }}>
+        <summary
+          style={{ cursor: 'pointer', padding: '8px', background: '#f3f4f6' }}
+        >
+          Debug Form Data (click to expand)
+        </summary>
+        <pre
+          style={{
+            background: '#eee',
+            marginTop: 12,
+            padding: 12,
+            fontSize: '12px',
+          }}
+        >
+          {JSON.stringify(
+            {
+              ...form,
+              pets,
+              photos: photos.map((f) => f.name),
+              selectedDogs: selectedDogs.map((d) => ({
+                id: d.id,
+                name: d.name,
+              })),
+              otherDogName,
+            },
+            null,
+            2
+          )}
+        </pre>
+      </details>
     </form>
   );
 };
