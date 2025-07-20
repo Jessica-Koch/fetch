@@ -1,10 +1,8 @@
 // apps/web/src/components/AdoptionForm/AdoptionForm.tsx
 import { useEffect, useState } from 'react';
-import styles from './AdoptionForm.module.scss';
 import {
   AdoptionFieldConfig,
   adoptionFields,
-  AdoptionFormState,
   FieldState,
   FieldValue,
   PetFields,
@@ -13,9 +11,7 @@ import { Button } from '../Button/Button';
 import { Dog, AdoptionApplicationSubmission } from '@fetch/shared';
 import { useRenderField } from '../../hooks/useRenderField';
 
-const getInitialState = (
-  fields: AdoptionFieldConfig<AdoptionFormState>[]
-): AdoptionFormState => {
+const getInitialState = (fields: AdoptionFieldConfig[]): FieldState => {
   const state: FieldState = {};
   fields.forEach((field) => {
     if (field.repeat) return;
@@ -36,6 +32,9 @@ const getInitialState = (
       case 'select':
         state[field.name] = field.options?.[0]?.value ?? '';
         break;
+      case 'dogSelector':
+        state[field.name] = { dogs: [], other: '' };
+        break;
       default:
         state[field.name] = '';
     }
@@ -54,18 +53,23 @@ export const AdoptionForm = () => {
   const currentSection = adoptionFields[currentSectionIndex];
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedDogs, setSelectedDogs] = useState<Dog[]>([]);
+  const [otherDogName, setOtherDogName] = useState<string>('');
   const [photos, setPhotos] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Use the custom hook
+  // Use the custom hook with all required props
   const { renderField } = useRenderField({
     form,
     errors,
     onFieldChange: handleFieldChange,
     photos,
     onPhotosChange: setPhotos,
+    selectedDogs,
+    onSelectedDogsChange: setSelectedDogs,
+    otherDogName,
+    onOtherDogNameChange: setOtherDogName,
   });
 
   function handleFieldChange(field: string, value: FieldValue) {
@@ -112,6 +116,15 @@ export const AdoptionForm = () => {
           return;
         }
 
+        // Special validation for dogSelector
+        if (field.type === 'dogSelector') {
+          if (selectedDogs.length === 0 && !otherDogName.trim()) {
+            newErrors[field.name] =
+              'Please select at least one dog or specify another dog.';
+          }
+          return;
+        }
+
         const val = form[field.name];
         if (
           val === undefined ||
@@ -143,7 +156,7 @@ export const AdoptionForm = () => {
       return;
     }
 
-    if (selectedDogs.length === 0) {
+    if (selectedDogs.length === 0 && !otherDogName.trim()) {
       alert('Please select at least one dog to apply for.');
       return;
     }
@@ -155,93 +168,122 @@ export const AdoptionForm = () => {
       // TODO: Upload photos to S3/storage first and get URLs
       const photoUrls: string[] = []; // This would be populated after upload
 
+      // Helper functions to safely get form values with proper types
+      const getFormValue = (key: string): string => {
+        const value = form[key];
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number') return value.toString();
+        return '';
+      };
+
+      const getFormBool = (key: string): boolean => Boolean(form[key]);
+
+      const getFormArray = (key: string): string[] => {
+        const value = form[key];
+        return Array.isArray(value) &&
+          value.every((item) => typeof item === 'string')
+          ? value
+          : [];
+      };
+
       // Prepare submission data
       const submission: AdoptionApplicationSubmission = {
         selectedDogs: selectedDogs.map((dog) => dog.id),
 
         // Adopter info
-        firstName: form.firstName as string,
-        lastName: form.lastName as string,
-        email: form.email as string,
-        phone: form.phone as string,
-        phoneType: form.phoneType as 'MOBILE' | 'HOME' | 'WORK',
-        address1: form.address1 as string,
-        address2: (form.address2 as string) || undefined,
-        city: form.city as string,
-        state: form.state as string,
-        zipCode: form.zipCode as string,
-        socialMedia: (form.socialMedia as string) || undefined,
-        adopterAge: form.adopterAge as string,
-        occupation: form.occupation as string,
-        employer: form.employer as string,
-        lengthOfEmployment: form.lengthOfEmployment as string,
+        firstName: getFormValue('firstName'),
+        lastName: getFormValue('lastName'),
+        email: getFormValue('email'),
+        phone: getFormValue('phone'),
+        phoneType: getFormValue('phoneType') as 'MOBILE' | 'HOME' | 'WORK',
+        address1: getFormValue('address1'),
+        address2: getFormValue('address2') || undefined,
+        city: getFormValue('city'),
+        state: getFormValue('state'),
+        zipCode: getFormValue('zipCode'),
+        socialMedia: getFormValue('socialMedia') || undefined,
+        adopterAge: getFormValue('adopterAge'),
+        occupation: getFormValue('occupation'),
+        employer: getFormValue('employer'),
+        lengthOfEmployment: getFormValue('lengthOfEmployment'),
 
         // All other form fields
-        dogName: form.dogName as string,
-        isGift: form.isGift as 'yes' | 'no',
-        dogExperience: form.dogExperience as string,
-        breedExperience: form.breedExperience as string,
-        significantOther: form.significantOther as boolean,
-        partnerName: (form.partnerName as string) || undefined,
-        partnerOccupation: (form.partnerOccupation as string) || undefined,
-        householdMembers: form.householdMembers as string,
-        dogAllergies: form.dogAllergies as string,
-        ownsOrRents: form.ownsOrRents as 'own' | 'rent' | 'other',
-        housingOtherExplain: (form.housingOtherExplain as string) || undefined,
-        landlordName: (form.landlordName as string) || undefined,
-        landlordPhone: (form.landlordPhone as string) || undefined,
-        landlordEmail: (form.landlordEmail as string) || undefined,
-        allowsDogs: (form.allowsDogs as 'yes' | 'no') || undefined,
+        dogName: getFormValue('dogName'),
+        isGift: getFormValue('isGift') as 'yes' | 'no',
+        dogExperience: getFormValue('dogExperience'),
+        breedExperience: getFormValue('breedExperience'),
+        significantOther: getFormBool('significantOther'),
+        partnerName: getFormValue('partnerName') || undefined,
+        partnerOccupation: getFormValue('partnerOccupation') || undefined,
+        householdMembers: getFormValue('householdMembers'),
+        dogAllergies: getFormValue('dogAllergies'),
+        ownsOrRents: getFormValue('ownsOrRents') as 'own' | 'rent' | 'other',
+        housingOtherExplain: getFormValue('housingOtherExplain') || undefined,
+        landlordName: getFormValue('landlordName') || undefined,
+        landlordPhone: getFormValue('landlordPhone') || undefined,
+        landlordEmail: getFormValue('landlordEmail') || undefined,
+        allowsDogs: (getFormValue('allowsDogs') as 'yes' | 'no') || undefined,
         breedRestrictions:
-          (form.breedRestrictions as 'yes' | 'no') || undefined,
-        hoa: (form.hoa as 'yes' | 'no') || undefined,
+          (getFormValue('breedRestrictions') as 'yes' | 'no') || undefined,
+        hoa: (getFormValue('hoa') as 'yes' | 'no') || undefined,
         hoaBreedRestrictions:
-          (form.hoaBreedRestrictions as 'yes' | 'no') || undefined,
-        houseType: form.houseType as
+          (getFormValue('hoaBreedRestrictions') as 'yes' | 'no') || undefined,
+        houseType: getFormValue('houseType') as
           | 'house'
           | 'townhome'
           | 'apartment'
           | 'mobile_home'
           | 'other',
-        hasFence: form.hasFence as boolean,
-        fenceType: (form.fenceType as string) || undefined,
-        numberOfPets: form.numberOfPets as string,
+        hasFence: getFormBool('hasFence'),
+        fenceType: getFormValue('fenceType') || undefined,
+        numberOfPets: getFormValue('numberOfPets'),
         pets: pets,
-        vetName: form.vetName as string,
-        motivation: form.motivation as string,
-        petEnergyLevel: form.petEnergyLevel as 'low' | 'medium' | 'high',
-        dogFood: form.dogFood as string,
-        howActiveIsYourHousehold: form.howActiveIsYourHousehold as
+        vetName: getFormValue('vetName'),
+        motivation: getFormValue('motivation'),
+        petEnergyLevel: getFormValue('petEnergyLevel') as
+          | 'low'
+          | 'medium'
+          | 'high',
+        dogFood: getFormValue('dogFood'),
+        howActiveIsYourHousehold: getFormValue('howActiveIsYourHousehold') as
           | 'low'
           | 'light'
           | 'moderate'
           | 'high',
-        dailyExerciseAndEnrichment: form.dailyExerciseAndEnrichment as string,
-        offLimitsPlaces: form.offLimitsPlaces as string,
-        hoursAlone: form.hoursAlone as string,
-        whereDogWillBeWhenAlone: form.whereDogWillBeWhenAlone as string[],
-        travelPlans: form.travelPlans as string,
-        openToOtherDogs: form.openToOtherDogs as 'yes' | 'no' | 'notApplicable',
-        petTakenToShelter: form.petTakenToShelter as string,
-        everGaveUpPet: form.everGaveUpPet as string,
-        giveUpPet: form.giveUpPet as string,
-        euthanizeDog: form.euthanizeDog as string,
-        moveWithoutDog: form.moveWithoutDog as string,
-        trainingExperience: form.trainingExperience as string,
-        familiarWithCutOffCues: form.familiarWithCutOffCues as
+        dailyExerciseAndEnrichment: getFormValue('dailyExerciseAndEnrichment'),
+        offLimitsPlaces: getFormValue('offLimitsPlaces'),
+        hoursAlone: getFormValue('hoursAlone'),
+        whereDogWillBeWhenAlone: getFormArray('whereDogWillBeWhenAlone'),
+        travelPlans: getFormValue('travelPlans'),
+        openToOtherDogs: getFormValue('openToOtherDogs') as
+          | 'yes'
+          | 'no'
+          | 'notApplicable',
+        petTakenToShelter: getFormValue('petTakenToShelter'),
+        everGaveUpPet: getFormValue('everGaveUpPet'),
+        giveUpPet: getFormValue('giveUpPet'),
+        euthanizeDog: getFormValue('euthanizeDog'),
+        moveWithoutDog: getFormValue('moveWithoutDog'),
+        trainingExperience: getFormValue('trainingExperience'),
+        familiarWithCutOffCues: getFormValue('familiarWithCutOffCues') as
           | 'veryFamiliar'
           | 'somewhatFamiliar'
           | 'notFamiliar',
-        trainingPlans: form.trainingPlans as string[],
-        difficultBehaviors: form.difficultBehaviors as string,
-        dogSocialization: form.dogSocialization as string,
-        petIntroduction: (form.petIntroduction as string) || undefined,
-        destructiveBehavior: form.destructiveBehavior as 'yes' | 'no',
-        costOfDog: form.costOfDog as 'yes' | 'no',
-        dogHousebreaking: form.dogHousebreaking as 'yes' | 'no',
-        willingToTrain: form.willingToTrain as 'yes' | 'no' | 'depends',
-        dateReadyToAdopt: form.dateReadyToAdopt as string,
-        howDidYouHearAboutUs: form.howDidYouHearAboutUs as
+        trainingPlans: getFormArray('trainingPlans'),
+        difficultBehaviors: getFormValue('difficultBehaviors'),
+        dogSocialization: getFormValue('dogSocialization'),
+        petIntroduction: getFormValue('petIntroduction') || undefined,
+        destructiveBehavior: getFormValue('destructiveBehavior') as
+          | 'yes'
+          | 'no',
+        costOfDog: getFormValue('costOfDog') as 'yes' | 'no',
+        dogHousebreaking: getFormValue('dogHousebreaking') as 'yes' | 'no',
+        willingToTrain: getFormValue('willingToTrain') as
+          | 'yes'
+          | 'no'
+          | 'depends',
+        dateReadyToAdopt: getFormValue('dateReadyToAdopt'),
+        howDidYouHearAboutUs: getFormValue('howDidYouHearAboutUs') as
           | 'petfinder'
           | 'facebook'
           | 'instagram'
@@ -250,12 +292,12 @@ export const AdoptionForm = () => {
           | 'adoptionEvent'
           | 'other',
         additionalQuestionsAndInfo:
-          (form.additionalQuestionsAndInfo as string) || undefined,
-        longTermCommitment: form.longTermCommitment as 'yes' | 'no',
-        unknownHistory: form.unknownHistory as 'yes' | 'no',
-        ageRequirement: form.ageRequirement as 'yes' | 'no',
-        termsAndConditions: form.termsAndConditions as 'yes' | 'no',
-        signature: form.signature as 'yes' | 'no',
+          getFormValue('additionalQuestionsAndInfo') || undefined,
+        longTermCommitment: getFormValue('longTermCommitment') as 'yes' | 'no',
+        unknownHistory: getFormValue('unknownHistory') as 'yes' | 'no',
+        ageRequirement: getFormValue('ageRequirement') as 'yes' | 'no',
+        termsAndConditions: getFormValue('termsAndConditions') as 'yes' | 'no',
+        signature: getFormValue('signature') as 'yes' | 'no',
         photoUrls,
       };
 
@@ -274,7 +316,6 @@ export const AdoptionForm = () => {
       }
 
       setSubmitSuccess(true);
-      // Reset form or redirect to success page
     } catch (error) {
       console.error('Submission error:', error);
       setSubmitError(
@@ -287,7 +328,7 @@ export const AdoptionForm = () => {
 
   if (submitSuccess) {
     return (
-      <div className={styles.adoptionForm}>
+      <div>
         <h2>Application Submitted Successfully!</h2>
         <p>
           Thank you for your adoption application. We will review it and get
@@ -298,44 +339,59 @@ export const AdoptionForm = () => {
   }
 
   return (
-    <form className={styles.adoptionForm} onSubmit={handleSubmit}>
-      <h2 className={styles.h2}>Adoption Application</h2>
-      <div className={styles.formContainer}>
-        <h3 className={styles.sectionHeading}>{currentSection.title}</h3>
+    <form onSubmit={handleSubmit}>
+      <h2>Adoption Application</h2>
+      <div>
+        <h3>{currentSection.title}</h3>
+
+        {/* Show selected dogs if any */}
         {selectedDogs.length > 0 && (
-          <div className={styles.selectedDogs}>
+          <div>
             <h4>Selected Dogs:</h4>
-            {selectedDogs.map((dog) => (
-              <div key={dog.id}>
-                {dog.name} ({dog.breed})
-              </div>
-            ))}
+            <ul>
+              {selectedDogs.map((dog) => (
+                <li key={dog.id}>
+                  {dog.name} ({dog.breed})
+                </li>
+              ))}
+            </ul>
           </div>
         )}
-        <div className={styles.formSection}>
-          {currentSection.fields.map((field) => renderField(field))}
-        </div>
+
+        {/* Show other dog name if specified */}
+        {otherDogName && (
+          <div>
+            <h4>Other Dog:</h4>
+            <p>{otherDogName}</p>
+          </div>
+        )}
+
+        <div>{currentSection.fields.map((field) => renderField(field))}</div>
+
         {submitError && (
           <div style={{ color: 'red', marginTop: 10, marginBottom: 10 }}>
             Error: {submitError}
           </div>
         )}
-        {currentSectionIndex > 0 && (
-          <Button
-            type='button'
-            label='Back'
-            onClick={() => setCurrentSectionIndex((i) => i - 1)}
-          />
-        )}
-        {currentSectionIndex < totalSections - 1 ? (
-          <Button type='button' label='Next' onClick={onNextButtonClick} />
-        ) : (
-          <Button
-            type='submit'
-            label={submitting ? 'Submitting...' : 'Submit'}
-            disabled={submitting}
-          />
-        )}
+
+        <div>
+          {currentSectionIndex > 0 && (
+            <Button
+              type='button'
+              label='Back'
+              onClick={() => setCurrentSectionIndex((i) => i - 1)}
+            />
+          )}
+          {currentSectionIndex < totalSections - 1 ? (
+            <Button type='button' label='Next' onClick={onNextButtonClick} />
+          ) : (
+            <Button
+              type='submit'
+              label={submitting ? 'Submitting...' : 'Submit'}
+              disabled={submitting}
+            />
+          )}
+        </div>
       </div>
     </form>
   );

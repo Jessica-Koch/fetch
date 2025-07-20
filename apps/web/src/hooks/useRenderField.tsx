@@ -1,13 +1,14 @@
-// apps/web/src/components/AdoptionForm/AdoptionForm.tsx
+// apps/web/src/hooks/useRenderField.tsx
 import { ReactElement } from 'react';
 import { TextInput } from '../components/TextInput/TextInput';
 import { PhotoVideoDropzone } from '../components/PhotoVideoDropzone/PhotoVideoDropzone';
+import { DogSelector } from '../components/DogSelector/DogSelector';
 import {
   AdoptionFieldConfig,
   FieldState,
   FieldValue,
 } from '../components/AdoptionForm/AdoptionForm.types';
-import styles from '../components/AdoptionForm/AdoptionForm.module.scss';
+import { Dog } from '@fetch/shared';
 
 interface UseRenderFieldProps {
   form: FieldState;
@@ -15,6 +16,10 @@ interface UseRenderFieldProps {
   onFieldChange: (field: string, value: FieldValue) => void;
   photos?: File[];
   onPhotosChange?: (files: File[]) => void;
+  selectedDogs?: Dog[];
+  onSelectedDogsChange?: (dogs: Dog[]) => void;
+  otherDogName?: string;
+  onOtherDogNameChange?: (name: string) => void;
 }
 
 export const useRenderField = ({
@@ -23,10 +28,33 @@ export const useRenderField = ({
   onFieldChange,
   photos = [],
   onPhotosChange,
+  selectedDogs = [],
+  onSelectedDogsChange,
+  otherDogName = '',
+  onOtherDogNameChange,
 }: UseRenderFieldProps) => {
   const safeTextInputValue = (val: FieldValue): string | number => {
-    if (typeof val === 'string' || typeof val === 'number') return val;
+    if (typeof val === 'string') return val;
+    if (typeof val === 'number') return val;
     return '';
+  };
+
+  const safeSelectValue = (val: FieldValue): string => {
+    if (typeof val === 'string') return val;
+    if (typeof val === 'number') return val.toString();
+    return '';
+  };
+
+  const safeArrayValue = (val: FieldValue): string[] => {
+    if (Array.isArray(val)) {
+      // Handle File[] by converting to string[] (using file names)
+      if (val.length > 0 && val[0] instanceof File) {
+        return (val as File[]).map((file) => file.name);
+      }
+      // Handle string[] directly
+      return val as string[];
+    }
+    return [];
   };
 
   const renderField = (
@@ -48,12 +76,36 @@ export const useRenderField = ({
     if (field.repeat && typeof idx === 'number') return null;
 
     switch (field.type) {
+      case 'dogSelector':
+        if (!onSelectedDogsChange || !onOtherDogNameChange) {
+          console.warn(
+            'DogSelector requires onSelectedDogsChange and onOtherDogNameChange callbacks'
+          );
+          return null;
+        }
+        return (
+          <div key={name}>
+            <fieldset>
+              <legend>{label}</legend>
+              <DogSelector
+                selectedDogs={selectedDogs}
+                onSelectionChange={onSelectedDogsChange}
+                otherDogName={otherDogName}
+                onOtherDogNameChange={onOtherDogNameChange}
+                required={field.required}
+                error={errors[field.name]}
+              />
+              {field.helperText && <p>{field.helperText}</p>}
+            </fieldset>
+          </div>
+        );
+
       case 'text':
       case 'email':
       case 'tel':
         return (
-          <div className={styles.formField} key={name}>
-            <label className={styles.label}>
+          <div key={name}>
+            <label>
               {label}
               <TextInput
                 type={field.type}
@@ -76,7 +128,7 @@ export const useRenderField = ({
 
       case 'number':
         return (
-          <div className={styles.formField} key={name}>
+          <div key={name}>
             <label>
               {label}
               <TextInput
@@ -100,7 +152,7 @@ export const useRenderField = ({
 
       case 'checkbox':
         return (
-          <div className={styles.formField} key={name}>
+          <div key={name}>
             <label>
               <input
                 type='checkbox'
@@ -115,21 +167,16 @@ export const useRenderField = ({
 
       case 'checkboxGroup':
         return (
-          <div className={styles.formField} key={name}>
-            <span>{label}</span>
+          <fieldset key={name}>
+            <legend>{label}</legend>
             {field.options?.map((opt) => (
               <label key={opt.value}>
                 <input
                   type='checkbox'
                   name={`${field.name}_${opt.value}`}
-                  checked={
-                    Array.isArray(form[field.name]) &&
-                    (form[field.name] as string[]).includes(opt.value)
-                  }
+                  checked={safeArrayValue(form[field.name]).includes(opt.value)}
                   onChange={(e) => {
-                    const curr = Array.isArray(form[field.name])
-                      ? [...(form[field.name] as string[])]
-                      : [];
+                    const curr = [...safeArrayValue(form[field.name])];
                     if (e.target.checked) {
                       curr.push(opt.value);
                     } else {
@@ -147,12 +194,12 @@ export const useRenderField = ({
                 {errors[field.name]}
               </div>
             )}
-          </div>
+          </fieldset>
         );
 
       case 'textarea':
         return (
-          <div className={styles.formField} key={name}>
+          <div key={name}>
             <label>
               {label}
               <TextInput
@@ -174,8 +221,8 @@ export const useRenderField = ({
 
       case 'radio':
         return (
-          <div className={styles.formField} key={name}>
-            <span>{label}</span>
+          <fieldset key={name}>
+            <legend>{label}</legend>
             {field.options?.map((opt) => (
               <label key={opt.value}>
                 <input
@@ -193,17 +240,17 @@ export const useRenderField = ({
                 {errors[field.name]}
               </div>
             )}
-          </div>
+          </fieldset>
         );
 
       case 'select':
         return (
-          <div className={styles.formField} key={name}>
+          <div key={name}>
             <label>
               {label}
               <select
                 name={field.name}
-                value={safeTextInputValue(form[field.name])}
+                value={safeSelectValue(form[field.name])}
                 onChange={(e) => onFieldChange(field.name, e.target.value)}
                 required={field.required}
               >
@@ -228,7 +275,7 @@ export const useRenderField = ({
           return null;
         }
         return (
-          <div className={styles.formField} key={name}>
+          <div key={name}>
             <PhotoVideoDropzone
               value={photos}
               onChange={onPhotosChange}
@@ -246,13 +293,13 @@ export const useRenderField = ({
 
       case 'date':
         return (
-          <div className={styles.formField} key={name}>
+          <div key={name}>
             <label>
               {label}
               <input
                 type='date'
                 name={name}
-                value={safeTextInputValue(form[field.name])}
+                value={safeSelectValue(form[field.name])}
                 onChange={(e) => onFieldChange(field.name, e.target.value)}
                 required={field.required}
               />
