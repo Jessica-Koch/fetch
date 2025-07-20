@@ -1,7 +1,7 @@
 // apps/web/src/services/api.ts
 import type { Dog, CreateDogRequest, ApiResponse } from '@fetch/shared';
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 // Custom error type (not a class)
 export interface ApiError {
@@ -13,22 +13,24 @@ export interface ApiError {
 const createApiError = (status: number, message: string): ApiError => ({
   name: 'ApiError',
   status,
-  message
+  message,
 });
 
 export const isApiError = (error: unknown): error is ApiError => {
-  return typeof error === 'object' && 
-         error !== null && 
-         'name' in error && 
-         (error).name === 'ApiError';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'name' in error &&
+    error.name === 'ApiError'
+  );
 };
 
-const apiRequest = async <T,>(
+const apiRequest = async <T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> => {
   const url = `${API_BASE}${endpoint}`;
-  
+
   const config: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
@@ -39,12 +41,12 @@ const apiRequest = async <T,>(
 
   try {
     const response = await fetch(url, config);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw createApiError(
         response.status,
-        (errorData).message || `HTTP ${response.status}: ${response.statusText}`
+        errorData.message || `HTTP ${response.status}: ${response.statusText}`
       );
     }
 
@@ -53,8 +55,9 @@ const apiRequest = async <T,>(
     if (isApiError(error)) {
       throw error;
     }
-    
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
     throw createApiError(0, `Network error: ${errorMessage}`);
   }
 };

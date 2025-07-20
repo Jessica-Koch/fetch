@@ -6,7 +6,11 @@
     "dev:api": "pnpm --filter @fetch/api dev",
     "dev:web": "pnpm --filter @fetch/web dev",
     "build": "pnpm --filter @fetch/shared build && pnpm --filter @fetch/api build && pnpm --filter @fetch/web build",
-    "build:shared": "pnpm --filter @fetch/shared build"
+    "build:shared": "pnpm --filter @fetch/shared build",
+    "build:api": "pnpm --filter @fetch/shared build && pnpm --filter @fetch/api build",
+    "build:web": "pnpm --filter @fetch/shared build && pnpm --filter @fetch/web build",
+    "start:api": "pnpm --filter @fetch/api start",
+    "start:web": "pnpm --filter @fetch/web preview"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

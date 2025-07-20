@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "deploy": "node scripts/migrate-deploy.js && npm start",
     "start": "node dist/index.js",
     "import-petfinder": "tsx src/scripts/import-petfinder.ts",
     "prisma:generate": "prisma generate",

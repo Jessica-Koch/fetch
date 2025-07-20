@@ -60,8 +60,18 @@ const petfinderImporter =
 type Server = typeof fastify;
 const buildServer = async (): Promise<Server> => {
   // Register CORS
+  const allowedOrigins: (string | RegExp)[] = [
+    'http://localhost:3000', // Local development
+    /\.railway\.app$/, // Allow all Railway domains
+  ];
+
+  // Add frontend URL if it exists
+  if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+  }
+
   await fastify.register(cors, {
-    origin: ['http://localhost:3000'],
+    origin: allowedOrigins,
     credentials: true,
   });
 
