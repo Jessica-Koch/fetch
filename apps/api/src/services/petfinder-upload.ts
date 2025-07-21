@@ -1,5 +1,5 @@
 // apps/api/src/services/petfinder-upload.ts
-import { createPetfinderFTPService } from './petfinder-ftp';
+import { createPetfinderFTPService } from './petfinder-ftp.js';
 import type { Dog } from '@fetch/shared';
 
 export type UploadMethod = 'ftp' | 'auto';
