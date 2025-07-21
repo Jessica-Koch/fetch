@@ -81,6 +81,14 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
             message: `Successfully uploaded ${dog.name} via FTP. Petfinder will process the file within 1-2 hours.`,
           };
         }
+
+        // Fallback return if no method is handled
+        return {
+          success: false,
+          method: '',
+          error: 'No valid upload method available',
+          message: `Failed to upload ${dog.name}: No valid upload method available`,
+        };
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
@@ -138,6 +146,14 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
       } catch (error) {
         console.log('FTP upload failed, trying  fallback...', error);
       }
+
+      // If all methods fail, return error
+      return {
+        success: false,
+        method: 'ftp',
+        error: 'All upload methods failed',
+        message: `Failed to upload ${dog.name}: All upload methods failed`,
+      };
     },
 
     // Test both connection methods
