@@ -1,6 +1,7 @@
 FROM node:24-alpine
 
-# Use environment variable instead of build arg
+# Use environment variable (available at both build and runtime)
+ARG SERVICE
 ENV SERVICE=${SERVICE:-api}
 
 # Install pnpm
@@ -31,7 +32,9 @@ EXPOSE 3000
 
 # Different start commands based on service
 CMD if [ "$SERVICE" = "web" ]; then \
-      pnpm preview --host 0.0.0.0 --port ${PORT:-3000}; \
+      echo "Starting web service in directory: $(pwd)" && \
+      echo "Available scripts:" && cat package.json | grep -A 5 '"scripts"' && \
+      PORT=${PORT:-3000} pnpm run preview; \
     else \
       pnpm start; \
     fi
