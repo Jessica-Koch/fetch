@@ -6,9 +6,9 @@ import {
   Placement,
   type CreateDogWithPetfinderRequest,
 } from '@fetch/shared';
-import { createPetfinderUploadService } from './services/petfinder-upload';
-import { createPetfinderImporter } from './services/petfinder-importer';
-import { connectToMongoDB } from './services/mongodb.service';
+import { createPetfinderUploadService } from './services/petfinder-upload.js';
+import { createPetfinderImporter } from './services/petfinder-importer.js';
+import { connectToMongoDB } from './services/mongodb.service.js';
 
 const fastify = Fastify({
   logger: true,
