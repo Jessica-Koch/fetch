@@ -147,7 +147,7 @@ export const createPetfinderUploadService = (config: PetfinderUploadConfig) => {
         console.log('FTP upload failed, trying  fallback...', error);
       }
 
-      // If all methods fail, return error
+      // If all methods fail, return an error
       return {
         success: false,
         method: 'ftp',
