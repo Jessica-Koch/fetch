@@ -4,9 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import {
   DogStatus,
   Placement,
-  Gender,
-  Size,
-  Coat,
   type CreateDogWithPetfinderRequest,
 } from '@fetch/shared';
 import { createPetfinderUploadService } from './services/petfinder-upload';

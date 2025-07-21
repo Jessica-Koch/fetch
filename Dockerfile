@@ -20,6 +20,9 @@ RUN pnpm run build:shared
 
 # Build API
 RUN pnpm run build:api
+RUN pnpm run build:api
+RUN echo "=== Checking specific file ===" && ls -la /app/apps/api/dist/services/petfinder-upload*
+RUN echo "=== File contents check ===" && head -5 /app/apps/api/dist/services/petfinder-upload.js
 
 # Set working directory to API  
 WORKDIR /app/apps/api
