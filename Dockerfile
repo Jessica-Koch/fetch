@@ -1,5 +1,8 @@
 FROM node:24-alpine
 
+# Build argument to determine which service to build
+ARG SERVICE=api
+
 # Install pnpm
 RUN npm install -g pnpm@10.11.1
 
@@ -18,12 +21,17 @@ RUN pnpm install --frozen-lockfile
 # Build shared package first
 RUN pnpm run build:shared
 
-# Build API
-RUN pnpm run build:api
+# Build the specified service
+RUN pnpm run build:${SERVICE}
 
-# Set working directory to API  
-WORKDIR /app/apps/api
+# Set working directory based on service
+WORKDIR /app/apps/${SERVICE}
 
-EXPOSE 3001
+EXPOSE 3000
 
-CMD ["pnpm", "start"]
+# Different start commands based on service
+CMD if [ "$SERVICE" = "web" ]; then \
+      pnpm preview --host 0.0.0.0 --port ${PORT:-3000}; \
+    else \
+      pnpm start; \
+    fi
