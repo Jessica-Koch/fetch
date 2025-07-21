@@ -1,7 +1,7 @@
 FROM node:24-alpine
 
-# Build argument to determine which service to build
-ARG SERVICE=api
+# Use environment variable instead of build arg
+ENV SERVICE=${SERVICE:-api}
 
 # Install pnpm
 RUN npm install -g pnpm@10.11.1
