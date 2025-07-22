@@ -27,13 +27,12 @@ export function PhotoVideoDropzone({
     [onChange, value, maxFiles]
   );
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-      accept: { 'image/*': [], 'video/*': [] },
-      onDrop,
-      multiple: true,
-      maxFiles,
-    });
+  const { getRootProps, getInputProps, fileRejections } = useDropzone({
+    accept: { 'image/*': [], 'video/*': [] },
+    onDrop,
+    multiple: true,
+    maxFiles,
+  });
 
   // Helper: Remove a file by index
   const removeFile = (i: number) => {

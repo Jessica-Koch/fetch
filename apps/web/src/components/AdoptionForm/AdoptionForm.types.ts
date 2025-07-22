@@ -35,7 +35,7 @@ export interface AdoptionFieldConfig<T = FieldState> {
   maxFiles?: number;
 }
 
-export const adoptionFields: AdoptionFormSection<FieldState>[] = [
+export const adoptionFields: AdoptionFormSection<AdoptionFormState>[] = [
   {
     id: 'dog_info',
     title: 'Dog Information',
