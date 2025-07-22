@@ -1,7 +1,7 @@
 // apps/web/src/services/api.ts
 import type { Dog, CreateDogRequest, ApiResponse } from '@fetch/shared';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 // Custom error type (not a class)
 export interface ApiError {

@@ -18,15 +18,18 @@ export default defineConfig({
       },
     },
   },
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-    },
-  },
+  server:
+    process.env.NODE_ENV === 'production'
+      ? {}
+      : {
+          port: 3000,
+          proxy: {
+            '/api': {
+              target: 'http://localhost:3001',
+              changeOrigin: true,
+            },
+          },
+        },
   preview: {
     allowedHosts: ['web-production-58768.up.railway.app'],
   },
