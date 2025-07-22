@@ -5,7 +5,7 @@ type ButtonProps = {
   disabled?: boolean;
   label: string;
   onClick?: () => void;
-  type: 'button' | 'submit' | 'reset';
+  type?: 'button' | 'submit' | 'reset';
 };
 
 export const Button = ({

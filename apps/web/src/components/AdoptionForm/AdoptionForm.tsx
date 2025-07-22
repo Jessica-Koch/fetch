@@ -3,50 +3,237 @@ import { useEffect, useState } from 'react';
 import {
   AdoptionFieldConfig,
   adoptionFields,
-  FieldState,
   FieldValue,
   PetFields,
+  AdoptionFormState,
+  FormFieldValue,
+  FieldState,
 } from './AdoptionForm.types';
 import { Button } from '../Button/Button';
 import { Dog, AdoptionApplicationSubmission } from '@fetch/shared';
 import { useRenderField } from '../../hooks/useRenderField';
 
-const getInitialState = (fields: AdoptionFieldConfig[]): FieldState => {
-  const state: FieldState = {};
-  fields.forEach((field) => {
-    if (field.repeat) return;
-    switch (field.type) {
-      case 'checkbox':
-        state[field.name] = false;
-        break;
-      case 'number':
-        state[field.name] = 0;
-        break;
-      case 'checkboxGroup':
-        state[field.name] = [];
-        break;
-      case 'file':
-        state[field.name] = [];
-        break;
-      case 'radio':
-      case 'select':
-        state[field.name] = field.options?.[0]?.value ?? '';
-        break;
-      case 'dogSelector':
-        state[field.name] = { dogs: [], other: '' };
-        break;
-      default:
-        state[field.name] = '';
+const createFormField = <T extends FieldValue>(
+  initialValue: T,
+  onChange: (value: T) => void
+): FormFieldValue<T> => ({
+  value: initialValue,
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const target = e.target;
+    let newValue: T;
+
+    if (target.type === 'checkbox') {
+      newValue = (target as HTMLInputElement).checked as T;
+    } else if (target.type === 'number') {
+      newValue = Number(target.value) as T;
+    } else {
+      newValue = target.value as T;
     }
-  });
-  return state;
+
+    onChange(newValue);
+  },
+});
+
+const createInitialFormState = (): AdoptionFormState => {
+  // This will be replaced with proper state setters
+  const handleFieldChange =
+    (fieldName: keyof AdoptionFormState) => (value: FieldValue) => {
+      console.log('Field change:', fieldName, value);
+    };
+
+  return {
+    // Dog Info
+    selectedDogs: { dogs: [], other: '' },
+    isGift: createFormField('no' as const, handleFieldChange('isGift')),
+    dogExperience: createFormField('', handleFieldChange('dogExperience')),
+    breedExperience: createFormField('', handleFieldChange('breedExperience')),
+
+    // Adopter Info
+    firstName: createFormField('', handleFieldChange('firstName')),
+    lastName: createFormField('', handleFieldChange('lastName')),
+    email: createFormField('', handleFieldChange('email')),
+    phone: createFormField('', handleFieldChange('phone')),
+    phoneType: createFormField(
+      'mobile' as const,
+      handleFieldChange('phoneType')
+    ),
+    address1: createFormField('', handleFieldChange('address1')),
+    address2: createFormField('', handleFieldChange('address2')),
+    city: createFormField('', handleFieldChange('city')),
+    zip: createFormField('', handleFieldChange('zip')),
+    zipCode: createFormField('', handleFieldChange('zipCode')),
+    socialMedia: createFormField('', handleFieldChange('socialMedia')),
+    adopterAge: createFormField('', handleFieldChange('adopterAge')),
+    occupation: createFormField('', handleFieldChange('occupation')),
+    employer: createFormField('', handleFieldChange('employer')),
+    lengthOfEmployment: createFormField(
+      '',
+      handleFieldChange('lengthOfEmployment')
+    ),
+
+    // Household Info
+    significantOther: createFormField(
+      false,
+      handleFieldChange('significantOther')
+    ),
+    partnerName: createFormField('', handleFieldChange('partnerName')),
+    partnerOccupation: createFormField(
+      '',
+      handleFieldChange('partnerOccupation')
+    ),
+    householdMembers: createFormField(
+      '',
+      handleFieldChange('householdMembers')
+    ),
+    dogAllergies: createFormField('', handleFieldChange('dogAllergies')),
+
+    // Housing Info
+    ownsOrRents: createFormField(
+      'own' as const,
+      handleFieldChange('ownsOrRents')
+    ),
+    housingOtherExplain: createFormField(
+      '',
+      handleFieldChange('housingOtherExplain')
+    ),
+    landlordName: createFormField('', handleFieldChange('landlordName')),
+    landlordPhone: createFormField('', handleFieldChange('landlordPhone')),
+    landlordEmail: createFormField('', handleFieldChange('landlordEmail')),
+    allowsDogs: createFormField(
+      'yes' as const,
+      handleFieldChange('allowsDogs')
+    ),
+    breedRestrictions: createFormField(
+      'no' as const,
+      handleFieldChange('breedRestrictions')
+    ),
+    hoa: createFormField('no' as const, handleFieldChange('hoa')),
+    hoaBreedRestrictions: createFormField(
+      'no' as const,
+      handleFieldChange('hoaBreedRestrictions')
+    ),
+    houseType: createFormField(
+      'house' as const,
+      handleFieldChange('houseType')
+    ),
+    hasFence: createFormField(false, handleFieldChange('hasFence')),
+    fenceType: createFormField('', handleFieldChange('fenceType')),
+
+    // Current Pets - just the base field, repeated fields will be handled dynamically
+    numberOfPets: createFormField(0, handleFieldChange('numberOfPets')),
+
+    // Lifestyle & Care
+    vetName: createFormField('', handleFieldChange('vetName')),
+    motivation: createFormField('', handleFieldChange('motivation')),
+    petEnergyLevel: createFormField(
+      'medium' as const,
+      handleFieldChange('petEnergyLevel')
+    ),
+    dogFood: createFormField('', handleFieldChange('dogFood')),
+    howActiveIsYourHousehold: createFormField(
+      'moderate' as const,
+      handleFieldChange('howActiveIsYourHousehold')
+    ),
+    dailyExerciseAndEnrichment: createFormField(
+      '',
+      handleFieldChange('dailyExerciseAndEnrichment')
+    ),
+    offLimitsPlaces: createFormField('', handleFieldChange('offLimitsPlaces')),
+    hoursAlone: createFormField('', handleFieldChange('hoursAlone')),
+    whereDogWillBeWhenAlone: createFormField(
+      [] as string[],
+      handleFieldChange('whereDogWillBeWhenAlone')
+    ),
+    travelPlans: createFormField('', handleFieldChange('travelPlans')),
+    openToOtherDogs: createFormField(
+      'yes' as const,
+      handleFieldChange('openToOtherDogs')
+    ),
+
+    // Additional Questions
+    petTakenToShelter: createFormField(
+      '',
+      handleFieldChange('petTakenToShelter')
+    ),
+    everGaveUpPet: createFormField('', handleFieldChange('everGaveUpPet')),
+    giveUpPet: createFormField('', handleFieldChange('giveUpPet')),
+    euthanizeDog: createFormField('', handleFieldChange('euthanizeDog')),
+    moveWithoutDog: createFormField('', handleFieldChange('moveWithoutDog')),
+
+    // Training & Behavior
+    trainingExperience: createFormField(
+      '',
+      handleFieldChange('trainingExperience')
+    ),
+    familiarWithCutOffCues: createFormField(
+      'notFamiliar' as const,
+      handleFieldChange('familiarWithCutOffCues')
+    ),
+    trainingPlans: createFormField(
+      [] as string[],
+      handleFieldChange('trainingPlans')
+    ),
+    difficultBehaviors: createFormField(
+      '',
+      handleFieldChange('difficultBehaviors')
+    ),
+    dogSocialization: createFormField(
+      '',
+      handleFieldChange('dogSocialization')
+    ),
+    petIntroduction: createFormField('', handleFieldChange('petIntroduction')),
+
+    // Final Agreements & Disclosures
+    destructiveBehavior: createFormField(
+      'no' as const,
+      handleFieldChange('destructiveBehavior')
+    ),
+    costOfDog: createFormField('no' as const, handleFieldChange('costOfDog')),
+    dogHousebreaking: createFormField(
+      'no' as const,
+      handleFieldChange('dogHousebreaking')
+    ),
+    willingToTrain: createFormField(
+      'yes' as const,
+      handleFieldChange('willingToTrain')
+    ),
+    dateReadyToAdopt: createFormField(
+      '',
+      handleFieldChange('dateReadyToAdopt')
+    ),
+    photos: createFormField([] as File[], handleFieldChange('photos')),
+    howDidYouHearAboutUs: createFormField(
+      'petfinder' as const,
+      handleFieldChange('howDidYouHearAboutUs')
+    ),
+    additionalQuestionsAndInfo: createFormField(
+      '',
+      handleFieldChange('additionalQuestionsAndInfo')
+    ),
+    longTermCommitment: createFormField(
+      'yes' as const,
+      handleFieldChange('longTermCommitment')
+    ),
+    unknownHistory: createFormField(
+      'yes' as const,
+      handleFieldChange('unknownHistory')
+    ),
+    ageRequirement: createFormField(
+      'yes' as const,
+      handleFieldChange('ageRequirement')
+    ),
+    termsAndConditions: createFormField(
+      'no' as const,
+      handleFieldChange('termsAndConditions')
+    ),
+    signature: createFormField('no' as const, handleFieldChange('signature')),
+  } as AdoptionFormState;
 };
 
-// flatten all fields for initial state
-const allFields = adoptionFields.flatMap((section) => section.fields);
-
 export const AdoptionForm = () => {
-  const [form, setForm] = useState<FieldState>(getInitialState(allFields));
+  const [form, setForm] = useState<AdoptionFormState>(() =>
+    createInitialFormState()
+  );
   const [pets, setPets] = useState<PetFields[]>([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
   const totalSections = adoptionFields.length;
@@ -59,9 +246,23 @@ export const AdoptionForm = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Use the custom hook with all required props
+  // Use the custom hook with all required props - convert form to FieldState for compatibility
+  const formAsFieldState: FieldState = Object.entries(form).reduce(
+    (acc, [key, value]) => {
+      if (key === 'selectedDogs') {
+        acc[key] = value;
+      } else if (value && typeof value === 'object' && 'value' in value) {
+        acc[key] = (value as FormFieldValue<FieldValue>).value;
+      } else {
+        acc[key] = value as FieldValue;
+      }
+      return acc;
+    },
+    {} as FieldState
+  );
+
   const { renderField } = useRenderField({
-    form,
+    form: formAsFieldState,
     errors,
     onFieldChange: handleFieldChange,
     photos,
@@ -73,22 +274,50 @@ export const AdoptionForm = () => {
   });
 
   function handleFieldChange(field: string, value: FieldValue) {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setForm((prev) => {
+      // Create a proper update for the specific field
+      const fieldUpdate = { ...prev };
+
+      // Handle special cases
+      if (field === 'selectedDogs') {
+        fieldUpdate.selectedDogs = value as unknown as {
+          dogs: Dog[];
+          other: string;
+        };
+      } else {
+        // For FormFieldValue fields, update the value property
+        const currentField = (prev as unknown as Record<string, unknown>)[
+          field
+        ];
+        if (
+          currentField &&
+          typeof currentField === 'object' &&
+          'value' in currentField &&
+          'onChange' in currentField
+        ) {
+          (fieldUpdate as unknown as Record<string, unknown>)[field] = {
+            ...currentField,
+            value: value,
+          };
+        }
+      }
+
+      return fieldUpdate;
+    });
 
     setErrors((prev) => {
-      const { [field]: removed, ...rest } = prev;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [field]: _, ...rest } = prev;
       return rest;
     });
   }
 
   // Handle repeated pets fields
   useEffect(() => {
+    const numberOfPetsField = form.numberOfPets;
     const numberOfPets = Math.max(
       0,
-      Math.min(Number(form.numberOfPets) || 0, 10)
+      Math.min(Number(numberOfPetsField.value) || 0, 10)
     );
     setPets((curr) => {
       const arr = curr.slice(0, numberOfPets);
@@ -125,14 +354,31 @@ export const AdoptionForm = () => {
           return;
         }
 
-        const val = form[field.name];
+        // Get the field value - handle both FormFieldValue and direct values
+        const formField = (form as unknown as Record<string, unknown>)[
+          field.name
+        ];
+        let val: FieldValue;
+
+        if (
+          formField &&
+          typeof formField === 'object' &&
+          'value' in formField
+        ) {
+          val = (formField as FormFieldValue<FieldValue>).value;
+        } else {
+          val = formField as FieldValue;
+        }
+
         if (
           val === undefined ||
           val === null ||
           (typeof val === 'string' && val.trim() === '') ||
           (Array.isArray(val) && val.length === 0)
         ) {
-          newErrors[field.name] = `${field.label} is required.`;
+          const fieldLabel =
+            typeof field.label === 'function' ? field.label(0) : field.label;
+          newErrors[field.name] = `${fieldLabel} is required.`;
         }
       }
     });
@@ -170,20 +416,46 @@ export const AdoptionForm = () => {
 
       // Helper functions to safely get form values with proper types
       const getFormValue = (key: string): string => {
-        const value = form[key];
-        if (typeof value === 'string') return value;
-        if (typeof value === 'number') return value.toString();
+        const formField = (form as unknown as Record<string, unknown>)[key];
+        if (
+          formField &&
+          typeof formField === 'object' &&
+          'value' in formField
+        ) {
+          const value = (formField as FormFieldValue<FieldValue>).value;
+          if (typeof value === 'string') return value;
+          if (typeof value === 'number') return value.toString();
+          return '';
+        }
         return '';
       };
 
-      const getFormBool = (key: string): boolean => Boolean(form[key]);
+      const getFormBool = (key: string): boolean => {
+        const formField = (form as unknown as Record<string, unknown>)[key];
+        if (
+          formField &&
+          typeof formField === 'object' &&
+          'value' in formField
+        ) {
+          return Boolean((formField as FormFieldValue<FieldValue>).value);
+        }
+        return false;
+      };
 
       const getFormArray = (key: string): string[] => {
-        const value = form[key];
-        return Array.isArray(value) &&
-          value.every((item) => typeof item === 'string')
-          ? value
-          : [];
+        const formField = (form as unknown as Record<string, unknown>)[key];
+        if (
+          formField &&
+          typeof formField === 'object' &&
+          'value' in formField
+        ) {
+          const value = (formField as FormFieldValue<FieldValue>).value;
+          return Array.isArray(value) &&
+            value.every((item) => typeof item === 'string')
+            ? value
+            : [];
+        }
+        return [];
       };
 
       // Prepare submission data
@@ -366,7 +638,11 @@ export const AdoptionForm = () => {
           </div>
         )}
 
-        <div>{currentSection.fields.map((field) => renderField(field))}</div>
+        <div>
+          {currentSection.fields.map((field) =>
+            renderField(field as unknown as AdoptionFieldConfig<FieldState>)
+          )}
+        </div>
 
         {submitError && (
           <div style={{ color: 'red', marginTop: 10, marginBottom: 10 }}>

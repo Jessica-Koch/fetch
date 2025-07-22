@@ -825,7 +825,7 @@ export const Intake = ({ onSubmit, loading = false }: IntakeProps) => {
 
         {/* Submit Button */}
         <Button
-          onClick={handleSubmit}
+          type='submit'
           disabled={loading}
           className={`${styles.button} ${loading ? styles.loading : ''}`}
           label={loading ? 'Adding Dog...' : 'Add Dog'}
