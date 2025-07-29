@@ -14,7 +14,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use 'theme' as theme;`, // <--- fix here!
+        additionalData: `@use 'theme' as theme;`,
       },
     },
   },

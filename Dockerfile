@@ -4,6 +4,10 @@ FROM node:24-alpine
 ARG SERVICE
 ENV SERVICE=${SERVICE:-api}
 
+# Add this for Vite environment variables
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
 # Install pnpm
 RUN npm install -g pnpm@10.11.1
 

@@ -1,7 +1,13 @@
 // apps/web/src/services/api.ts
 import type { Dog, CreateDogRequest, ApiResponse } from '@fetch/shared';
+console.log('=== API DEBUGGING ===');
+console.log('import.meta.env.MODE:', import.meta.env.MODE);
+console.log('import.meta.env.VITE_API_URL:', import.meta.env.VITE_API_URL);
+console.log('import.meta.env (all):', import.meta.env);
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+console.log('Final API_BASE:', API_BASE);
+console.log('=== END DEBUGGING ===');
 
 // Custom error type (not a class)
 export interface ApiError {
