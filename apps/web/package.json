@@ -7,7 +7,7 @@
     "dev": "concurrently \"tsc -b --watch\" \"vite --mode development\"",
     "build": "tsc -b && vite build",
     "type-check": "tsc -b",
-    "preview": "vite preview --host 0.0.0.0 --port 3000",
+    "preview": "vite preview --host 0.0.0.0 --port 5173",
     "lint": "eslint ."
   },
   "dependencies": {

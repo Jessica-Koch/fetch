@@ -32,13 +32,13 @@ RUN pnpm run build:${SERVICE}
 # Set working directory based on service
 WORKDIR /app/apps/${SERVICE}
 
-EXPOSE 3000
+EXPOSE 5173
 
 # Different start commands based on service
 CMD if [ "$SERVICE" = "web" ]; then \
       echo "Starting web service in directory: $(pwd)" && \
       echo "Available scripts:" && cat package.json | grep -A 5 '"scripts"' && \
-      PORT=${PORT:-3000} pnpm run preview; \
+      PORT=${PORT:-5173} pnpm run preview; \
     else \
       pnpm start; \
     fi

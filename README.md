@@ -80,7 +80,7 @@ pnpm run dev
 # Backend only (http://localhost:3001)
 pnpm run dev:api
 
-# Frontend only (http://localhost:3000)
+# Frontend only (http://localhost:5173)
 pnpm run dev:web
 ```
 

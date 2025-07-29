@@ -18,7 +18,7 @@ const start = async () => {
   try {
     // Register CORS with your Railway domains
     const allowedOrigins = [
-      'http://localhost:3000', // Local development
+      'http://localhost:5173', // Local development
       'https://web-production-58768.up.railway.app', // Your Railway web service
       /.*\.railway\.app$/, // Allow all Railway domains
     ];
