@@ -32,23 +32,13 @@ RUN pnpm run build:${SERVICE}
 # Set working directory based on service
 WORKDIR /app/apps/${SERVICE}
 
-EXPOSE 5173
+EXPOSE 3000
 
 # Different start commands based on service
 CMD if [ "$SERVICE" = "web" ]; then \
       echo "Starting web service in directory: $(pwd)" && \
-      echo "Railway assigned PORT: $PORT" && \
-      echo "Contents of dist:" && ls -la dist/ && \
-      echo "Testing if port $PORT is available..." && \
-      echo "Starting vite preview..." && \
-      vite preview --host 0.0.0.0 --port $PORT --strictPort & \
-      VITE_PID=$! && \
-      sleep 5 && \
-      echo "Checking if vite is still running..." && \
-      ps aux | grep vite && \
-      echo "Testing local connection..." && \
-      wget -O- http://localhost:$PORT/ || echo "Local connection failed" && \
-      wait $VITE_PID; \
+      echo "Available scripts:" && cat package.json | grep -A 5 '"scripts"' && \
+      PORT=${PORT:-3000} pnpm run preview; \
     else \
       pnpm start; \
     fi
