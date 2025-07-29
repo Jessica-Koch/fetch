@@ -1,42 +1,56 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import multpart from '@fastify/multipart';
+import multipart from '@fastify/multipart';
 import { PrismaClient } from '@prisma/client';
 import * as dotenv from 'dotenv';
-import { applicationRoutes } from './routes/application.routes';
-import * as dotenv
 
-import { applicationRoutes } from './routes/application.routes';
+// Import your route handlers
+import { applicationRoutes } from './routes/application.routes.js';
+// Add other route imports here as needed
 
+// Load environment variables
 dotenv.config();
 
 const prisma = new PrismaClient();
 const fastify = Fastify({ logger: true });
 
 const start = async () => {
-    try {
-        // Register CORS with Railway domains
-        await fastify.register(cors, {
-      origin: [
-        'http://localhost:3000', // Local development
-        'https://web-production-58768.up.railway.app', // Your Railway web service
-        process.env.FRONTEND_URL, // Environment variable
-        /.*\.railway\.app$/, // Allow all Railway domains
-      ],
+  try {
+    // Register CORS with your Railway domains
+    const allowedOrigins = [
+      'http://localhost:3000', // Local development
+      'https://web-production-58768.up.railway.app', // Your Railway web service
+      /.*\.railway\.app$/, // Allow all Railway domains
+    ];
+
+    // Add FRONTEND_URL if it exists
+    if (process.env.FRONTEND_URL) {
+      allowedOrigins.push(process.env.FRONTEND_URL);
+    }
+
+    await fastify.register(cors, {
+      origin: allowedOrigins,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
-        });
-        
-        // Register multipart for file uploads
-        await fastify.register(multpart);
+    });
 
-        // Health check endpoint
-        fastify.get('/dogs', async () => {
+    // Register multipart for file uploads
+    await fastify.register(multipart);
+
+    // Health check endpoint
+    fastify.get('/health', async () => ({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    }));
+
+    // Basic dogs endpoint for testing
+    fastify.get('/dogs', async () => {
       try {
         const dogs = await prisma.dog.findMany({
           take: 20, // Limit to 20 dogs
-          orderBy: { createdAt: 'desc' }
+          orderBy: { createdAt: 'desc' },
         });
         return { success: true, data: dogs };
       } catch (error) {
@@ -51,7 +65,7 @@ const start = async () => {
     // Start the server
     const port = parseInt(process.env.PORT || '3001');
     const host = '0.0.0.0'; // Important for Railway deployment
-    
+
     await fastify.listen({ port, host });
     console.log(`🚀 Server running on http://${host}:${port}`);
     console.log(`📊 Health check: http://${host}:${port}/health`);
