@@ -1,6 +1,6 @@
 // apps/api/src/services/mongodb.service.ts
 import { MongoClient, Db, Collection } from 'mongodb';
-import { AdoptionApplication } from '../models/application.model';
+import { AdoptionApplication } from '../models/application.model.js';
 
 let client: MongoClient | null = null;
 let db: Db | null = null;

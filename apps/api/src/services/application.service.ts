@@ -1,8 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { PrismaClient } from '@prisma/client';
-import { AdoptionApplication } from '../models/application.model';
-import { getApplicationsCollection } from './mongodb.service';
-import { get } from 'http';
+import { AdoptionApplication } from '../models/application.model.js';
+import { getApplicationsCollection } from './mongodb.service.js';
 
 export class ApplicationService {
   constructor(private prisma: PrismaClient) {}
