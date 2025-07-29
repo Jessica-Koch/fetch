@@ -42,3 +42,4 @@ CMD if [ "$SERVICE" = "web" ]; then \
     else \
       pnpm start; \
     fi
+    
