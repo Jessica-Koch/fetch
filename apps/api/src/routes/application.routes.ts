@@ -1,8 +1,8 @@
 // apps/api/src/routes/application.routes.ts
 import { FastifyInstance } from 'fastify';
-import { ApplicationService } from '../services/application.service';
 import { PrismaClient } from '@prisma/client';
-import { AdoptionApplication } from '../models/application.model';
+import { AdoptionApplication } from '../models/application.model.js';
+import { ApplicationService } from '../services/application.service.js';
 
 export const applicationRoutes = async (
   fastify: FastifyInstance,
