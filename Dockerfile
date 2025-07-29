@@ -29,6 +29,9 @@ RUN pnpm run build:shared
 # Build the specified service
 RUN pnpm run build:${SERVICE}
 
+# Add this line after the build steps
+RUN ls -la /app/apps/web/dist || echo "dist folder not found"
+
 # Set working directory based on service
 WORKDIR /app/apps/${SERVICE}
 
