@@ -283,4 +283,43 @@ export const applicationRoutes = async (
       }
     }
   );
+
+  // Add after your other routes, before the server start
+  fastify.post('/admin/import-petfinder', async (request, reply) => {
+    try {
+      console.log('Starting Petfinder import...');
+
+      const { createPetfinderImporter } = await import(
+        '../services/petfinder-importer.js'
+      );
+
+      const importer = createPetfinderImporter(
+        {
+          clientId: process.env.PETFINDER_API_KEY!,
+          clientSecret: process.env.PETFINDER_SECRET!,
+        },
+        prisma
+      );
+
+      console.log('Testing connection...');
+      const isConnected = await importer.testConnection();
+      if (!isConnected) {
+        throw new Error('Failed to connect to Petfinder API');
+      }
+
+      const orgId = process.env.PETFINDER_ORGANIZATION_ID || 'CA3207';
+      console.log(`Importing from organization: ${orgId}`);
+
+      const result = await importer.importFromOrganization(orgId);
+
+      console.log('Import completed:', result);
+      return { success: true, result };
+    } catch (error) {
+      console.error('Import failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  });
 };
