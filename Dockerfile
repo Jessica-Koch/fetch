@@ -37,8 +37,8 @@ EXPOSE 5173
 # Different start commands based on service
 CMD if [ "$SERVICE" = "web" ]; then \
       echo "Starting web service in directory: $(pwd)" && \
-      echo "Available scripts:" && cat package.json | grep -A 5 '"scripts"' && \
-      PORT=${PORT:-5173} pnpm run preview; \
+      echo "PORT is: $PORT" && \
+      vite preview --host 0.0.0.0 --port $PORT; \
     else \
       pnpm start; \
     fi
