@@ -16,6 +16,20 @@ const fastify = Fastify({ logger: true });
 
 const start = async () => {
   try {
+    // Run database migrations on startup
+    console.log('🔄 Running database migrations...');
+    try {
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execAsync = promisify(exec);
+
+      await execAsync('npx prisma migrate deploy');
+      console.log('✅ Database migrations completed successfully');
+    } catch (migrationError) {
+      console.error('❌ Migration failed:', migrationError);
+      // Don't exit - try to continue, maybe tables already exist
+    }
+
     // Register CORS with your Railway domains
     const allowedOrigins = [
       'http://localhost:5173', // Local development
